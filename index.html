@@ -415,7 +415,7 @@ async function copyText(text) {
 
 /* ---------- doctor profile & vocab ---------- */
 const D = {
-  name: { bn: "ডা. আরিফুল হাসান", en: "Dr. Ariful Hasan" },
+  name: { bn: "ডা. এম. দাস", en: "Dr. M. Das" },
   degrees: { bn: "এমবিবিএস (কলকাতা), এমডি (জেনারেল মেডিসিন)", en: "MBBS (Cal), MD (General Medicine)" },
   title: { bn: "মেডিসিন বিশেষজ্ঞ", en: "Medicine Specialist" },
   post: { bn: "সহকারী অধ্যাপক, মেডিসিন বিভাগ", en: "Assistant Professor, Department of Medicine" },
@@ -449,11 +449,11 @@ function slotsFor(date, type) {
 const isPast = (date, hm) => date < today() || (date === today() && hm <= nowHM());
 
 /* ---------- store ---------- */
-const KEY = "db24-demo-v3";
+const KEY = "db24-demo-v4";
 function seed() {
   const tday = today(), y = ymd(dayAt(dayAt(-1).getDay() === 0 ? -2 : -1)), tm = ymd(dayAt(dayAt(1).getDay() === 0 ? 2 : 1)), ago = n => ymd(dayAt(-n));
   return {
-    v: 3, nextAppt: 1006, nextRx: 5002, nextPost: 5,
+    v: 4, nextAppt: 1006, nextRx: 5002, nextPost: 5,
     posts: [
       { id: "p1", date: ago(3), cat: { bn: "সংক্রামক রোগ", en: "Infectious disease" },
         title: { bn: "ডেঙ্গু জ্বরে কখন হাসপাতালে যাবেন", en: "Dengue: when to go to the hospital" },
@@ -477,7 +477,7 @@ function seed() {
           en: "At least 150 minutes of brisk walking a week is one of the simplest ways to control type 2 diabetes. Thirty minutes a day, five days a week, meets the goal.\n\nIf you take insulin or a sulfonylurea, a long walk on an empty stomach can make your sugar drop suddenly. Carry two biscuits or a date. If you feel dizzy, get palpitations or sweat heavily, stop and eat something right away.\n\nFoot care matters more in winter. Wear soft socks and well-fitting shoes, and check your feet every night for cuts, blisters or red patches. In diabetes even a small foot wound can turn serious quickly." } }
     ],
     appointments: [
-      { id: "DB1001", type: "online", date: tday, time: "10:30", serial: 1, status: "confirmed", pay: "upi", name: { bn: "রাহুল দাস", en: "Rahul Das" }, phone: "9830000001", age: "42", gender: "male",
+      { id: "DB1001", type: "online", date: tday, time: "10:30", serial: 1, status: "confirmed", pay: "upi", name: { bn: "রাহুল সরকার", en: "Rahul Sarkar" }, phone: "9830000001", age: "42", gender: "male",
         problem: { bn: "৩ দিন ধরে জ্বর, গা ব্যথা ও মাথা ব্যথা", en: "Fever, body ache and headache for 3 days" }, rxId: null,
         chat: [{ from: "sys", text: { bn: "রোগী রুমে যোগ দিয়েছেন", en: "Patient joined the room" }, t: "10:27" }, { from: "patient", text: { bn: "নমস্কার ডাক্তারবাবু, আমি রুমে আছি।", en: "Hello doctor, I'm in the room." }, t: "10:28" }] },
       { id: "DB1002", type: "chamber", date: tday, time: "17:00", serial: 1, status: "confirmed", pay: "chamber", name: { bn: "সুস্মিতা ঘোষ", en: "Susmita Ghosh" }, phone: "9830000002", age: "29", gender: "female",
@@ -507,7 +507,7 @@ function seed() {
   };
 }
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 3) return s; } } catch (e) {}
+  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 4) return s; } } catch (e) {}
   return seed();
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -597,7 +597,7 @@ function viewHome() {
   app.innerHTML = `
   <section class="wrap hero">
     <div>
-      <div class="hero-id"><div class="portrait" aria-hidden="true">${t("আ", "A")}</div><div><p class="eyebrow">${loc(D.title)} · ${t("কলকাতা", "Kolkata")}</p><h1>${loc(D.name)}</h1></div></div>
+      <div class="hero-id"><div class="portrait" aria-hidden="true">${t("দ", "D")}</div><div><p class="eyebrow">${loc(D.title)} · ${t("কলকাতা", "Kolkata")}</p><h1>${loc(D.name)}</h1></div></div>
       <p class="degrees">${loc(D.degrees)}<br>${loc(D.post)}</p>
       <p class="lede">${t("জ্বর, ডায়াবেটিস, উচ্চ রক্তচাপ, গ্যাস্ট্রিক ও দীর্ঘমেয়াদি রোগের চিকিৎসা। চেম্বারে এসে অথবা ঘরে বসে ভিডিও কলে পরামর্শ নিন। প্রেসক্রিপশন পাবেন অনলাইনেই, যেকোনো ফার্মেসিতে দেখাতে পারবেন।",
         "Treatment for fever, diabetes, high blood pressure, acidity and long-term conditions. Visit the chamber or consult by video from home. Your prescription arrives online, ready to show at any pharmacy.")}</p>
@@ -669,7 +669,7 @@ function viewPost(id) {
     <a href="#blog">← ${t("সব লেখা", "All articles")}</a>
     <div class="post-meta" style="margin-top:16px"><span class="tag">${esc(loc(p.cat))}</span><span>${fmtDate(p.date)}</span></div>
     <h1>${esc(loc(p.title))}</h1>
-    <div class="byline"><div class="portrait" aria-hidden="true">${t("আ", "A")}</div><div><b>${loc(D.name)}</b><div class="muted" style="font-size:.88rem">${loc(D.degrees)}</div></div></div>
+    <div class="byline"><div class="portrait" aria-hidden="true">${t("দ", "D")}</div><div><b>${loc(D.name)}</b><div class="muted" style="font-size:.88rem">${loc(D.degrees)}</div></div></div>
     <div class="body">${loc(p.body).split(/\n\s*\n/).map(par => `<p>${esc(par.trim())}</p>`).join("")}</div>
     <p class="note" style="margin-top:28px">${t("এই লেখা সাধারণ স্বাস্থ্য সচেতনতার জন্য। নিজের সমস্যার জন্য ডাক্তারের পরামর্শ নিন।", "This article is for general health awareness. See a doctor about your own symptoms.")} <a href="#booking">${t("সিরিয়াল নিন", "Book appointment")}</a></p>
   </article>
@@ -1078,7 +1078,7 @@ function viewRxPaper(id) {
       </div>
       <footer class="pad-foot">
         <span>${t("সোম থেকে শনি · চেম্বার বিকাল ৫টা থেকে রাত ৯টা · অনলাইন সকাল ১০টা থেকে দুপুর ১টা", "Mon to Sat · Chamber 5 to 9 PM · Online 10 AM to 1 PM")}<br>${t("এই প্রেসক্রিপশন DoctorBangla24 থেকে ডিজিটালভাবে তৈরি (ডেমো)", "Issued digitally through DoctorBangla24 (demo)")}</span>
-        <div class="sign"><div class="scrawl">A. Hasan</div><div class="line">${t("ডাক্তারের স্বাক্ষর", "Doctor's signature")}</div></div>
+        <div class="sign"><div class="scrawl">M. Das</div><div class="line">${t("ডাক্তারের স্বাক্ষর", "Doctor's signature")}</div></div>
       </footer>
     </article>
   </div>`;
