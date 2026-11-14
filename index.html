@@ -102,11 +102,23 @@ p { margin: 0; }
 .pill.online::before, .pill.chamber::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .pill.online { background: var(--accent-soft); color: var(--accent); }
 .demo-band { background: var(--warn-soft); color: var(--warn); font-size: .82rem; }
-.demo-band .wrap { padding-block: 5px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+.demo-band .wrap { padding-block: 5px; font-size: .8rem; display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+.menu-btn { display: none; }
 @media (max-width: 760px) {
-  .head-row { flex-wrap: wrap; gap: 8px 12px; }
-  .nav { order: 3; flex-basis: 100%; }
+  .head-row { gap: 10px; }
+  .brand small { display: none; }
   .who { margin-left: auto; }
+  .who .pill { display: none; }
+  .menu-btn { display: inline-grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--ink); cursor: pointer; flex-shrink: 0; }
+  .menu-btn svg { width: 20px; height: 20px; }
+  .nav { display: none; }
+  .site-head.open .nav {
+    display: flex; flex-direction: column; gap: 2px; position: absolute; left: 0; right: 0; top: 100%;
+    background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: var(--shadow);
+    padding-block: 8px 14px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .site-head.open .nav a { padding: 12px; font-size: 1.02rem; }
 }
 
 /* Buttons + forms */
@@ -127,8 +139,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--a
 .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-@media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: 1fr; } .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.stack { display: flex; flex-direction: column; gap: 14px; }
+@media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .between { justify-content: space-between; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; min-width: 0; }
@@ -155,19 +167,29 @@ main { min-height: 60vh; }
 .q-next { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; color: var(--accent); text-align: right; }
 .meter { grid-column: 1 / -1; height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
 .meter span { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
-@media (max-width: 860px) { .hero { grid-template-columns: 1fr; gap: 24px; } }
+@media (max-width: 860px) { .hero { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
 .services { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
 .service { padding: 22px; display: flex; flex-direction: column; gap: 8px; }
 .service + .service { border-left: 1px solid var(--line); }
 .fee { font-family: var(--f-display); font-size: 1.5rem; font-weight: 700; }
 .fee small { font-family: var(--f-body); font-size: .85rem; color: var(--muted); font-weight: 500; }
-@media (max-width: 760px) { .services { grid-template-columns: 1fr; } .service + .service { border-left: 0; border-top: 1px solid var(--line); } }
+@media (max-width: 760px) { .services { grid-template-columns: minmax(0, 1fr); } .service + .service { border-left: 0; border-top: 1px solid var(--line); } }
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
 table { width: 100%; border-collapse: collapse; font-size: .95rem; }
 th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { font-size: .8rem; color: var(--muted); font-weight: 600; letter-spacing: .03em; background: var(--surface-2); white-space: nowrap; }
 tr:last-child td { border-bottom: 0; }
 td.nowrap { white-space: nowrap; }
+@media (max-width: 640px) {
+  .table-wrap.cards { border: 0; background: transparent; overflow: visible; }
+  .cards table, .cards tbody, .cards td { display: block; width: 100%; }
+  .cards thead { display: none; }
+  .cards tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 10px; }
+  .cards td { border: 0; padding: 0; min-width: 0 !important; white-space: normal; }
+  .cards td[data-label]::before { content: attr(data-label); display: block; font-size: .74rem; font-weight: 600; color: var(--muted); letter-spacing: .03em; }
+  .cards td.full { grid-column: 1 / -1; }
+  .cards td .row { flex-wrap: wrap !important; }
+}
 
 /* Blog */
 .posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
@@ -186,7 +208,8 @@ td.nowrap { white-space: nowrap; }
 
 /* Booking */
 .steps { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; padding-block: 10px 50px; align-items: start; }
-@media (max-width: 880px) { .steps { grid-template-columns: 1fr; } }
+@media (max-width: 880px) { .steps { grid-template-columns: minmax(0, 1fr); } .summary { position: static; } }
+@media (max-width: 480px) { .choice { grid-template-columns: minmax(0, 1fr); } .ticket { padding: 20px 16px; } .ticket .big { font-size: 2.5rem; } }
 .step-title { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
 .step-no { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: .82rem; font-weight: 700; flex-shrink: 0; }
 .choice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -216,7 +239,15 @@ td.nowrap { white-space: nowrap; }
 /* Consultation room */
 .room { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; padding-block: 16px 50px; align-items: start; }
 .room.no-video { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
-@media (max-width: 960px) { .room, .room.no-video { grid-template-columns: 1fr; } }
+@media (max-width: 960px) { .room, .room.no-video { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) {
+  .stage { aspect-ratio: 4 / 3; }
+  .stage .avatar { width: 80px; height: 80px; font-size: 1.8rem; }
+  .self { width: 32%; font-size: .68rem; text-align: center; }
+  .stage .who-name { font-size: .8rem; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chat { height: 320px; }
+  .msg { max-width: 90%; }
+}
 .stage { position: relative; background: var(--stage); color: var(--stage-ink); border-radius: 14px; aspect-ratio: 16 / 10; max-width: 100%; overflow: hidden; display: grid; place-items: center; }
 .stage .avatar { width: 108px; height: 108px; border-radius: 50%; background: rgb(255 255 255 / .1); display: grid; place-items: center; font-family: var(--f-display); font-size: 2.4rem; font-weight: 700; position: relative; }
 .stage .avatar::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid rgb(79 195 161 / .6); animation: pulse 1.8s ease-out infinite; }
@@ -280,10 +311,10 @@ td.nowrap { white-space: nowrap; }
 .sign .scrawl { font-family: Georgia, serif; font-style: italic; font-size: 1.4rem; color: var(--accent); }
 .sign .line { border-top: 1px solid var(--muted); padding-top: 2px; }
 @media (max-width: 640px) {
-  .pad-head { grid-template-columns: 1fr; padding: 18px; }
+  .pad-head { grid-template-columns: minmax(0, 1fr); padding: 18px; }
   .pad-head .en { text-align: left; }
   .pad-pt, .pad-foot { padding-left: 18px; padding-right: 18px; }
-  .pad-body { grid-template-columns: 1fr; }
+  .pad-body { grid-template-columns: minmax(0, 1fr); }
   .pad-left { border-right: 0; border-bottom: 1px solid var(--pad-line); padding: 18px; }
   .pad-right { padding: 18px; }
 }
@@ -296,6 +327,7 @@ td.nowrap { white-space: nowrap; }
 .stat { padding: 16px; }
 .stat b { display: block; font-family: var(--f-display); font-size: 1.9rem; line-height: 1.2; }
 .stat span { color: var(--muted); font-size: .86rem; }
+@media (max-width: 560px) { .tabs { flex-wrap: wrap; gap: 0; } .tabs button { flex: 1 1 45%; padding: 10px 8px; } }
 @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .login { max-width: 420px; margin: 50px auto; display: flex; flex-direction: column; gap: 14px; }
 .hint { font-size: .86rem; background: var(--accent-soft); color: var(--accent); padding: 8px 12px; border-radius: 8px; }
@@ -308,7 +340,7 @@ td.nowrap { white-space: nowrap; }
 footer { border-top: 1px solid var(--line); background: var(--surface); margin-top: 20px; }
 footer .wrap { padding-block: 26px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; font-size: .9rem; color: var(--muted); }
 footer b { color: var(--ink); }
-@media (max-width: 720px) { footer .wrap { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { footer .wrap { grid-template-columns: minmax(0, 1fr); } }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 10px; font-weight: 500; opacity: 0; pointer-events: none; transition: .25s; z-index: 50; max-width: calc(100% - 32px); text-align: center; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
@@ -319,9 +351,10 @@ footer b { color: var(--ink); }
     <a class="brand" href="#home"><span class="brand-mark">DB</span><span><b>DoctorBangla24</b><small id="brand-sub"></small></span></a>
     <nav class="nav" id="nav"></nav>
     <div class="who"><button class="btn sm lang-btn" id="lang-btn" type="button"></button><span id="who" class="row" style="gap:8px;flex-wrap:nowrap"></span></div>
+    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
-  <div class="demo-band"><div class="wrap"><span id="demo-text"></span><button class="btn sm ghost" id="reset-demo" type="button"></button></div></div>
 </header>
+<div class="demo-band"><div class="wrap"><span id="demo-text"></span><button class="btn sm ghost" id="reset-demo" type="button"></button></div></div>
 
 <main id="app"></main>
 
@@ -498,6 +531,7 @@ function renderShell() {
   document.documentElement.lang = lang;
   $("#brand-sub").textContent = t("চেম্বার ও অনলাইন পরামর্শ", "Chamber & online care");
   $("#nav").setAttribute("aria-label", t("মূল মেনু", "Main menu"));
+  $("#menu-btn").setAttribute("aria-label", t("মেনু খুলুন", "Open menu"));
   $("#nav").innerHTML = NAV.map(([k, b, e]) => `<a href="#${k}" data-v="${k}">${t(b, e)}</a>`).join("");
   const lb = $("#lang-btn");
   lb.textContent = lang === "bn" ? "English" : "বাংলা";
@@ -520,7 +554,9 @@ function renderWho() {
   const lo = $("#logout");
   if (lo) lo.onclick = () => { setAuthed(false); toast(t("লগআউট হয়েছে", "Logged out")); route(); };
 }
+function closeMenu() { $(".site-head").classList.remove("open"); $("#menu-btn").setAttribute("aria-expanded", "false"); }
 function route() {
+  closeMenu();
   cleanups.forEach(f => { try { f(); } catch (e) {} }); cleanups = [];
   const h = (location.hash || "#home").slice(1);
   const i = h.indexOf("-");
@@ -587,11 +623,11 @@ function viewHome() {
   </section>
   <section class="wrap section" style="padding-top:0">
     <div class="section-head"><h2>${t("সাক্ষাতের সময়সূচি", "Consultation hours")}</h2><span class="muted">${t("শুক্রবার ও সরকারি ছুটির দিন বন্ধ", "Closed on Fridays and public holidays")}</span></div>
-    <div class="table-wrap"><table>
+    <div class="table-wrap cards"><table>
       <thead><tr><th>${t("ধরন", "Type")}</th><th>${t("দিন", "Days")}</th><th>${t("সময়", "Time")}</th><th>${t("স্থান", "Where")}</th></tr></thead>
       <tbody>
-        <tr><td>${typePill("online")}</td><td>${t("শনি থেকে বৃহস্পতি", "Sat to Thu")}</td><td class="nowrap">${fmtTime("10:00")} – ${fmtTime("13:00")}</td><td>${t("ভিডিও কল, এই ওয়েবসাইটে", "Video call on this website")}</td></tr>
-        <tr><td>${typePill("chamber")}</td><td>${t("শনি থেকে বৃহস্পতি", "Sat to Thu")}</td><td class="nowrap">${fmtTime("17:00")} – ${fmtTime("21:00")}</td><td>${loc(D.chamber)}</td></tr>
+        <tr><td data-label="${t("ধরন", "Type")}">${typePill("online")}</td><td data-label="${t("দিন", "Days")}">${t("শনি থেকে বৃহস্পতি", "Sat to Thu")}</td><td class="nowrap full" data-label="${t("সময়", "Time")}">${fmtTime("10:00")} – ${fmtTime("13:00")}</td><td class="full" data-label="${t("স্থান", "Where")}">${t("ভিডিও কল, এই ওয়েবসাইটে", "Video call on this website")}</td></tr>
+        <tr><td data-label="${t("ধরন", "Type")}">${typePill("chamber")}</td><td data-label="${t("দিন", "Days")}">${t("শনি থেকে বৃহস্পতি", "Sat to Thu")}</td><td class="nowrap full" data-label="${t("সময়", "Time")}">${fmtTime("17:00")} – ${fmtTime("21:00")}</td><td class="full" data-label="${t("স্থান", "Where")}">${loc(D.chamber)}</td></tr>
       </tbody>
     </table></div>
   </section>
@@ -1098,13 +1134,13 @@ function viewDoctor() {
 }
 function apptRows(list, showDate) {
   if (!list.length) return `<p class="empty">${t("কোনো অ্যাপয়েন্টমেন্ট নেই।", "No appointments.")}</p>`;
-  return `<div class="table-wrap"><table><thead><tr><th>${t("সিরিয়াল", "Serial")}</th>${showDate ? `<th>${t("তারিখ", "Date")}</th>` : ""}<th>${t("সময়", "Time")}</th><th>${t("রোগী", "Patient")}</th><th>${t("সমস্যা", "Complaint")}</th><th>${t("ধরন", "Type")}</th><th>${t("অবস্থা", "Status")}</th><th></th></tr></thead><tbody>
+  return `<div class="table-wrap cards"><table><thead><tr><th>${t("সিরিয়াল", "Serial")}</th>${showDate ? `<th>${t("তারিখ", "Date")}</th>` : ""}<th>${t("সময়", "Time")}</th><th>${t("রোগী", "Patient")}</th><th>${t("সমস্যা", "Complaint")}</th><th>${t("ধরন", "Type")}</th><th>${t("অবস্থা", "Status")}</th><th></th></tr></thead><tbody>
   ${list.map(a => `<tr>
-    <td>${num(a.serial)}</td>${showDate ? `<td class="nowrap">${fmtDate(a.date)}</td>` : ""}<td class="nowrap">${fmtTime(a.time)}</td>
-    <td><b>${esc(loc(a.name))}</b><div class="muted mono" style="font-size:.78rem">${a.id} · ${esc(a.phone)}</div></td>
-    <td style="min-width:180px">${esc(loc(a.problem)) || `<span class='muted'>${t("উল্লেখ নেই", "Not given")}</span>`}</td>
+    <td data-label="${t("সিরিয়াল", "Serial")}">${num(a.serial)}</td>${showDate ? `<td class="nowrap" data-label="${t("তারিখ", "Date")}">${fmtDate(a.date)}</td>` : ""}<td class="nowrap" data-label="${t("সময়", "Time")}">${fmtTime(a.time)}</td>
+    <td class="full"><b>${esc(loc(a.name))}</b><div class="muted mono" style="font-size:.78rem">${a.id} · ${esc(a.phone)}</div></td>
+    <td class="full" style="min-width:180px" data-label="${t("সমস্যা", "Complaint")}">${esc(loc(a.problem)) || `<span class='muted'>${t("উল্লেখ নেই", "Not given")}</span>`}</td>
     <td>${typePill(a.type)}</td><td>${statusPill(a.status)}</td>
-    <td class="nowrap"><div class="row" style="gap:6px;flex-wrap:nowrap">
+    <td class="nowrap full"><div class="row" style="gap:6px;flex-wrap:nowrap">
       ${a.status === "pending" ? `<button class="btn sm" type="button" data-confirm="${a.id}">${t("নিশ্চিত করুন", "Confirm")}</button>` : ""}
       ${a.status !== "cancelled" ? `<a class="btn sm primary" href="#room-${a.id}">${a.status === "completed" ? t("খুলুন", "Open") : a.type === "online" ? t("কল শুরু করুন", "Start call") : t("প্রেসক্রিপশন লিখুন", "Write prescription")}</a>` : ""}
       ${a.rxId ? `<a class="btn sm" href="#rx-${a.rxId}">℞</a>` : ""}
@@ -1163,14 +1199,20 @@ function tabBlog(body) {
 }
 function tabRxs(body) {
   const list = S.prescriptions.slice().sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
-  body.innerHTML = !list.length ? `<p class="empty">${t("এখনো কোনো প্রেসক্রিপশন দেওয়া হয়নি।", "No prescriptions issued yet.")}</p>` : `<div class="table-wrap"><table>
+  body.innerHTML = !list.length ? `<p class="empty">${t("এখনো কোনো প্রেসক্রিপশন দেওয়া হয়নি।", "No prescriptions issued yet.")}</p>` : `<div class="table-wrap cards"><table>
     <thead><tr><th>${t("নং", "No.")}</th><th>${t("তারিখ", "Date")}</th><th>${t("রোগী", "Patient")}</th><th>${t("রোগ নির্ণয়", "Diagnosis")}</th><th>${t("ওষুধ", "Medicines")}</th><th></th></tr></thead><tbody>
-    ${list.map(r => `<tr><td class="mono">${r.id}</td><td class="nowrap">${fmtDate(r.date)}</td><td><b>${esc(loc(r.patient.name))}</b><div class="muted" style="font-size:.8rem">${yrs(r.patient.age)}, ${gName(r.patient.gender)}</div></td><td>${esc(loc(r.dx))}</td><td>${t(bn(r.meds.length) + "টি", String(r.meds.length))}</td>
-    <td class="nowrap"><a class="btn sm" href="#rx-${r.id}">${t("দেখুন", "View")}</a> <a class="btn sm ghost" href="#room-${r.apptId}">${t("সম্পাদনা", "Edit")}</a></td></tr>`).join("")}
+    ${list.map(r => `<tr><td class="mono" data-label="${t("নং", "No.")}">${r.id}</td><td class="nowrap" data-label="${t("তারিখ", "Date")}">${fmtDate(r.date)}</td><td class="full"><b>${esc(loc(r.patient.name))}</b><div class="muted" style="font-size:.8rem">${yrs(r.patient.age)}, ${gName(r.patient.gender)}</div></td><td data-label="${t("রোগ নির্ণয়", "Diagnosis")}">${esc(loc(r.dx))}</td><td data-label="${t("ওষুধ", "Medicines")}">${t(bn(r.meds.length) + "টি", String(r.meds.length))}</td>
+    <td class="nowrap full"><a class="btn sm" href="#rx-${r.id}">${t("দেখুন", "View")}</a> <a class="btn sm ghost" href="#room-${r.apptId}">${t("সম্পাদনা", "Edit")}</a></td></tr>`).join("")}
     </tbody></table></div>`;
 }
 
 /* ---------- boot ---------- */
+$("#menu-btn").onclick = () => {
+  const open = $(".site-head").classList.toggle("open");
+  $("#menu-btn").setAttribute("aria-expanded", String(open));
+};
+$("#nav").addEventListener("click", e => { if (e.target.closest("a")) closeMenu(); });
+document.addEventListener("click", e => { if (!e.target.closest(".site-head")) closeMenu(); });
 $("#lang-btn").onclick = () => {
   lang = lang === "bn" ? "en" : "bn";
   try { localStorage.setItem("db24-lang", lang); } catch (e) {}
