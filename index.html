@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -334,7 +334,7 @@ footer b { color: var(--ink); }
 "use strict";
 
 /* ---------- language ---------- */
-let lang = "bn";
+let lang = "en";
 try { const l = localStorage.getItem("db24-lang"); if (l === "en" || l === "bn") lang = l; } catch (e) {}
 const t = (b, e) => lang === "en" ? e : b;
 const loc = v => v && typeof v === "object" ? (v[lang] != null ? v[lang] : (v.bn != null ? v.bn : v.en)) : (v == null ? "" : v);
