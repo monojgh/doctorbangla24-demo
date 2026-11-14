@@ -377,6 +377,7 @@ const BN = "০১২৩৪৫৬৭৮৯";
 const bn = s => String(s).replace(/\d/g, d => BN[d]);
 const num = s => lang === "en" ? String(s) : bn(s);
 const toAscii = s => String(s).replace(/[০-৯]/g, d => BN.indexOf(d));
+const normPhone = s => { let d = toAscii(s).replace(/\D/g, ""); if (d.length === 12 && d.startsWith("91")) d = d.slice(2); else if (d.length === 11 && d.startsWith("0")) d = d.slice(1); return d; };
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const lines = s => String(s || "").split("\n").map(x => x.trim()).filter(Boolean);
 const MONTHS = { bn: ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"],
@@ -415,12 +416,12 @@ async function copyText(text) {
 /* ---------- doctor profile & vocab ---------- */
 const D = {
   name: { bn: "ডা. আরিফুল হাসান", en: "Dr. Ariful Hasan" },
-  degrees: { bn: "এমবিবিএস (ঢাকা), এফসিপিএস (মেডিসিন)", en: "MBBS (DU), FCPS (Medicine)" },
+  degrees: { bn: "এমবিবিএস (কলকাতা), এমডি (জেনারেল মেডিসিন)", en: "MBBS (Cal), MD (General Medicine)" },
   title: { bn: "মেডিসিন বিশেষজ্ঞ", en: "Medicine Specialist" },
   post: { bn: "সহকারী অধ্যাপক, মেডিসিন বিভাগ", en: "Assistant Professor, Department of Medicine" },
-  bmdc: "A-00000",
-  chamber: { bn: "DoctorBangla24 চেম্বার, বাড়ি ১২, রোড ৫, ধানমন্ডি, ঢাকা", en: "DoctorBangla24 Chamber, House 12, Road 5, Dhanmondi, Dhaka" },
-  fee: { chamber: 800, online: 600, report: 400 }
+  bmdc: "00000",
+  chamber: { bn: "DoctorBangla24 চেম্বার, ১২ গড়িয়াহাট রোড, কলকাতা ৭০০০১৯", en: "DoctorBangla24 Chamber, 12 Gariahat Road, Kolkata 700019" },
+  fee: { chamber: 600, online: 500, report: 300 }
 };
 const PIN = "2468";
 const SCHEDULE = {
@@ -428,17 +429,17 @@ const SCHEDULE = {
   online: { start: "10:00", end: "13:00", step: 15, label: { bn: "অনলাইন ভিডিও পরামর্শ", en: "Online video consultation" } }
 };
 const GENDER = { male: { bn: "পুরুষ", en: "Male" }, female: { bn: "মহিলা", en: "Female" }, other: { bn: "অন্যান্য", en: "Other" } };
-const PAY = { bkash: { bn: "বিকাশ", en: "bKash" }, nagad: { bn: "নগদ", en: "Nagad" }, card: { bn: "কার্ড", en: "Card" }, chamber: { bn: "চেম্বারে", en: "At the chamber" } };
+const PAY = { upi: { bn: "UPI (GPay / PhonePe / Paytm)", en: "UPI (GPay / PhonePe / Paytm)" }, card: { bn: "ডেবিট/ক্রেডিট কার্ড", en: "Debit/credit card" }, chamber: { bn: "চেম্বারে", en: "At the chamber" } };
 const STATUS = { pending: [{ bn: "অপেক্ষমাণ", en: "Pending" }, "warn"], confirmed: [{ bn: "নিশ্চিত", en: "Confirmed" }, "ok"], completed: [{ bn: "সম্পন্ন", en: "Completed" }, ""], cancelled: [{ bn: "বাতিল", en: "Cancelled" }, "bad"] };
 const statusPill = s => `<span class="pill ${STATUS[s][1]}">${loc(STATUS[s][0])}</span>`;
 const typePill = ty => ty === "online" ? `<span class="pill online">${t("অনলাইন", "Online")}</span>` : `<span class="pill chamber">${t("চেম্বার", "Chamber")}</span>`;
-const taka = n => "৳" + num(n.toLocaleString("en-IN"));
+const taka = n => "₹" + num(n.toLocaleString("en-IN"));
 const gName = g => loc(GENDER[g]) || g;
 const pName = p => loc(PAY[p]) || p;
 const yrs = a => lang === "en" ? a + " yrs" : bn(a) + " বছর";
 
 function slotsFor(date, type) {
-  if (parseD(date).getDay() === 5) return [];
+  if (parseD(date).getDay() === 0) return [];
   const s = SCHEDULE[type], out = [];
   let [h, m] = s.start.split(":").map(Number);
   const [eh, em] = s.end.split(":").map(Number);
@@ -448,17 +449,17 @@ function slotsFor(date, type) {
 const isPast = (date, hm) => date < today() || (date === today() && hm <= nowHM());
 
 /* ---------- store ---------- */
-const KEY = "db24-demo-v2";
+const KEY = "db24-demo-v3";
 function seed() {
-  const tday = today(), y = ymd(dayAt(-1)), tm = ymd(dayAt(1)), ago = n => ymd(dayAt(-n));
+  const tday = today(), y = ymd(dayAt(dayAt(-1).getDay() === 0 ? -2 : -1)), tm = ymd(dayAt(dayAt(1).getDay() === 0 ? 2 : 1)), ago = n => ymd(dayAt(-n));
   return {
-    v: 2, nextAppt: 1006, nextRx: 5002, nextPost: 5,
+    v: 3, nextAppt: 1006, nextRx: 5002, nextPost: 5,
     posts: [
       { id: "p1", date: ago(3), cat: { bn: "সংক্রামক রোগ", en: "Infectious disease" },
         title: { bn: "ডেঙ্গু জ্বরে কখন হাসপাতালে যাবেন", en: "Dengue: when to go to the hospital" },
         excerpt: { bn: "জ্বর কমে যাওয়ার পরের ২৪ থেকে ৪৮ ঘণ্টাই সবচেয়ে ঝুঁকিপূর্ণ। কোন লক্ষণ দেখলে দেরি করবেন না, জেনে নিন।", en: "The 24 to 48 hours after the fever drops are the riskiest. Learn the warning signs that mean you should not wait." },
-        body: { bn: "ডেঙ্গু জ্বরে বেশিরভাগ রোগী বাড়িতে বিশ্রাম, পর্যাপ্ত পানি ও প্যারাসিটামল খেয়েই সেরে ওঠেন। কিন্তু একটি ভুল ধারণা খুব প্রচলিত: জ্বর চলে গেলেই বিপদ কেটে গেছে। আসলে জ্বর কমে যাওয়ার পরের এক থেকে দুই দিনকে বলা হয় ক্রিটিক্যাল ফেজ, এই সময়েই রক্তনালী থেকে প্লাজমা বেরিয়ে যেতে পারে।\n\nযেসব লক্ষণ দেখলে দেরি না করে হাসপাতালে যাবেন: পেটে তীব্র ব্যথা, বারবার বমি, মাড়ি বা নাক দিয়ে রক্ত পড়া, কালো পায়খানা, অস্থিরতা বা অতিরিক্ত ঘুম ঘুম ভাব, হাত-পা ঠান্ডা হয়ে যাওয়া, এবং ছয় ঘণ্টার বেশি প্রস্রাব না হওয়া।\n\nডেঙ্গুতে ব্যথার ওষুধ হিসেবে শুধু প্যারাসিটামল নিন। আইবুপ্রোফেন, ডাইক্লোফেনাক বা অ্যাসপিরিন জাতীয় ওষুধ রক্তক্ষরণের ঝুঁকি বাড়ায়। প্রাপ্তবয়স্কদের দিনে আড়াই থেকে তিন লিটার তরল, যেমন খাবার স্যালাইন, ডাবের পানি, স্যুপ ও ফলের রস নিন।\n\nজ্বরের প্রথম দিনেই NS1 পরীক্ষা এবং ডাক্তারের পরামর্শে নির্দিষ্ট বিরতিতে CBC করে প্লাটিলেট ও হেমাটোক্রিট দেখা জরুরি। শুধু প্লাটিলেট সংখ্যা দেখে আতঙ্কিত হবেন না, হেমাটোক্রিট বাড়ছে কি না সেটিও সমান গুরুত্বপূর্ণ।",
-          en: "Most people with dengue recover at home with rest, plenty of fluids and paracetamol. But one belief is common and wrong: that the danger is over once the fever goes. The one to two days after the fever drops are the critical phase, when plasma can leak out of the blood vessels.\n\nGo to the hospital without delay if you notice severe abdominal pain, repeated vomiting, bleeding from the gums or nose, black stools, restlessness or unusual drowsiness, cold hands and feet, or no urine for more than six hours.\n\nUse only paracetamol for pain in dengue. Ibuprofen, diclofenac and aspirin raise the risk of bleeding. Adults should take two and a half to three litres of fluid a day: oral saline, coconut water, soup and fruit juice.\n\nAn NS1 test on the first day of fever and a CBC at the intervals your doctor advises are important for tracking platelets and haematocrit. Don't panic over the platelet count alone; a rising haematocrit matters just as much." } },
+        body: { bn: "ডেঙ্গু জ্বরে বেশিরভাগ রোগী বাড়িতে বিশ্রাম, পর্যাপ্ত জল ও প্যারাসিটামল খেয়েই সেরে ওঠেন। কিন্তু একটি ভুল ধারণা খুব প্রচলিত: জ্বর চলে গেলেই বিপদ কেটে গেছে। আসলে জ্বর কমে যাওয়ার পরের এক থেকে দুই দিনকে বলা হয় ক্রিটিক্যাল ফেজ, এই সময়েই রক্তনালী থেকে প্লাজমা বেরিয়ে যেতে পারে।\n\nযেসব লক্ষণ দেখলে দেরি না করে হাসপাতালে যাবেন: পেটে তীব্র ব্যথা, বারবার বমি, মাড়ি বা নাক দিয়ে রক্ত পড়া, কালো পায়খানা, অস্থিরতা বা অতিরিক্ত ঘুম ঘুম ভাব, হাত-পা ঠান্ডা হয়ে যাওয়া, এবং ছয় ঘণ্টার বেশি প্রস্রাব না হওয়া।\n\nডেঙ্গুতে ব্যথার ওষুধ হিসেবে শুধু প্যারাসিটামল নিন। আইবুপ্রোফেন, ডাইক্লোফেনাক বা অ্যাসপিরিন জাতীয় ওষুধ রক্তক্ষরণের ঝুঁকি বাড়ায়। প্রাপ্তবয়স্কদের দিনে আড়াই থেকে তিন লিটার তরল, যেমন ORS, ডাবের জল, স্যুপ ও ফলের রস নিন।\n\nজ্বরের প্রথম দিনেই NS1 পরীক্ষা এবং ডাক্তারের পরামর্শে নির্দিষ্ট বিরতিতে CBC করে প্লাটিলেট ও হেমাটোক্রিট দেখা জরুরি। শুধু প্লাটিলেট সংখ্যা দেখে আতঙ্কিত হবেন না, হেমাটোক্রিট বাড়ছে কি না সেটিও সমান গুরুত্বপূর্ণ।",
+          en: "Most people with dengue recover at home with rest, plenty of fluids and paracetamol. But one belief is common and wrong: that the danger is over once the fever goes. The one to two days after the fever drops are the critical phase, when plasma can leak out of the blood vessels.\n\nGo to the hospital without delay if you notice severe abdominal pain, repeated vomiting, bleeding from the gums or nose, black stools, restlessness or unusual drowsiness, cold hands and feet, or no urine for more than six hours.\n\nUse only paracetamol for pain in dengue. Ibuprofen, diclofenac and aspirin raise the risk of bleeding. Adults should take two and a half to three litres of fluid a day: ORS, coconut water, soup and fruit juice.\n\nAn NS1 test on the first day of fever and a CBC at the intervals your doctor advises are important for tracking platelets and haematocrit. Don't panic over the platelet count alone; a rising haematocrit matters just as much." } },
       { id: "p2", date: ago(8), cat: { bn: "হৃদরোগ ও প্রেশার", en: "Heart & blood pressure" },
         title: { bn: "উচ্চ রক্তচাপ: বাড়িতে প্রেশার মাপার সঠিক নিয়ম", en: "High blood pressure: measuring it correctly at home" },
         excerpt: { bn: "ভুল ভঙ্গিতে মাপলে রিডিং ১০ থেকে ১৫ পয়েন্ট পর্যন্ত বেশি আসতে পারে। পাঁচটি সহজ নিয়ম মানলেই ফল নির্ভরযোগ্য হবে।", en: "A poor posture can push a reading 10 to 15 points too high. Follow five simple rules and your numbers become reliable." },
@@ -476,37 +477,37 @@ function seed() {
           en: "At least 150 minutes of brisk walking a week is one of the simplest ways to control type 2 diabetes. Thirty minutes a day, five days a week, meets the goal.\n\nIf you take insulin or a sulfonylurea, a long walk on an empty stomach can make your sugar drop suddenly. Carry two biscuits or a date. If you feel dizzy, get palpitations or sweat heavily, stop and eat something right away.\n\nFoot care matters more in winter. Wear soft socks and well-fitting shoes, and check your feet every night for cuts, blisters or red patches. In diabetes even a small foot wound can turn serious quickly." } }
     ],
     appointments: [
-      { id: "DB1001", type: "online", date: tday, time: "10:30", serial: 1, status: "confirmed", pay: "bkash", name: { bn: "রাশেদ করিম", en: "Rashed Karim" }, phone: "01711000001", age: "42", gender: "male",
+      { id: "DB1001", type: "online", date: tday, time: "10:30", serial: 1, status: "confirmed", pay: "upi", name: { bn: "রাহুল দাস", en: "Rahul Das" }, phone: "9830000001", age: "42", gender: "male",
         problem: { bn: "৩ দিন ধরে জ্বর, গা ব্যথা ও মাথা ব্যথা", en: "Fever, body ache and headache for 3 days" }, rxId: null,
-        chat: [{ from: "sys", text: { bn: "রোগী রুমে যোগ দিয়েছেন", en: "Patient joined the room" }, t: "10:27" }, { from: "patient", text: { bn: "আসসালামু আলাইকুম স্যার, আমি রুমে আছি।", en: "Assalamu alaikum, doctor. I'm in the room." }, t: "10:28" }] },
-      { id: "DB1002", type: "chamber", date: tday, time: "17:00", serial: 1, status: "confirmed", pay: "chamber", name: { bn: "সুমাইয়া আক্তার", en: "Sumaiya Akter" }, phone: "01811000002", age: "29", gender: "female",
+        chat: [{ from: "sys", text: { bn: "রোগী রুমে যোগ দিয়েছেন", en: "Patient joined the room" }, t: "10:27" }, { from: "patient", text: { bn: "নমস্কার ডাক্তারবাবু, আমি রুমে আছি।", en: "Hello doctor, I'm in the room." }, t: "10:28" }] },
+      { id: "DB1002", type: "chamber", date: tday, time: "17:00", serial: 1, status: "confirmed", pay: "chamber", name: { bn: "সুস্মিতা ঘোষ", en: "Susmita Ghosh" }, phone: "9830000002", age: "29", gender: "female",
         problem: { bn: "বুক জ্বালাপোড়া, খাওয়ার পর পেট ফাঁপা", en: "Heartburn, bloating after meals" }, rxId: null, chat: [] },
-      { id: "DB1003", type: "chamber", date: tday, time: "17:15", serial: 2, status: "pending", pay: "chamber", name: { bn: "আব্দুল মালেক", en: "Abdul Malek" }, phone: "01911000003", age: "61", gender: "male",
+      { id: "DB1003", type: "chamber", date: tday, time: "17:15", serial: 2, status: "pending", pay: "chamber", name: { bn: "আব্দুল মালেক", en: "Abdul Malek" }, phone: "9830000003", age: "61", gender: "male",
         problem: { bn: "উচ্চ রক্তচাপের ফলো-আপ", en: "High blood pressure follow-up" }, rxId: null, chat: [] },
-      { id: "DB1004", type: "online", date: tm, time: "11:00", serial: 1, status: "pending", pay: "nagad", name: { bn: "ফারহানা ইসলাম", en: "Farhana Islam" }, phone: "01611000004", age: "35", gender: "female",
+      { id: "DB1004", type: "online", date: tm, time: "11:00", serial: 1, status: "pending", pay: "upi", name: { bn: "পৌলমী সেন", en: "Poulami Sen" }, phone: "9830000004", age: "35", gender: "female",
         problem: { bn: "ডায়াবেটিসের রিপোর্ট দেখানো", en: "Diabetes report review" }, rxId: null, chat: [] },
-      { id: "DB1005", type: "online", date: y, time: "10:00", serial: 1, status: "completed", pay: "bkash", name: { bn: "তানভীর হোসেন", en: "Tanvir Hossain" }, phone: "01511000005", age: "27", gender: "male",
-        problem: { bn: "হাঁচি, নাক দিয়ে পানি পড়া, চোখ চুলকানো", en: "Sneezing, runny nose, itchy eyes" }, rxId: "RX5001",
-        chat: [{ from: "patient", text: { bn: "স্যার, প্রতিদিন সকালে হাঁচি শুরু হয়।", en: "Doctor, the sneezing starts every morning." }, t: "10:02" },
+      { id: "DB1005", type: "online", date: y, time: "10:00", serial: 1, status: "completed", pay: "upi", name: { bn: "অরিজিৎ মুখার্জি", en: "Arijit Mukherjee" }, phone: "9830000005", age: "27", gender: "male",
+        problem: { bn: "হাঁচি, নাক দিয়ে জল পড়া, চোখ চুলকানো", en: "Sneezing, runny nose, itchy eyes" }, rxId: "RX5001",
+        chat: [{ from: "patient", text: { bn: "ডাক্তারবাবু, প্রতিদিন সকালে হাঁচি শুরু হয়।", en: "Doctor, the sneezing starts every morning." }, t: "10:02" },
                { from: "doctor", text: { bn: "কতদিন ধরে? ধুলাবালিতে বাড়ে কি?", en: "For how long? Does dust make it worse?" }, t: "10:03" },
                { from: "patient", text: { bn: "প্রায় ৫ দিন, হ্যাঁ ধুলায় বাড়ে।", en: "About 5 days, and yes, dust makes it worse." }, t: "10:03" },
                { from: "sys", text: { bn: "প্রেসক্রিপশন RX5001 পাঠানো হয়েছে", en: "Prescription RX5001 sent" }, t: "10:14" }] }
     ],
     prescriptions: [
-      { id: "RX5001", apptId: "DB1005", date: y, patient: { name: { bn: "তানভীর হোসেন", en: "Tanvir Hossain" }, age: "27", gender: "male", phone: "01511000005" },
-        cc: { bn: "হাঁচি ও নাক দিয়ে পানি পড়া, ৫ দিন\nচোখ চুলকানো", en: "Sneezing and runny nose, 5 days\nItchy eyes" },
+      { id: "RX5001", apptId: "DB1005", date: y, patient: { name: { bn: "অরিজিৎ মুখার্জি", en: "Arijit Mukherjee" }, age: "27", gender: "male", phone: "9830000005" },
+        cc: { bn: "হাঁচি ও নাক দিয়ে জল পড়া, ৫ দিন\nচোখ চুলকানো", en: "Sneezing and runny nose, 5 days\nItchy eyes" },
         oe: { bp: "120/80", pulse: "78", temp: "98.4", weight: "68" }, dx: "Allergic rhinitis",
-        meds: [{ name: "Tab. Fexo 120 mg", dose: { bn: "০+০+১", en: "0+0+1" }, timing: { bn: "রাতে খাবারের পরে", en: "After dinner" }, dur: { bn: "১৪ দিন", en: "14 days" } },
-               { name: "Tab. Monas 10 mg", dose: { bn: "০+০+১", en: "0+0+1" }, timing: { bn: "রাতে খাবারের পরে", en: "After dinner" }, dur: { bn: "১ মাস", en: "1 month" } },
+        meds: [{ name: "Tab. Allegra 120 mg", dose: { bn: "০+০+১", en: "0+0+1" }, timing: { bn: "রাতে খাবারের পরে", en: "After dinner" }, dur: { bn: "১৪ দিন", en: "14 days" } },
+               { name: "Tab. Montair 10 mg", dose: { bn: "০+০+১", en: "0+0+1" }, timing: { bn: "রাতে খাবারের পরে", en: "After dinner" }, dur: { bn: "১ মাস", en: "1 month" } },
                { name: "Nasal spray Avamys", dose: { bn: "প্রতি নাকে ২ চাপ", en: "2 sprays each nostril" }, timing: { bn: "সকালে", en: "Morning" }, dur: { bn: "১৪ দিন", en: "14 days" } }],
         tests: "CBC with ESR\nSerum IgE",
-        advice: { bn: "ধুলাবালি এড়িয়ে চলুন, বাইরে মাস্ক পরুন\nদিনে দুবার গরম পানির ভাপ নিন\nবিছানার চাদর সপ্তাহে একবার গরম পানিতে ধুয়ে নিন", en: "Avoid dust; wear a mask outdoors\nSteam inhalation twice a day\nWash bed sheets in hot water once a week" },
+        advice: { bn: "ধুলাবালি এড়িয়ে চলুন, বাইরে মাস্ক পরুন\nদিনে দুবার গরম জলের ভাপ নিন\nবিছানার চাদর সপ্তাহে একবার গরম জলে ধুয়ে নিন", en: "Avoid dust; wear a mask outdoors\nSteam inhalation twice a day\nWash bed sheets in hot water once a week" },
         follow: { bn: "২ সপ্তাহ পর রিপোর্টসহ", en: "After 2 weeks with reports" } }
     ]
   };
 }
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 2) return s; } } catch (e) {}
+  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 3) return s; } } catch (e) {}
   return seed();
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -526,7 +527,7 @@ const LISTS = {
   timing: [["খাবারের পরে", "After meals"], ["খাবারের আগে", "Before meals"], ["খালি পেটে", "Empty stomach"], ["রাতে খাবারের পরে", "After dinner"], ["জ্বর ১০১° এর বেশি হলে", "If fever above 101°F"]],
   dur: [["৩ দিন", "3 days"], ["৫ দিন", "5 days"], ["৭ দিন", "7 days"], ["১৪ দিন", "14 days"], ["১ মাস", "1 month"], ["চলবে", "Continue"]]
 };
-const MEDS = ["Tab. Napa 500 mg", "Tab. Napa Extend 665 mg", "Cap. Seclo 20 mg", "Tab. Pantonix 20 mg", "Tab. Fexo 120 mg", "Tab. Rupa 10 mg", "Tab. Monas 10 mg", "Tab. Azithrocin 500 mg", "Cap. Cef-3 200 mg", "Tab. Amlodipine 5 mg", "Tab. Losartan 50 mg", "Tab. Metformin 500 mg", "Tab. Domperidone 10 mg", "Tab. Ceevit 250 mg", "Syp. Tusca Plus 100 ml", "Sachet ORS-N", "Susp. Antacid Plus 200 ml", "Nasal spray Avamys"];
+const MEDS = ["Tab. Dolo 650 mg", "Tab. Calpol 500 mg", "Tab. Pan 40 mg", "Cap. Pan-D", "Tab. Allegra 120 mg", "Tab. Levocet 5 mg", "Tab. Montair 10 mg", "Tab. Azithral 500 mg", "Tab. Taxim-O 200 mg", "Tab. Amlong 5 mg", "Tab. Telma 40 mg", "Tab. Glycomet 500 mg", "Tab. Domstal 10 mg", "Tab. Limcee 500 mg", "Syp. Ascoril LS 100 ml", "Electral ORS sachet", "Syp. Digene 200 ml", "Nasal spray Avamys"];
 function renderShell() {
   document.documentElement.lang = lang;
   $("#brand-sub").textContent = t("চেম্বার ও অনলাইন পরামর্শ", "Chamber & online care");
@@ -539,9 +540,9 @@ function renderShell() {
   $("#demo-text").textContent = t("ডেমো সংস্করণ: সব তথ্য এই ব্রাউজারেই সংরক্ষিত থাকে। নমুনা রোগী ও লেখাগুলো উদাহরণ মাত্র।", "Demo version: all data stays in this browser. Sample patients and articles are examples only.");
   $("#reset-demo").textContent = t("ডেমো ডেটা রিসেট", "Reset demo data");
   $("#foot").innerHTML = `
-    <div><b>DoctorBangla24</b><br>${loc(D.name)}, ${loc(D.title)}<br>${t("শনি থেকে বৃহস্পতিবার · শুক্রবার বন্ধ", "Saturday to Thursday · closed Friday")}</div>
-    <div><b>${t("চেম্বার", "Chamber")}</b><br>${t("বাড়ি ১২, রোড ৫, ধানমন্ডি, ঢাকা", "House 12, Road 5, Dhanmondi, Dhaka")}<br>${t("সিরিয়াল", "Appointments")}: <span class="mono">01700-000000</span> (${t("ডেমো", "demo")})</div>
-    <div><b>${t("জরুরি অবস্থায়", "In an emergency")}</b><br>${t("বুকে তীব্র ব্যথা, শ্বাসকষ্ট বা অজ্ঞান হলে অনলাইনের অপেক্ষা না করে নিকটস্থ হাসপাতালে যান বা ৯৯৯ এ কল করুন।", "For severe chest pain, breathlessness or fainting, don't wait for an online slot. Go to the nearest hospital or call 999.")}</div>`;
+    <div><b>DoctorBangla24</b><br>${loc(D.name)}, ${loc(D.title)}<br>${t("সোম থেকে শনিবার · রবিবার বন্ধ", "Monday to Saturday · closed Sunday")}</div>
+    <div><b>${t("চেম্বার", "Chamber")}</b><br>${t("১২ গড়িয়াহাট রোড, কলকাতা ৭০০০১৯", "12 Gariahat Road, Kolkata 700019")}<br>${t("সিরিয়াল", "Appointments")}: <span class="mono">+91 98300 00000</span> (${t("ডেমো", "demo")})</div>
+    <div><b>${t("জরুরি অবস্থায়", "In an emergency")}</b><br>${t("বুকে তীব্র ব্যথা, শ্বাসকষ্ট বা অজ্ঞান হলে অনলাইনের অপেক্ষা না করে নিকটস্থ হাসপাতালে যান বা ১১২ নম্বরে কল করুন।", "For severe chest pain, breathlessness or fainting, don't wait for an online slot. Go to the nearest hospital or call 112.")}</div>`;
   const opt = arr => arr.map(v => `<option value="${esc(v)}"></option>`).join("");
   $("#lists").innerHTML = `<datalist id="med-list">${opt(MEDS)}</datalist>` +
     ["dose", "timing", "dur"].map(k => `<datalist id="${k}-list">${opt(LISTS[k].map(x => t(x[0], x[1])))}</datalist>`).join("");
@@ -596,7 +597,7 @@ function viewHome() {
   app.innerHTML = `
   <section class="wrap hero">
     <div>
-      <div class="hero-id"><div class="portrait" aria-hidden="true">${t("আ", "A")}</div><div><p class="eyebrow">${loc(D.title)} · ${t("ঢাকা", "Dhaka")}</p><h1>${loc(D.name)}</h1></div></div>
+      <div class="hero-id"><div class="portrait" aria-hidden="true">${t("আ", "A")}</div><div><p class="eyebrow">${loc(D.title)} · ${t("কলকাতা", "Kolkata")}</p><h1>${loc(D.name)}</h1></div></div>
       <p class="degrees">${loc(D.degrees)}<br>${loc(D.post)}</p>
       <p class="lede">${t("জ্বর, ডায়াবেটিস, উচ্চ রক্তচাপ, গ্যাস্ট্রিক ও দীর্ঘমেয়াদি রোগের চিকিৎসা। চেম্বারে এসে অথবা ঘরে বসে ভিডিও কলে পরামর্শ নিন। প্রেসক্রিপশন পাবেন অনলাইনেই, যেকোনো ফার্মেসিতে দেখাতে পারবেন।",
         "Treatment for fever, diabetes, high blood pressure, acidity and long-term conditions. Visit the chamber or consult by video from home. Your prescription arrives online, ready to show at any pharmacy.")}</p>
@@ -604,7 +605,7 @@ function viewHome() {
       <dl class="facts">
         <div><dt>${t("বছরের অভিজ্ঞতা", "Years of practice")}</dt><dd>${num(14)}+</dd></div>
         <div><dt>${t("রোগী দেখেছেন", "Patients seen")}</dt><dd>${num("12,000")}+</dd></div>
-        <div><dt>${t("বিএমডিসি রেজি.", "BMDC reg.")}</dt><dd class="mono" style="font-size:1rem;padding-top:6px">${D.bmdc} (${t("ডেমো", "demo")})</dd></div>
+        <div><dt>${t("রেজি. নং (WBMC)", "Reg. no. (WBMC)")}</dt><dd class="mono" style="font-size:1rem;padding-top:6px">${D.bmdc} (${t("ডেমো", "demo")})</dd></div>
       </dl>
     </div>
     <aside class="card queue" aria-label="${t("আজকের সিরিয়াল", "Today's queue")}">
@@ -616,18 +617,18 @@ function viewHome() {
   </section>
   <section class="wrap section" style="padding-top:12px">
     <div class="services">
-      <div class="service"><span class="eyebrow">${t("চেম্বার", "Chamber")}</span><h3>${t("সরাসরি সাক্ষাৎ", "In-person visit")}</h3><div class="fee">${taka(D.fee.chamber)} <small>${t("প্রথম ভিজিট", "first visit")}</small></div><p class="muted">${t("ধানমন্ডি চেম্বারে, সন্ধ্যা ৫টা থেকে ৯টা। প্রেশার, ওজন ও প্রয়োজনীয় পরীক্ষা চেম্বারেই।", "Dhanmondi chamber, 5 to 9 PM. Blood pressure, weight and basic checks done on site.")}</p></div>
+      <div class="service"><span class="eyebrow">${t("চেম্বার", "Chamber")}</span><h3>${t("সরাসরি সাক্ষাৎ", "In-person visit")}</h3><div class="fee">${taka(D.fee.chamber)} <small>${t("প্রথম ভিজিট", "first visit")}</small></div><p class="muted">${t("গড়িয়াহাট চেম্বারে, সন্ধ্যা ৫টা থেকে ৯টা। প্রেশার, ওজন ও প্রয়োজনীয় পরীক্ষা চেম্বারেই।", "Gariahat chamber, 5 to 9 PM. Blood pressure, weight and basic checks done on site.")}</p></div>
       <div class="service"><span class="eyebrow">${t("অনলাইন", "Online")}</span><h3>${t("ভিডিও পরামর্শ", "Video consultation")}</h3><div class="fee">${taka(D.fee.online)} <small>${t("প্রতি পরামর্শ", "per consultation")}</small></div><p class="muted">${t("সকাল ১০টা থেকে দুপুর ১টা। কল শেষে ডিজিটাল প্রেসক্রিপশন সাথে সাথে পাবেন।", "10 AM to 1 PM. Your digital prescription arrives as soon as the call ends.")}</p></div>
       <div class="service"><span class="eyebrow">${t("ফলো-আপ", "Follow-up")}</span><h3>${t("রিপোর্ট দেখানো", "Report review")}</h3><div class="fee">${taka(D.fee.report)} <small>${t("৭ দিনের মধ্যে", "within 7 days")}</small></div><p class="muted">${t("আগের প্রেসক্রিপশনের পরীক্ষার রিপোর্ট নিয়ে চেম্বারে বা অনলাইনে দেখান।", "Bring the test reports from your last prescription, at the chamber or online.")}</p></div>
     </div>
   </section>
   <section class="wrap section" style="padding-top:0">
-    <div class="section-head"><h2>${t("সাক্ষাতের সময়সূচি", "Consultation hours")}</h2><span class="muted">${t("শুক্রবার ও সরকারি ছুটির দিন বন্ধ", "Closed on Fridays and public holidays")}</span></div>
+    <div class="section-head"><h2>${t("সাক্ষাতের সময়সূচি", "Consultation hours")}</h2><span class="muted">${t("রবিবার ও সরকারি ছুটির দিন বন্ধ", "Closed on Sundays and public holidays")}</span></div>
     <div class="table-wrap cards"><table>
       <thead><tr><th>${t("ধরন", "Type")}</th><th>${t("দিন", "Days")}</th><th>${t("সময়", "Time")}</th><th>${t("স্থান", "Where")}</th></tr></thead>
       <tbody>
-        <tr><td data-label="${t("ধরন", "Type")}">${typePill("online")}</td><td data-label="${t("দিন", "Days")}">${t("শনি থেকে বৃহস্পতি", "Sat to Thu")}</td><td class="nowrap full" data-label="${t("সময়", "Time")}">${fmtTime("10:00")} – ${fmtTime("13:00")}</td><td class="full" data-label="${t("স্থান", "Where")}">${t("ভিডিও কল, এই ওয়েবসাইটে", "Video call on this website")}</td></tr>
-        <tr><td data-label="${t("ধরন", "Type")}">${typePill("chamber")}</td><td data-label="${t("দিন", "Days")}">${t("শনি থেকে বৃহস্পতি", "Sat to Thu")}</td><td class="nowrap full" data-label="${t("সময়", "Time")}">${fmtTime("17:00")} – ${fmtTime("21:00")}</td><td class="full" data-label="${t("স্থান", "Where")}">${loc(D.chamber)}</td></tr>
+        <tr><td data-label="${t("ধরন", "Type")}">${typePill("online")}</td><td data-label="${t("দিন", "Days")}">${t("সোম থেকে শনি", "Mon to Sat")}</td><td class="nowrap full" data-label="${t("সময়", "Time")}">${fmtTime("10:00")} – ${fmtTime("13:00")}</td><td class="full" data-label="${t("স্থান", "Where")}">${t("ভিডিও কল, এই ওয়েবসাইটে", "Video call on this website")}</td></tr>
+        <tr><td data-label="${t("ধরন", "Type")}">${typePill("chamber")}</td><td data-label="${t("দিন", "Days")}">${t("সোম থেকে শনি", "Mon to Sat")}</td><td class="nowrap full" data-label="${t("সময়", "Time")}">${fmtTime("17:00")} – ${fmtTime("21:00")}</td><td class="full" data-label="${t("স্থান", "Where")}">${loc(D.chamber)}</td></tr>
       </tbody>
     </table></div>
   </section>
@@ -683,7 +684,7 @@ function viewBooking() {
   if (bk.done) return viewTicket(bk.done);
   const days = Array.from({ length: 10 }, (_, n) => ymd(dayAt(n)));
   const all = slotsFor(bk.date, bk.type), free = freeSlots(bk.date, bk.type);
-  const pays = bk.type === "online" ? ["bkash", "nagad", "card"] : ["chamber", "bkash", "nagad"];
+  const pays = bk.type === "online" ? ["upi", "card"] : ["chamber", "upi"];
   app.innerHTML = `
   <div class="wrap page-head"><p class="eyebrow">${loc(D.name)}</p><h1>${t("সিরিয়াল নিন", "Book an appointment")}</h1><p class="muted">${t("ধরন, দিন ও সময় বেছে নিয়ে রোগীর তথ্য দিন। বুকিং আইডি দিয়ে পরে অনলাইন রুমে যোগ দিতে পারবেন।", "Choose the type, day and time, then enter the patient's details. You'll use the booking ID to join the online room.")}</p></div>
   <div class="wrap steps">
@@ -691,21 +692,21 @@ function viewBooking() {
       <div class="card">
         <div class="step-title"><span class="step-no">${num(1)}</span><h3>${t("পরামর্শের ধরন", "Consultation type")}</h3></div>
         <div class="choice">
-          <button type="button" data-type="chamber" aria-pressed="${bk.type === "chamber"}"><b>${loc(SCHEDULE.chamber.label)}</b><small>${t("ধানমন্ডি · বিকাল ৫টা থেকে", "Dhanmondi · from 5 PM")} · ${taka(D.fee.chamber)}</small></button>
+          <button type="button" data-type="chamber" aria-pressed="${bk.type === "chamber"}"><b>${loc(SCHEDULE.chamber.label)}</b><small>${t("গড়িয়াহাট · বিকাল ৫টা থেকে", "Gariahat · from 5 PM")} · ${taka(D.fee.chamber)}</small></button>
           <button type="button" data-type="online" aria-pressed="${bk.type === "online"}"><b>${loc(SCHEDULE.online.label)}</b><small>${t("ঘরে বসে · সকাল ১০টা থেকে", "From home · from 10 AM")} · ${taka(D.fee.online)}</small></button>
         </div>
       </div>
       <div class="card">
         <div class="step-title"><span class="step-no">${num(2)}</span><h3>${t("দিন ও সময়", "Day and time")}</h3></div>
-        <div class="days">${days.map(d => { const dt = parseD(d), off = dt.getDay() === 5; return `<button type="button" class="day" data-date="${d}" aria-pressed="${bk.date === d}" ${off ? `disabled title="${t("শুক্রবার বন্ধ", "Closed on Friday")}"` : ""}><small>${DAYS_SHORT[lang][dt.getDay()]}</small><b>${num(dt.getDate())}</b><small>${MONTHS[lang][dt.getMonth()].slice(0, 3)}</small></button>`; }).join("")}</div>
+        <div class="days">${days.map(d => { const dt = parseD(d), off = dt.getDay() === 0; return `<button type="button" class="day" data-date="${d}" aria-pressed="${bk.date === d}" ${off ? `disabled title="${t("রবিবার বন্ধ", "Closed on Sunday")}"` : ""}><small>${DAYS_SHORT[lang][dt.getDay()]}</small><b>${num(dt.getDate())}</b><small>${MONTHS[lang][dt.getMonth()].slice(0, 3)}</small></button>`; }).join("")}</div>
         <p class="muted" style="font-size:.88rem;margin:14px 0 8px">${fmtDay(bk.date)}, ${fmtDate(bk.date)} · ${t(bn(free.length) + "টি সময় খালি", free.length + " slots open")}</p>
         <div class="slots">${all.length ? all.map(s => `<button type="button" class="slot" data-time="${s}" aria-pressed="${bk.time === s}" ${free.includes(s) ? "" : "disabled"}>${fmtTime(s)}</button>`).join("") : `<p class="muted">${t("এই দিনে সাক্ষাৎ বন্ধ।", "No consultations on this day.")}</p>`}</div>
       </div>
       <form class="card stack" id="bk-form" novalidate>
         <div class="step-title" style="margin:0"><span class="step-no">${num(3)}</span><h3>${t("রোগীর তথ্য", "Patient details")}</h3></div>
         <div class="grid2">
-          <div class="field"><label for="bk-name">${t("রোগীর নাম", "Patient's name")}</label><input id="bk-name" required autocomplete="name" placeholder="${t("যেমন: মোঃ রফিকুল ইসলাম", "e.g. Md. Rafiqul Islam")}"></div>
-          <div class="field"><label for="bk-phone">${t("মোবাইল নম্বর", "Mobile number")}</label><input id="bk-phone" required inputmode="tel" placeholder="01XXXXXXXXX"></div>
+          <div class="field"><label for="bk-name">${t("রোগীর নাম", "Patient's name")}</label><input id="bk-name" required autocomplete="name" placeholder="${t("যেমন: সৌমিত্র চট্টোপাধ্যায়", "e.g. Soumitra Chatterjee")}"></div>
+          <div class="field"><label for="bk-phone">${t("মোবাইল নম্বর", "Mobile number")}</label><input id="bk-phone" required inputmode="tel" placeholder="98XXXXXXXX"></div>
         </div>
         <div class="grid3">
           <div class="field"><label for="bk-age">${t("বয়স (বছর)", "Age (years)")}</label><input id="bk-age" required inputmode="numeric" placeholder="${num(35)}"></div>
@@ -715,7 +716,7 @@ function viewBooking() {
         <div class="field"><label for="bk-problem">${t("সমস্যা সংক্ষেপে", "Main complaint")}</label><textarea id="bk-problem" placeholder="${t("যেমন: ৩ দিন ধরে জ্বর ও কাশি", "e.g. Fever and cough for 3 days")}"></textarea></div>
         <p class="err" id="bk-err" hidden></p>
         <button class="btn primary" type="submit" ${bk.time ? "" : "disabled"}>${bk.time ? t("সিরিয়াল নিশ্চিত করুন", "Confirm appointment") : t("আগে একটি সময় বেছে নিন", "Pick a time first")}</button>
-        <p class="muted" style="font-size:.82rem">${t("ডেমোতে কোনো টাকা কাটা হয় না। আসল সাইটে এখানে বিকাশ/নগদ পেমেন্ট গেটওয়ে যুক্ত হবে।", "No money is charged in the demo. The live site would connect a bKash/Nagad payment gateway here.")}</p>
+        <p class="muted" style="font-size:.82rem">${t("ডেমোতে কোনো টাকা কাটা হয় না। আসল সাইটে এখানে UPI/Razorpay পেমেন্ট গেটওয়ে যুক্ত হবে।", "No money is charged in the demo. The live site would connect a UPI/Razorpay payment gateway here.")}</p>
       </form>
     </div>
     <aside class="card summary">
@@ -740,11 +741,11 @@ function viewBooking() {
   $("#bk-form").onsubmit = e => {
     e.preventDefault();
     const v = keep(), err = $("#bk-err");
-    const phone = toAscii(v["bk-phone"]).replace(/\D/g, "");
+    const phone = normPhone(v["bk-phone"]);
     const age = toAscii(v["bk-age"]).replace(/\D/g, "");
     let msg = "";
     if (!v["bk-name"].trim()) msg = t("রোগীর নাম লিখুন।", "Enter the patient's name.");
-    else if (!/^01\d{9}$/.test(phone)) msg = t("১১ সংখ্যার মোবাইল নম্বর দিন, যেমন 01712345678।", "Enter an 11-digit mobile number, e.g. 01712345678.");
+    else if (!/^[6-9]\d{9}$/.test(phone)) msg = t("১০ সংখ্যার মোবাইল নম্বর দিন, যেমন 9876543210।", "Enter a 10-digit mobile number, e.g. 9876543210.");
     else if (!age || +age > 120) msg = t("সঠিক বয়স লিখুন।", "Enter a valid age.");
     else if (!freeSlots(bk.date, bk.type).includes(bk.time)) msg = t("এই সময়টি এইমাত্র বুক হয়ে গেছে, অন্য সময় বেছে নিন।", "That slot was just taken. Pick another time.");
     if (msg) { err.textContent = msg; err.hidden = false; return; }
@@ -780,7 +781,7 @@ function normId(q) { return toAscii(q.trim().toUpperCase()).replace(/[^A-Z0-9]/g
 function findByQuery(q) {
   const n = normId(q);
   if (!n) return [];
-  return S.appointments.filter(a => a.id === n || a.id === "DB" + n || a.phone === n);
+  return S.appointments.filter(a => a.id === n || a.id === "DB" + n || a.phone === normPhone(q));
 }
 function viewConsult() {
   const todays = S.appointments.filter(a => a.type === "online" && a.date === today() && a.status !== "cancelled");
@@ -788,7 +789,7 @@ function viewConsult() {
   <div class="wrap page-head"><p class="eyebrow">${t("ভিডিও পরামর্শ", "Video consultation")}</p><h1>${t("অনলাইন পরামর্শ রুম", "Online consultation room")}</h1><p class="muted">${t("বুকিং আইডি বা মোবাইল নম্বর দিয়ে আপনার অ্যাপয়েন্টমেন্ট খুঁজে রুমে প্রবেশ করুন।", "Find your appointment with your booking ID or mobile number, then enter the room.")}</p></div>
   <section class="wrap section" style="padding-top:16px;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));align-items:start">
     <form class="card stack" id="cs-form">
-      <div class="field"><label for="cs-q">${t("বুকিং আইডি অথবা মোবাইল নম্বর", "Booking ID or mobile number")}</label><input id="cs-q" placeholder="${t("যেমন", "e.g.")}: DB1001 / 01711000001"></div>
+      <div class="field"><label for="cs-q">${t("বুকিং আইডি অথবা মোবাইল নম্বর", "Booking ID or mobile number")}</label><input id="cs-q" placeholder="${t("যেমন", "e.g.")}: DB1001 / 9830000001"></div>
       <button class="btn primary" type="submit">${t("অ্যাপয়েন্টমেন্ট খুঁজুন", "Find appointment")}</button>
       <p class="hint">${t("ডেমোর জন্য আজকের নমুনা রোগী:", "Sample patient for today's demo:")} <button type="button" class="chip" id="cs-demo">DB1001</button></p>
       <div id="cs-out"></div>
@@ -823,17 +824,17 @@ let viewAsPatient = false;
 const TEMPLATES = {
   fever: { label: { bn: "ভাইরাল জ্বর", en: "Viral fever" },
     cc: { bn: "জ্বর, ৩ দিন\nগা ও মাথা ব্যথা", en: "Fever, 3 days\nBody ache and headache" }, dx: "Acute febrile illness (viral)",
-    meds: [{ name: "Tab. Napa 500 mg", dose: { bn: "১+১+১", en: "1+1+1" }, timing: { bn: "খাবারের পরে", en: "After meals" }, dur: { bn: "৫ দিন", en: "5 days" } },
-           { name: "Sachet ORS-N", dose: { bn: "পাতলা পায়খানা বা ঘামের পর", en: "After loose stool or sweating" }, timing: { bn: "আধা লিটার পানিতে", en: "In half a litre of water" }, dur: { bn: "প্রয়োজনে", en: "As needed" } },
-           { name: "Tab. Ceevit 250 mg", dose: { bn: "১+০+১", en: "1+0+1" }, timing: { bn: "চুষে খাবেন", en: "Chew" }, dur: { bn: "৭ দিন", en: "7 days" } }],
+    meds: [{ name: "Tab. Dolo 650 mg", dose: { bn: "১+১+১", en: "1+1+1" }, timing: { bn: "খাবারের পরে", en: "After meals" }, dur: { bn: "৫ দিন", en: "5 days" } },
+           { name: "Electral ORS sachet", dose: { bn: "পাতলা পায়খানা বা ঘামের পর", en: "After loose stool or sweating" }, timing: { bn: "আধা লিটার জলে", en: "In half a litre of water" }, dur: { bn: "প্রয়োজনে", en: "As needed" } },
+           { name: "Tab. Limcee 500 mg", dose: { bn: "১+০+১", en: "1+0+1" }, timing: { bn: "চুষে খাবেন", en: "Chew" }, dur: { bn: "৭ দিন", en: "7 days" } }],
     tests: "CBC\nDengue NS1 Ag",
-    advice: { bn: "প্রচুর পানি ও তরল খাবার খান\nপূর্ণ বিশ্রাম নিন\nজ্বর ৩ দিনের বেশি থাকলে বা পেটে ব্যথা, বমি হলে দ্রুত যোগাযোগ করুন", en: "Drink plenty of water and fluids\nTake full rest\nContact us quickly if fever lasts over 3 days, or with abdominal pain or vomiting" },
+    advice: { bn: "প্রচুর জল ও তরল খাবার খান\nপূর্ণ বিশ্রাম নিন\nজ্বর ৩ দিনের বেশি থাকলে বা পেটে ব্যথা, বমি হলে দ্রুত যোগাযোগ করুন", en: "Drink plenty of water and fluids\nTake full rest\nContact us quickly if fever lasts over 3 days, or with abdominal pain or vomiting" },
     follow: { bn: "৩ দিন পর রিপোর্টসহ", en: "After 3 days with reports" } },
   gastric: { label: { bn: "গ্যাস্ট্রাইটিস", en: "Gastritis" },
     cc: { bn: "বুক জ্বালাপোড়া, ২ সপ্তাহ\nখাওয়ার পর পেট ফাঁপা", en: "Heartburn, 2 weeks\nBloating after meals" }, dx: "Gastro-oesophageal reflux disease (GERD)",
-    meds: [{ name: "Cap. Seclo 20 mg", dose: { bn: "১+০+১", en: "1+0+1" }, timing: { bn: "খাবারের আগে", en: "Before meals" }, dur: { bn: "১৪ দিন", en: "14 days" } },
-           { name: "Tab. Domperidone 10 mg", dose: { bn: "১+১+১", en: "1+1+1" }, timing: { bn: "খাবারের আগে", en: "Before meals" }, dur: { bn: "৭ দিন", en: "7 days" } },
-           { name: "Susp. Antacid Plus 200 ml", dose: { bn: "২ চামচ ৩ বার", en: "2 tsp 3 times" }, timing: { bn: "খাবারের পরে", en: "After meals" }, dur: { bn: "প্রয়োজনে", en: "As needed" } }],
+    meds: [{ name: "Tab. Pan 40 mg", dose: { bn: "১+০+১", en: "1+0+1" }, timing: { bn: "খাবারের আগে", en: "Before meals" }, dur: { bn: "১৪ দিন", en: "14 days" } },
+           { name: "Tab. Domstal 10 mg", dose: { bn: "১+১+১", en: "1+1+1" }, timing: { bn: "খাবারের আগে", en: "Before meals" }, dur: { bn: "৭ দিন", en: "7 days" } },
+           { name: "Syp. Digene 200 ml", dose: { bn: "২ চামচ ৩ বার", en: "2 tsp 3 times" }, timing: { bn: "খাবারের পরে", en: "After meals" }, dur: { bn: "প্রয়োজনে", en: "As needed" } }],
     tests: "",
     advice: { bn: "রাতের খাবার ঘুমের অন্তত ২ ঘণ্টা আগে খান\nতেল-মশলা, চা-কফি ও ধূমপান কমান\nমাথার দিক একটু উঁচু করে ঘুমান", en: "Eat dinner at least 2 hours before bed\nCut down on oily food, tea, coffee and smoking\nSleep with the head end slightly raised" },
     follow: { bn: "২ সপ্তাহ পর", en: "After 2 weeks" } }
@@ -889,7 +890,7 @@ function viewRoom(id) {
 
   const quick = asDoc
     ? [t("কতদিন ধরে সমস্যা হচ্ছে?", "How long has this been going on?"), t("জ্বর মেপেছেন? কত ছিল?", "Did you check your temperature?"), t("আগে কোনো ওষুধ খেয়েছেন?", "Have you taken any medicine?"), t("প্রেসক্রিপশন পাঠাচ্ছি।", "I'm sending your prescription.")]
-    : [t("জি, ৩ দিন ধরে।", "For 3 days."), t("সর্বোচ্চ ১০২° ছিল।", "It went up to 102°F."), t("শুধু নাপা খেয়েছি।", "Only paracetamol."), t("ধন্যবাদ স্যার।", "Thank you, doctor.")];
+    : [t("জি, ৩ দিন ধরে।", "For 3 days."), t("সর্বোচ্চ ১০২° ছিল।", "It went up to 102°F."), t("শুধু প্যারাসিটামল খেয়েছি।", "Only paracetamol."), t("ধন্যবাদ ডাক্তারবাবু।", "Thank you, doctor.")];
   $("#chips").innerHTML = quick.map(q => `<button type="button" class="chip">${q}</button>`).join("");
   const renderChat = () => {
     const box = $("#msgs"); if (!box) return;
@@ -972,7 +973,7 @@ function renderRxWriter(root, a, onSaved) {
       <button type="button" class="btn sm ghost" id="add-med" style="margin-top:6px">+ ${t("আরেকটি ওষুধ", "Add medicine")}</button></div>
     <div class="grid2">
       <div class="field"><label for="rx-tests">${t("পরীক্ষা (Investigation)", "Investigations")}</label><textarea id="rx-tests" rows="3" placeholder="CBC&#10;RBS">${esc(ex ? loc(ex.tests) : "")}</textarea></div>
-      <div class="field"><label for="rx-advice">${t("উপদেশ", "Advice")}</label><textarea id="rx-advice" rows="3" placeholder="${t("প্রচুর পানি পান করুন", "Drink plenty of water")}">${esc(ex ? loc(ex.advice) : "")}</textarea></div>
+      <div class="field"><label for="rx-advice">${t("উপদেশ", "Advice")}</label><textarea id="rx-advice" rows="3" placeholder="${t("প্রচুর জল পান করুন", "Drink plenty of water")}">${esc(ex ? loc(ex.advice) : "")}</textarea></div>
     </div>
     <div class="field"><label for="rx-follow">${t("পরবর্তী সাক্ষাৎ", "Follow-up")}</label><input id="rx-follow" list="dur-list" value="${esc(ex ? loc(ex.follow) : "")}" placeholder="${t("যেমন: ৭ দিন পর", "e.g. after 7 days")}"></div>
     <p class="err" id="rx-err" hidden></p>
@@ -1021,7 +1022,7 @@ function viewRx(id) {
   <div class="wrap page-head"><p class="eyebrow">${t("ডিজিটাল প্রেসক্রিপশন", "Digital prescriptions")}</p><h1>${t("আমার প্রেসক্রিপশন", "My prescriptions")}</h1><p class="muted">${t("বুকিং আইডি, প্রেসক্রিপশন নম্বর বা মোবাইল নম্বর দিয়ে খুঁজুন।", "Search by booking ID, prescription number or mobile number.")}</p></div>
   <section class="wrap section" style="padding-top:16px;max-width:720px;margin-left:0">
     <form class="card stack" id="rx-q-form">
-      <div class="field"><label for="rx-q">${t("আইডি অথবা মোবাইল নম্বর", "ID or mobile number")}</label><input id="rx-q" placeholder="${t("যেমন", "e.g.")}: RX5001 / DB1005 / 01511000005"></div>
+      <div class="field"><label for="rx-q">${t("আইডি অথবা মোবাইল নম্বর", "ID or mobile number")}</label><input id="rx-q" placeholder="${t("যেমন", "e.g.")}: RX5001 / DB1005 / 9830000005"></div>
       <button class="btn primary" type="submit">${t("খুঁজুন", "Search")}</button>
       <p class="hint">${t("ডেমোর নমুনা:", "Demo sample:")} <button type="button" class="chip" id="rx-demo">RX5001</button></p>
       <div id="rx-out"></div>
@@ -1029,7 +1030,7 @@ function viewRx(id) {
   </section>`;
   const run = () => {
     const n = normId($("#rx-q").value);
-    const res = !n ? [] : S.prescriptions.filter(r => r.id === n || r.id === "RX" + n || r.apptId === n || r.apptId === "DB" + n || r.patient.phone === n);
+    const res = !n ? [] : S.prescriptions.filter(r => r.id === n || r.id === "RX" + n || r.apptId === n || r.apptId === "DB" + n || r.patient.phone === normPhone($("#rx-q").value));
     $("#rx-out").innerHTML = !res.length ? `<p class="err">${t("কোনো প্রেসক্রিপশন পাওয়া যায়নি। পরামর্শ শেষ হলে ডাক্তার প্রেসক্রিপশন পাঠাবেন।", "No prescription found. The doctor sends it after the consultation.")}</p>` :
       res.map(r => `<div class="list-item"><div><b>${esc(loc(r.patient.name))}</b> <span class="mono muted">${r.id}</span><div class="muted" style="font-size:.88rem">${fmtDate(r.date)} · ${esc(loc(r.dx))}</div></div><a class="btn sm primary" href="#rx-${r.id}">${t("দেখুন", "View")}</a></div>`).join("");
   };
@@ -1054,8 +1055,8 @@ function viewRxPaper(id) {
     </div>
     <article class="pad">
       <header class="pad-head">
-        <div><h2>${D.name.bn}</h2><p>${D.degrees.bn}<br>${D.title.bn}<br>বিএমডিসি রেজি. নং ${D.bmdc} (ডেমো)</p></div>
-        <div class="en"><h2>${D.name.en}</h2><p>${D.degrees.en}<br>${D.title.en}<br>${D.chamber.en}</p></div>
+        <div><h2>${D.name.bn}</h2><p>${D.degrees.bn}<br>${D.title.bn}<br>পশ্চিমবঙ্গ মেডিক্যাল কাউন্সিল রেজি. নং ${D.bmdc} (ডেমো)</p></div>
+        <div class="en"><h2>${D.name.en}</h2><p>${D.degrees.en}<br>${D.title.en}<br>WBMC Reg. No. ${D.bmdc} (demo)<br>${D.chamber.en}</p></div>
       </header>
       <div class="pad-pt">
         <span>${t("নাম", "Name")}: <b>${esc(loc(r.patient.name))}</b></span><span>${t("বয়স", "Age")}: <b>${yrs(r.patient.age)}</b></span><span>${t("লিঙ্গ", "Sex")}: <b>${gName(r.patient.gender)}</b></span>
@@ -1076,7 +1077,7 @@ function viewRxPaper(id) {
         </div>
       </div>
       <footer class="pad-foot">
-        <span>${t("শনি থেকে বৃহস্পতি · চেম্বার বিকাল ৫টা থেকে রাত ৯টা · অনলাইন সকাল ১০টা থেকে দুপুর ১টা", "Sat to Thu · Chamber 5 to 9 PM · Online 10 AM to 1 PM")}<br>${t("এই প্রেসক্রিপশন DoctorBangla24 থেকে ডিজিটালভাবে তৈরি (ডেমো)", "Issued digitally through DoctorBangla24 (demo)")}</span>
+        <span>${t("সোম থেকে শনি · চেম্বার বিকাল ৫টা থেকে রাত ৯টা · অনলাইন সকাল ১০টা থেকে দুপুর ১টা", "Mon to Sat · Chamber 5 to 9 PM · Online 10 AM to 1 PM")}<br>${t("এই প্রেসক্রিপশন DoctorBangla24 থেকে ডিজিটালভাবে তৈরি (ডেমো)", "Issued digitally through DoctorBangla24 (demo)")}</span>
         <div class="sign"><div class="scrawl">A. Hasan</div><div class="line">${t("ডাক্তারের স্বাক্ষর", "Doctor's signature")}</div></div>
       </footer>
     </article>
