@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DoctorBangla24</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a clinic front desk. Sticky header, one 1120px column; views swap in place.
+   The prescription pad is the one "paper" object on the site, everything else stays flat. */
+:root {
+  --bg: #f2f6f4;
+  --surface: #ffffff;
+  --surface-2: #e7efeb;
+  --ink: #13231e;
+  --muted: #586a64;
+  --line: #d3dfd9;
+  --accent: #0c6a56;
+  --accent-ink: #ffffff;
+  --accent-soft: #d7ebe3;
+  --rx: #b13e1c;
+  --pad: #fffdf6;
+  --pad-line: #e8dfc9;
+  --ok: #157a3c;
+  --ok-soft: #dcf2e3;
+  --warn: #946200;
+  --warn-soft: #fbefd2;
+  --bad: #b42323;
+  --bad-soft: #fbe1e1;
+  --stage: #0f1c18;
+  --stage-ink: #e6efeb;
+  --shadow: 0 1px 2px rgb(19 35 30 / .06), 0 8px 24px rgb(19 35 30 / .06);
+  --f-body: "Hind Siliguri", "Noto Sans Bengali", "Nirmala UI", system-ui, sans-serif;
+  --f-display: "Noto Serif Bengali", "Hind Siliguri", Georgia, serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1613; --surface: #15201c; --surface-2: #1b2924; --ink: #e3ece8; --muted: #9aafa7;
+    --line: #2a3a34; --accent: #4fc3a1; --accent-ink: #052219; --accent-soft: #19362d; --rx: #f08b65;
+    --pad: #1a231f; --pad-line: #33413a; --ok: #5fd08c; --ok-soft: #173826; --warn: #e5b44c; --warn-soft: #3a2f14;
+    --bad: #f08080; --bad-soft: #3d1c1c; --stage: #08100d; --stage-ink: #e6efeb;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1613; --surface: #15201c; --surface-2: #1b2924; --ink: #e3ece8; --muted: #9aafa7;
+  --line: #2a3a34; --accent: #4fc3a1; --accent-ink: #052219; --accent-soft: #19362d; --rx: #f08b65;
+  --pad: #1a231f; --pad-line: #33413a; --ok: #5fd08c; --ok-soft: #173826; --warn: #e5b44c; --warn-soft: #3a2f14;
+  --bad: #f08080; --bad-soft: #3d1c1c; --stage: #08100d; --stage-ink: #e6efeb;
+  --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.65;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+a { color: var(--accent); }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.3; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); }
+h2 { font-size: clamp(1.35rem, 3vw, 1.75rem); }
+h3 { font-size: 1.12rem; }
+p { margin: 0; }
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.mono { font-family: var(--f-mono); font-size: .88em; letter-spacing: .02em; }
+.muted { color: var(--muted); }
+.eyebrow { font-size: .8rem; font-weight: 600; letter-spacing: .06em; color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* Header */
+.site-head { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.head-row { display: flex; align-items: center; gap: 16px; padding-block: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); flex-shrink: 0; }
+.brand-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 700; font-family: var(--f-mono); font-size: .85rem; }
+.brand b { font-size: 1.05rem; display: block; line-height: 1.1; }
+.brand small { color: var(--muted); font-size: .74rem; }
+.nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+.nav::-webkit-scrollbar { display: none; }
+.nav a { white-space: nowrap; text-decoration: none; color: var(--muted); padding: 6px 11px; border-radius: 8px; font-weight: 500; font-size: .95rem; }
+.nav a:hover { color: var(--ink); background: var(--surface-2); }
+.nav a.on { color: var(--accent); background: var(--accent-soft); }
+.who { flex-shrink: 0; font-size: .82rem; display: flex; align-items: center; gap: 8px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+.pill.doc { background: var(--accent-soft); color: var(--accent); }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.online::before, .pill.chamber::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.online { background: var(--accent-soft); color: var(--accent); }
+.demo-band { background: var(--warn-soft); color: var(--warn); font-size: .82rem; }
+.demo-band .wrap { padding-block: 5px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+@media (max-width: 760px) {
+  .head-row { flex-wrap: wrap; gap: 8px 12px; }
+  .nav { order: 3; flex-basis: 100%; }
+  .who { margin-left: auto; }
+}
+
+/* Buttons + forms */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; font-size: .96rem; cursor: pointer; text-decoration: none; line-height: 1.3; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.07); }
+.btn.sm { padding: 5px 11px; font-size: .85rem; border-radius: 7px; }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--accent); }
+.btn.danger { color: var(--bad); }
+.btn.danger.armed { background: var(--bad); color: #fff; border-color: var(--bad); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+label { font-size: .88rem; font-weight: 600; color: var(--muted); display: block; margin-bottom: 4px; }
+input, select, textarea { width: 100%; font: inherit; font-size: .98rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; }
+textarea { resize: vertical; min-height: 84px; line-height: 1.55; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.field { min-width: 0; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: 1fr; } .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.between { justify-content: space-between; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; min-width: 0; }
+.section { padding-block: 40px; }
+.section-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+main { min-height: 60vh; }
+.page-head { padding-block: 32px 8px; display: flex; flex-direction: column; gap: 6px; }
+
+/* Home */
+.hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 36px; padding-block: 44px 28px; align-items: start; }
+.hero-id { display: flex; gap: 18px; align-items: center; margin-bottom: 14px; }
+.portrait { width: 84px; height: 84px; border-radius: 50%; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-family: var(--f-display); font-size: 2rem; font-weight: 700; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--line); }
+.degrees { color: var(--muted); font-weight: 500; }
+.lede { font-size: 1.08rem; max-width: 60ch; margin-block: 14px 22px; }
+.facts { display: flex; gap: 28px; flex-wrap: wrap; margin: 26px 0 0; padding-top: 18px; border-top: 1px solid var(--line); }
+.facts div { display: flex; flex-direction: column; }
+.facts dt { font-size: .8rem; color: var(--muted); order: 2; }
+.facts dd { margin: 0; font-weight: 700; font-size: 1.3rem; font-family: var(--f-display); }
+.queue { box-shadow: var(--shadow); }
+.queue h3 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.q-line { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding-block: 14px; border-bottom: 1px dashed var(--line); }
+.q-line:last-of-type { border-bottom: 0; }
+.q-line strong { font-size: 1.05rem; }
+.q-next { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; color: var(--accent); text-align: right; }
+.meter { grid-column: 1 / -1; height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.meter span { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+@media (max-width: 860px) { .hero { grid-template-columns: 1fr; gap: 24px; } }
+.services { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+.service { padding: 22px; display: flex; flex-direction: column; gap: 8px; }
+.service + .service { border-left: 1px solid var(--line); }
+.fee { font-family: var(--f-display); font-size: 1.5rem; font-weight: 700; }
+.fee small { font-family: var(--f-body); font-size: .85rem; color: var(--muted); font-weight: 500; }
+@media (max-width: 760px) { .services { grid-template-columns: 1fr; } .service + .service { border-left: 0; border-top: 1px solid var(--line); } }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .8rem; color: var(--muted); font-weight: 600; letter-spacing: .03em; background: var(--surface-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.nowrap { white-space: nowrap; }
+
+/* Blog */
+.posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+.post-card { display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: inherit; transition: border-color .15s, transform .15s; }
+.post-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.post-card h3 { font-size: 1.15rem; }
+.post-card p { color: var(--muted); font-size: .95rem; }
+.post-meta { display: flex; gap: 8px; align-items: center; font-size: .82rem; color: var(--muted); flex-wrap: wrap; }
+.tag { font-size: .78rem; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 1px 9px; border-radius: 99px; }
+.article { max-width: 70ch; margin: 0 auto; padding-block: 34px 50px; }
+.article h1 { font-size: clamp(1.7rem, 4vw, 2.3rem); margin-block: 10px 12px; }
+.article .body { display: flex; flex-direction: column; gap: 16px; font-size: 1.07rem; margin-top: 26px; }
+.byline { display: flex; align-items: center; gap: 12px; padding-block: 14px; border-block: 1px solid var(--line); }
+.byline .portrait { width: 44px; height: 44px; font-size: 1.1rem; border-width: 2px; }
+.note { font-size: .9rem; background: var(--surface-2); border-radius: 8px; padding: 12px 14px; color: var(--muted); }
+
+/* Booking */
+.steps { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; padding-block: 10px 50px; align-items: start; }
+@media (max-width: 880px) { .steps { grid-template-columns: 1fr; } }
+.step-title { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+.step-no { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: .82rem; font-weight: 700; flex-shrink: 0; }
+.choice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.choice button { text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: var(--r); padding: 14px; font: inherit; color: var(--ink); cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+.choice button small { color: var(--muted); }
+.choice button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.days { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.day { flex: 0 0 auto; min-width: 70px; border: 1.5px solid var(--line); background: var(--surface); border-radius: 9px; padding: 8px 10px; font: inherit; color: var(--ink); cursor: pointer; text-align: center; line-height: 1.3; }
+.day small { display: block; color: var(--muted); font-size: .76rem; }
+.day b { font-size: 1.1rem; }
+.day[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.day[aria-pressed="true"] small { color: inherit; opacity: .85; }
+.day:disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.slot { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 8px 6px; font: inherit; font-size: .9rem; color: var(--ink); cursor: pointer; }
+.slot[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.slot:disabled { background: var(--surface-2); color: var(--muted); cursor: not-allowed; text-decoration: line-through; }
+.summary { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px); display: flex; flex-direction: column; gap: 12px; }
+.sum-row { display: flex; justify-content: space-between; gap: 12px; font-size: .95rem; border-bottom: 1px dashed var(--line); padding-bottom: 8px; }
+.sum-row span:first-child { color: var(--muted); }
+.sum-row span:last-child { text-align: right; font-weight: 600; }
+.ticket { border: 2px dashed var(--accent); border-radius: 14px; padding: 24px; background: var(--surface); text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; max-width: 520px; margin: 30px auto 60px; }
+.ticket .big { font-family: var(--f-display); font-size: 3rem; font-weight: 700; color: var(--accent); line-height: 1; }
+.ticket .id { font-family: var(--f-mono); font-size: 1.15rem; background: var(--surface-2); padding: 4px 12px; border-radius: 6px; }
+.empty { text-align: center; padding: 34px 16px; color: var(--muted); }
+
+/* Consultation room */
+.room { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; padding-block: 16px 50px; align-items: start; }
+.room.no-video { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
+@media (max-width: 960px) { .room, .room.no-video { grid-template-columns: 1fr; } }
+.stage { position: relative; background: var(--stage); color: var(--stage-ink); border-radius: 14px; aspect-ratio: 16 / 10; max-width: 100%; overflow: hidden; display: grid; place-items: center; }
+.stage .avatar { width: 108px; height: 108px; border-radius: 50%; background: rgb(255 255 255 / .1); display: grid; place-items: center; font-family: var(--f-display); font-size: 2.4rem; font-weight: 700; position: relative; }
+.stage .avatar::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid rgb(79 195 161 / .6); animation: pulse 1.8s ease-out infinite; }
+@keyframes pulse { from { transform: scale(.92); opacity: 1; } to { transform: scale(1.18); opacity: 0; } }
+.stage .who-name { position: absolute; left: 14px; bottom: 12px; font-size: .9rem; background: rgb(0 0 0 / .45); padding: 2px 10px; border-radius: 6px; }
+.stage .timer { position: absolute; left: 14px; top: 12px; font-family: var(--f-mono); font-size: .85rem; background: rgb(0 0 0 / .45); padding: 2px 10px; border-radius: 6px; display: flex; gap: 6px; align-items: center; }
+.stage .timer::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
+.self { position: absolute; right: 12px; bottom: 12px; width: 26%; aspect-ratio: 4 / 3; max-width: 100%; background: #1f2f29; border-radius: 10px; border: 2px solid rgb(255 255 255 / .2); display: grid; place-items: center; overflow: hidden; font-size: .78rem; color: #b9cbc4; }
+.self video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.controls { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.ctl { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; display: grid; place-items: center; }
+.ctl svg { width: 20px; height: 20px; }
+.ctl.off { background: var(--surface-2); color: var(--bad); }
+.ctl.end { background: var(--bad); color: #fff; border-color: var(--bad); width: auto; padding: 0 18px; border-radius: 999px; font: inherit; font-weight: 600; }
+.chat { display: flex; flex-direction: column; height: 360px; padding: 0; overflow: hidden; }
+.chat-head { padding: 10px 14px; border-bottom: 1px solid var(--line); font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.msg { max-width: 82%; padding: 7px 12px; border-radius: 12px; font-size: .94rem; background: var(--surface-2); align-self: flex-start; overflow-wrap: anywhere; }
+.msg.me { align-self: flex-end; background: var(--accent); color: var(--accent-ink); }
+.msg.sys { align-self: center; background: transparent; color: var(--muted); font-size: .82rem; text-align: center; }
+.msg time { display: block; font-size: .72rem; opacity: .7; }
+.chat form { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
+.chips { display: flex; gap: 6px; padding: 8px 10px 0; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 99px; padding: 2px 10px; font: inherit; font-size: .8rem; cursor: pointer; }
+.chip:hover { color: var(--accent); border-color: var(--accent); }
+
+/* Prescription writer */
+.rx-writer { display: flex; flex-direction: column; gap: 16px; }
+.rx-writer h3 { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rx-sym { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 700; color: var(--rx); font-size: 1.6rem; line-height: 1; }
+.med-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, .9fr) auto; gap: 6px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
+.med-row input:first-child { grid-column: 1 / -2; font-weight: 600; }
+.med-row .x { grid-column: -2 / -1; grid-row: 1; }
+.med-row input { padding: 7px 9px; font-size: .92rem; }
+.med-row .x { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 1.2rem; padding: 6px; line-height: 1; }
+.med-row .x:hover { color: var(--bad); }
+.med-head { display: none; }
+
+/* Prescription paper */
+.pad { background: var(--pad); border: 1px solid var(--pad-line); border-radius: 6px; box-shadow: var(--shadow); max-width: 860px; margin: 0 auto; color: var(--ink); }
+.pad-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding: 24px 28px 18px; border-bottom: 3px double var(--accent); }
+.pad-head h2 { font-size: 1.35rem; color: var(--accent); }
+.pad-head .en { font-family: Georgia, serif; text-align: right; }
+.pad-head .en h2 { font-family: Georgia, serif; }
+.pad-head p { font-size: .88rem; color: var(--muted); }
+.pad-pt { display: flex; flex-wrap: wrap; gap: 6px 26px; padding: 10px 28px; border-bottom: 1px solid var(--pad-line); font-size: .93rem; }
+.pad-pt b { font-weight: 600; }
+.pad-body { display: grid; grid-template-columns: minmax(0, 34%) minmax(0, 1fr); min-height: 420px; }
+.pad-left { padding: 20px 22px 20px 28px; border-right: 1px solid var(--pad-line); display: flex; flex-direction: column; gap: 18px; font-size: .92rem; }
+.pad-left h4, .pad-right h4 { margin: 0 0 4px; font-size: .78rem; letter-spacing: .08em; color: var(--accent); font-family: "IBM Plex Mono", "Hind Siliguri", monospace; font-weight: 600; }
+.pad-left ul, .pad-right ul { margin: 0; padding-left: 18px; }
+.pad-right { padding: 20px 28px; display: flex; flex-direction: column; gap: 20px; }
+.pad-meds { list-style: none; padding: 0 !important; display: flex; flex-direction: column; gap: 12px; counter-reset: med; }
+.pad-meds li { counter-increment: med; display: grid; grid-template-columns: 26px 1fr; }
+.pad-meds li::before { content: counter(med) "."; font-weight: 600; color: var(--muted); }
+.pad-meds .mname { font-weight: 600; font-size: 1.02rem; }
+.pad-meds .mdose { font-size: .93rem; color: var(--muted); }
+.pad-meds .mdose b { color: var(--ink); font-weight: 600; letter-spacing: .04em; }
+.pad-foot { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; padding: 16px 28px 22px; border-top: 1px solid var(--pad-line); font-size: .85rem; color: var(--muted); }
+.sign { text-align: center; min-width: 180px; }
+.sign .scrawl { font-family: Georgia, serif; font-style: italic; font-size: 1.4rem; color: var(--accent); }
+.sign .line { border-top: 1px solid var(--muted); padding-top: 2px; }
+@media (max-width: 640px) {
+  .pad-head { grid-template-columns: 1fr; padding: 18px; }
+  .pad-head .en { text-align: left; }
+  .pad-pt, .pad-foot { padding-left: 18px; padding-right: 18px; }
+  .pad-body { grid-template-columns: 1fr; }
+  .pad-left { border-right: 0; border-bottom: 1px solid var(--pad-line); padding: 18px; }
+  .pad-right { padding: 18px; }
+}
+
+/* Doctor panel */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; margin-bottom: 20px; }
+.tabs button { border: 0; background: transparent; font: inherit; font-weight: 600; color: var(--muted); padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+.tabs button[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 22px; }
+.stat { padding: 16px; }
+.stat b { display: block; font-family: var(--f-display); font-size: 1.9rem; line-height: 1.2; }
+.stat span { color: var(--muted); font-size: .86rem; }
+@media (max-width: 720px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.login { max-width: 420px; margin: 50px auto; display: flex; flex-direction: column; gap: 14px; }
+.hint { font-size: .86rem; background: var(--accent-soft); color: var(--accent); padding: 8px 12px; border-radius: 8px; }
+.err { color: var(--bad); font-size: .88rem; }
+.list-item { display: flex; justify-content: space-between; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.list-item:last-child { border-bottom: 0; }
+.list-item > div { min-width: 0; }
+
+/* Footer, toast */
+footer { border-top: 1px solid var(--line); background: var(--surface); margin-top: 20px; }
+footer .wrap { padding-block: 26px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; font-size: .9rem; color: var(--muted); }
+footer b { color: var(--ink); }
+@media (max-width: 720px) { footer .wrap { grid-template-columns: 1fr; } }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 10px; font-weight: 500; opacity: 0; pointer-events: none; transition: .25s; z-index: 50; max-width: calc(100% - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="#home"><span class="brand-mark">DB</span><span><b>DoctorBangla24</b><small>চেম্বার ও অনলাইন পরামর্শ</small></span></a>
+    <nav class="nav" id="nav" aria-label="মূল মেনু">
+      <a href="#home" data-v="home">হোম</a>
+      <a href="#blog" data-v="blog">স্বাস্থ্য ব্লগ</a>
+      <a href="#booking" data-v="booking">সিরিয়াল নিন</a>
+      <a href="#consult" data-v="consult">অনলাইন পরামর্শ</a>
+      <a href="#rx" data-v="rx">প্রেসক্রিপশন</a>
+      <a href="#doctor" data-v="doctor">ডাক্তার প্যানেল</a>
+    </nav>
+    <div class="who" id="who"></div>
+  </div>
+  <div class="demo-band"><div class="wrap"><span>ডেমো সংস্করণ: সব তথ্য এই ব্রাউজারেই সংরক্ষিত থাকে। নমুনা রোগী ও লেখাগুলো উদাহরণ মাত্র।</span><button class="btn sm ghost" id="reset-demo" type="button">ডেমো ডেটা রিসেট</button></div></div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div><b>DoctorBangla24</b><br>ডা. আরিফুল হাসান, মেডিসিন বিশেষজ্ঞ<br>শনি থেকে বৃহস্পতিবার · শুক্রবার বন্ধ</div>
+    <div><b>চেম্বার</b><br>বাড়ি ১২, রোড ৫, ধানমন্ডি, ঢাকা<br>সিরিয়াল: <span class="mono">01700-000000</span> (ডেমো)</div>
+    <div><b>জরুরি অবস্থায়</b><br>বুকে তীব্র ব্যথা, শ্বাসকষ্ট বা অজ্ঞান হলে অনলাইনের অপেক্ষা না করে নিকটস্থ হাসপাতালে যান বা ৯৯৯ এ কল করুন।</div>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<datalist id="med-list">
+  <option value="Tab. Napa 500 mg"></option>
+  <option value="Tab. Napa Extend 665 mg"></option>
+  <option value="Cap. Seclo 20 mg"></option>
+  <option value="Tab. Pantonix 20 mg"></option>
+  <option value="Tab. Fexo 120 mg"></option>
+  <option value="Tab. Rupa 10 mg"></option>
+  <option value="Tab. Monas 10 mg"></option>
+  <option value="Tab. Azithrocin 500 mg"></option>
+  <option value="Cap. Cef-3 200 mg"></option>
+  <option value="Tab. Amlodipine 5 mg"></option>
+  <option value="Tab. Losartan 50 mg"></option>
+  <option value="Tab. Metformin 500 mg"></option>
+  <option value="Tab. Domperidone 10 mg"></option>
+  <option value="Tab. Ceevit 250 mg"></option>
+  <option value="Syp. Tusca Plus 100 ml"></option>
+  <option value="Sachet ORS-N"></option>
+  <option value="Susp. Antacid Plus 200 ml"></option>
+  <option value="Nasal spray Avamys"></option>
+</datalist>
+<datalist id="dose-list">
+  <option value="১+০+১"></option>
+  <option value="১+১+১"></option>
+  <option value="০+০+১"></option>
+  <option value="১+০+০"></option>
+  <option value="০+১+০"></option>
+  <option value="১+১+১+১"></option>
+  <option value="২ চামচ ৩ বার"></option>
+  <option value="প্রয়োজনে"></option>
+</datalist>
+<datalist id="timing-list">
+  <option value="খাবারের পরে"></option>
+  <option value="খাবারের আগে"></option>
+  <option value="খালি পেটে"></option>
+  <option value="রাতে খাবারের পরে"></option>
+  <option value="জ্বর ১০১° এর বেশি হলে"></option>
+</datalist>
+<datalist id="dur-list">
+  <option value="৩ দিন"></option>
+  <option value="৫ দিন"></option>
+  <option value="৭ দিন"></option>
+  <option value="১৪ দিন"></option>
+  <option value="১ মাস"></option>
+  <option value="চলবে"></option>
+</datalist>
+
+<script>
+(function () {
+"use strict";
+
+/* ---------- helpers ---------- */
+const BN = "০১২৩৪৫৬৭৮৯";
+const bn = s => String(s).replace(/\d/g, d => BN[d]);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const lines = s => String(s || "").split("\n").map(x => x.trim()).filter(Boolean);
+const MONTHS = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+const DAYS = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
+const DAYS_SHORT = ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"];
+const pad2 = n => String(n).padStart(2, "0");
+const ymd = d => d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+const dayAt = n => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return d; };
+const today = () => ymd(dayAt(0));
+const parseD = s => new Date(s + "T00:00:00");
+const fmtDate = s => { const d = parseD(s); return bn(d.getDate()) + " " + MONTHS[d.getMonth()] + " " + bn(d.getFullYear()); };
+const fmtDay = s => DAYS[parseD(s).getDay()];
+function fmtTime(hm) {
+  const [h, m] = hm.split(":").map(Number);
+  const part = h < 12 ? "সকাল" : h < 16 ? "দুপুর" : h < 18 ? "বিকাল" : "সন্ধ্যা";
+  return part + " " + bn(((h + 11) % 12) + 1) + ":" + bn(pad2(m));
+}
+const nowHM = () => { const d = new Date(); return pad2(d.getHours()) + ":" + pad2(d.getMinutes()); };
+const $ = (sel, root) => (root || document).querySelector(sel);
+const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+const initials = name => (name || "?").replace(/^ডা\.\s*/, "").trim().charAt(0);
+const framed = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2600);
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); toast("কপি হয়েছে"); }
+  catch (e) { toast("কপি করা যায়নি, লিংকটি হাতে কপি করুন: " + text); }
+}
+
+/* ---------- doctor profile ---------- */
+const D = {
+  name: "ডা. আরিফুল হাসান", nameEn: "Dr. Ariful Hasan",
+  degrees: "এমবিবিএস (ঢাকা), এফসিপিএস (মেডিসিন)", degreesEn: "MBBS (DU), FCPS (Medicine)",
+  title: "মেডিসিন বিশেষজ্ঞ", titleEn: "Medicine Specialist",
+  post: "সহকারী অধ্যাপক, মেডিসিন বিভাগ", bmdc: "A-00000 (ডেমো)",
+  chamber: "DoctorBangla24 চেম্বার, বাড়ি ১২, রোড ৫, ধানমন্ডি, ঢাকা",
+  fee: { chamber: 800, online: 600, report: 400 }
+};
+const PIN = "2468";
+const SCHEDULE = {
+  chamber: { start: "17:00", end: "21:00", step: 15, label: "চেম্বারে সাক্ষাৎ" },
+  online: { start: "10:00", end: "13:00", step: 15, label: "অনলাইন ভিডিও পরামর্শ" }
+};
+function slotsFor(date, type) {
+  if (parseD(date).getDay() === 5) return [];
+  const s = SCHEDULE[type], out = [];
+  let [h, m] = s.start.split(":").map(Number);
+  const [eh, em] = s.end.split(":").map(Number);
+  while (h * 60 + m < eh * 60 + em) { out.push(pad2(h) + ":" + pad2(m)); m += s.step; if (m >= 60) { h++; m -= 60; } }
+  return out;
+}
+const isPast = (date, hm) => date < today() || (date === today() && hm <= nowHM());
+
+/* ---------- store ---------- */
+const KEY = "db24-demo-v1";
+function seed() {
+  const t = today(), y = ymd(dayAt(-1)), tm = ymd(dayAt(1)), ago = n => ymd(dayAt(-n));
+  return {
+    v: 1, nextAppt: 1006, nextRx: 5002, nextPost: 5,
+    posts: [
+      { id: "p1", date: ago(3), cat: "সংক্রামক রোগ", title: "ডেঙ্গু জ্বরে কখন হাসপাতালে যাবেন",
+        excerpt: "জ্বর কমে যাওয়ার পরের ২৪ থেকে ৪৮ ঘণ্টাই সবচেয়ে ঝুঁকিপূর্ণ। কোন লক্ষণ দেখলে দেরি করবেন না, জেনে নিন।",
+        body: "ডেঙ্গু জ্বরে বেশিরভাগ রোগী বাড়িতে বিশ্রাম, পর্যাপ্ত পানি ও প্যারাসিটামল খেয়েই সেরে ওঠেন। কিন্তু একটি ভুল ধারণা খুব প্রচলিত: জ্বর চলে গেলেই বিপদ কেটে গেছে। আসলে জ্বর কমে যাওয়ার পরের এক থেকে দুই দিনকে বলা হয় ক্রিটিক্যাল ফেজ, এই সময়েই রক্তনালী থেকে প্লাজমা বেরিয়ে যেতে পারে।\n\nযেসব লক্ষণ দেখলে দেরি না করে হাসপাতালে যাবেন: পেটে তীব্র ব্যথা, বারবার বমি, মাড়ি বা নাক দিয়ে রক্ত পড়া, কালো পায়খানা, অস্থিরতা বা অতিরিক্ত ঘুম ঘুম ভাব, হাত-পা ঠান্ডা হয়ে যাওয়া, এবং ছয় ঘণ্টার বেশি প্রস্রাব না হওয়া।\n\nডেঙ্গুতে ব্যথার ওষুধ হিসেবে শুধু প্যারাসিটামল নিন। আইবুপ্রোফেন, ডাইক্লোফেনাক বা অ্যাসপিরিন জাতীয় ওষুধ রক্তক্ষরণের ঝুঁকি বাড়ায়। প্রাপ্তবয়স্কদের দিনে আড়াই থেকে তিন লিটার তরল, যেমন খাবার স্যালাইন, ডাবের পানি, স্যুপ ও ফলের রস নিন।\n\nজ্বরের প্রথম দিনেই NS1 পরীক্ষা এবং ডাক্তারের পরামর্শে নির্দিষ্ট বিরতিতে CBC করে প্লাটিলেট ও হেমাটোক্রিট দেখা জরুরি। শুধু প্লাটিলেট সংখ্যা দেখে আতঙ্কিত হবেন না, হেমাটোক্রিট বাড়ছে কি না সেটিও সমান গুরুত্বপূর্ণ।" },
+      { id: "p2", date: ago(8), cat: "হৃদরোগ ও প্রেশার", title: "উচ্চ রক্তচাপ: বাড়িতে প্রেশার মাপার সঠিক নিয়ম",
+        excerpt: "ভুল ভঙ্গিতে মাপলে রিডিং ১০ থেকে ১৫ পয়েন্ট পর্যন্ত বেশি আসতে পারে। পাঁচটি সহজ নিয়ম মানলেই ফল নির্ভরযোগ্য হবে।",
+        body: "অনেক রোগী চেম্বারে এসে বলেন, বাসায় প্রেশার মাপলে একেক সময় একেক রকম আসে। বেশিরভাগ ক্ষেত্রে সমস্যা মেশিনে নয়, মাপার পদ্ধতিতে।\n\nমাপার আগে অন্তত পাঁচ মিনিট চুপচাপ বসে বিশ্রাম নিন। আধা ঘণ্টার মধ্যে চা, কফি, ধূমপান বা ব্যায়াম করবেন না। পিঠ হেলান দিয়ে চেয়ারে বসুন, পা মাটিতে সমান রাখুন, পায়ের উপর পা তুলবেন না।\n\nহাত টেবিলের উপর এমনভাবে রাখুন যেন কাফটি হৃৎপিণ্ডের সমান উচ্চতায় থাকে। কাফ সরাসরি চামড়ার উপর বাঁধুন, জামার হাতার উপর নয়। মাপার সময় কথা বলবেন না।\n\nএক মিনিট বিরতি দিয়ে দুবার মাপুন এবং দুটোর গড় লিখে রাখুন। সকালে ওষুধ খাওয়ার আগে ও রাতে, টানা এক সপ্তাহ এভাবে লিখে ফলো-আপে নিয়ে আসলে ওষুধের ডোজ ঠিক করা অনেক সহজ হয়। বাসায় মাপা রিডিং বারবার ১৩৫/৮৫ এর বেশি হলে তা উচ্চ রক্তচাপ নির্দেশ করে।" },
+      { id: "p3", date: ago(15), cat: "পরিপাকতন্ত্র", title: "গ্যাস্ট্রিকের ব্যথা নাকি হার্টের ব্যথা?",
+        excerpt: "বুকের মাঝখানে জ্বালা মানেই গ্যাস্ট্রিক নয়। কোন ধরনের ব্যথায় ইসিজি করাতে হবে, তা বুঝে নিন।",
+        body: "আমাদের দেশে বুকে ব্যথা হলে অনেকেই প্রথমে গ্যাস্ট্রিকের ওষুধ খেয়ে নেন। এতে কখনো কখনো হার্ট অ্যাটাকের মূল্যবান সময় নষ্ট হয়।\n\nগ্যাস্ট্রিক বা অ্যাসিডিটির ব্যথা সাধারণত খাবারের সাথে সম্পর্কিত, বুক বা পেটের উপরের অংশে জ্বালাপোড়া হয়, টক ঢেকুর ওঠে এবং অ্যান্টাসিড খেলে কমে।\n\nহার্টের ব্যথা সাধারণত চাপ ধরা বা ভারী লাগার মতো, পরিশ্রমে বাড়ে, বাম হাত, চোয়াল বা পিঠে ছড়াতে পারে। সাথে ঘাম, শ্বাসকষ্ট বা মাথা ঘোরা থাকতে পারে।\n\nবয়স চল্লিশের বেশি, ডায়াবেটিস, উচ্চ রক্তচাপ, ধূমপান বা পরিবারে হৃদরোগের ইতিহাস থাকলে বুকে নতুন ধরনের ব্যথাকে কখনো হালকাভাবে নেবেন না। দেরি না করে একটি ইসিজি করান। সন্দেহ হলে অনলাইনের অপেক্ষা না করে সরাসরি হাসপাতালে যান।" },
+      { id: "p4", date: ago(24), cat: "ডায়াবেটিস", title: "ডায়াবেটিসে শীতের সকালের হাঁটা: যা মনে রাখবেন",
+        excerpt: "নিয়মিত হাঁটা রক্তে শর্করা কমায়, তবে খালি পেটে লম্বা হাঁটা কারো কারো জন্য বিপজ্জনক হতে পারে।",
+        body: "সপ্তাহে অন্তত ১৫০ মিনিট দ্রুত হাঁটা টাইপ ২ ডায়াবেটিস নিয়ন্ত্রণের সবচেয়ে সহজ উপায়গুলোর একটি। দিনে ৩০ মিনিট, সপ্তাহে পাঁচ দিন হাঁটলেই এই লক্ষ্য পূরণ হয়।\n\nযারা ইনসুলিন বা সালফোনাইলইউরিয়া জাতীয় ওষুধ নেন, তারা খালি পেটে দীর্ঘ সময় হাঁটলে সুগার হঠাৎ কমে যেতে পারে। সাথে দুটি বিস্কুট বা এক টুকরো খেজুর রাখুন। মাথা ঘোরা, বুক ধড়ফড় বা অতিরিক্ত ঘাম হলে সাথে সাথে থেমে কিছু খেয়ে নিন।\n\nশীতে পায়ের যত্ন বিশেষ জরুরি। নরম মোজা ও মাপমতো জুতা পরুন, প্রতিদিন রাতে পা ভালো করে দেখুন কোনো কাটা, ফোসকা বা লাল দাগ আছে কি না। ডায়াবেটিসে পায়ের ছোট ক্ষতও দ্রুত জটিল হতে পারে।" }
+    ],
+    appointments: [
+      { id: "DB1001", type: "online", date: t, time: "10:30", serial: 1, status: "confirmed", pay: "বিকাশ", name: "রাশেদ করিম", phone: "01711000001", age: "42", gender: "পুরুষ",
+        problem: "৩ দিন ধরে জ্বর, গা ব্যথা ও মাথা ব্যথা", rxId: null,
+        chat: [{ from: "sys", text: "রোগী রুমে যোগ দিয়েছেন", t: "10:27" }, { from: "patient", text: "আসসালামু আলাইকুম স্যার, আমি রুমে আছি।", t: "10:28" }] },
+      { id: "DB1002", type: "chamber", date: t, time: "17:00", serial: 1, status: "confirmed", pay: "চেম্বারে", name: "সুমাইয়া আক্তার", phone: "01811000002", age: "29", gender: "মহিলা",
+        problem: "বুক জ্বালাপোড়া, খাওয়ার পর পেট ফাঁপা", rxId: null, chat: [] },
+      { id: "DB1003", type: "chamber", date: t, time: "17:15", serial: 2, status: "pending", pay: "চেম্বারে", name: "আব্দুল মালেক", phone: "01911000003", age: "61", gender: "পুরুষ",
+        problem: "উচ্চ রক্তচাপের ফলো-আপ", rxId: null, chat: [] },
+      { id: "DB1004", type: "online", date: tm, time: "11:00", serial: 1, status: "pending", pay: "নগদ", name: "ফারহানা ইসলাম", phone: "01611000004", age: "35", gender: "মহিলা",
+        problem: "ডায়াবেটিসের রিপোর্ট দেখানো", rxId: null, chat: [] },
+      { id: "DB1005", type: "online", date: y, time: "10:00", serial: 1, status: "completed", pay: "বিকাশ", name: "তানভীর হোসেন", phone: "01511000005", age: "27", gender: "পুরুষ",
+        problem: "হাঁচি, নাক দিয়ে পানি পড়া, চোখ চুলকানো", rxId: "RX5001",
+        chat: [{ from: "patient", text: "স্যার, প্রতিদিন সকালে হাঁচি শুরু হয়।", t: "10:02" }, { from: "doctor", text: "কতদিন ধরে? ধুলাবালিতে বাড়ে কি?", t: "10:03" }, { from: "patient", text: "প্রায় ৫ দিন, হ্যাঁ ধুলায় বাড়ে।", t: "10:03" }, { from: "sys", text: "প্রেসক্রিপশন RX5001 পাঠানো হয়েছে", t: "10:14" }] }
+    ],
+    prescriptions: [
+      { id: "RX5001", apptId: "DB1005", date: y, patient: { name: "তানভীর হোসেন", age: "27", gender: "পুরুষ", phone: "01511000005" },
+        cc: "হাঁচি ও নাক দিয়ে পানি পড়া, ৫ দিন\nচোখ চুলকানো", oe: { bp: "120/80", pulse: "78", temp: "98.4", weight: "68" },
+        dx: "Allergic rhinitis",
+        meds: [{ name: "Tab. Fexo 120 mg", dose: "০+০+১", timing: "রাতে খাবারের পরে", dur: "১৪ দিন" },
+               { name: "Tab. Monas 10 mg", dose: "০+০+১", timing: "রাতে খাবারের পরে", dur: "১ মাস" },
+               { name: "Nasal spray Avamys", dose: "প্রতি নাকে ২ চাপ", timing: "সকালে", dur: "১৪ দিন" }],
+        tests: "CBC with ESR\nSerum IgE", advice: "ধুলাবালি এড়িয়ে চলুন, বাইরে মাস্ক পরুন\nদিনে দুবার গরম পানির ভাপ নিন\nবিছানার চাদর সপ্তাহে একবার গরম পানিতে ধুয়ে নিন", follow: "২ সপ্তাহ পর রিপোর্টসহ" }
+    ]
+  };
+}
+let mem = null;
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 1) return s; } } catch (e) {}
+  return seed();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+let S = load();
+let authed = false;
+try { authed = sessionStorage.getItem("db24-doc") === "1"; } catch (e) {}
+function setAuthed(v) { authed = v; try { v ? sessionStorage.setItem("db24-doc", "1") : sessionStorage.removeItem("db24-doc"); } catch (e) {} renderWho(); }
+
+const appt = id => S.appointments.find(a => a.id === id);
+const rxOf = id => S.prescriptions.find(r => r.id === id);
+const STATUS = { pending: ["অপেক্ষমাণ", "warn"], confirmed: ["নিশ্চিত", "ok"], completed: ["সম্পন্ন", ""], cancelled: ["বাতিল", "bad"] };
+const statusPill = s => `<span class="pill ${STATUS[s][1]}">${STATUS[s][0]}</span>`;
+const typePill = t => t === "online" ? `<span class="pill online">অনলাইন</span>` : `<span class="pill chamber">চেম্বার</span>`;
+const taka = n => "৳" + bn(n.toLocaleString("en-IN"));
+
+/* ---------- shell ---------- */
+const app = $("#app");
+let cleanups = [];
+function renderWho() {
+  $("#who").innerHTML = authed
+    ? `<span class="pill doc">ডাক্তার হিসেবে লগইন</span><button class="btn sm" id="logout" type="button">লগআউট</button>`
+    : `<span class="pill">রোগী হিসেবে দেখছেন</span>`;
+  const lo = $("#logout");
+  if (lo) lo.onclick = () => { setAuthed(false); toast("লগআউট হয়েছে"); route(); };
+}
+function route() {
+  cleanups.forEach(f => { try { f(); } catch (e) {} }); cleanups = [];
+  const h = (location.hash || "#home").slice(1);
+  const i = h.indexOf("-");
+  const v = i < 0 ? h : h.slice(0, i), arg = i < 0 ? "" : h.slice(i + 1);
+  const views = { home: viewHome, blog: viewBlog, post: viewPost, booking: viewBooking, consult: viewConsult, room: viewRoom, rx: viewRx, doctor: viewDoctor };
+  if (v !== "booking" && bk && bk.done) bk = null;
+  (views[v] || viewHome)(arg);
+  const navKey = { post: "blog", room: authed ? "doctor" : "consult" }[v] || v;
+  $$("#nav a").forEach(a => a.classList.toggle("on", a.dataset.v === navKey));
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- home ---------- */
+function freeSlots(date, type) {
+  const taken = S.appointments.filter(a => a.date === date && a.type === type && a.status !== "cancelled").map(a => a.time);
+  return slotsFor(date, type).filter(s => !taken.includes(s) && !isPast(date, s));
+}
+function nextOpening(type) {
+  for (let n = 0; n < 14; n++) {
+    const d = ymd(dayAt(n)), f = freeSlots(d, type);
+    if (f.length) return { date: d, time: f[0], n };
+  }
+  return null;
+}
+function viewHome() {
+  const t = today();
+  const queueLine = type => {
+    const total = slotsFor(t, type).length;
+    const booked = S.appointments.filter(a => a.date === t && a.type === type && a.status !== "cancelled").length;
+    const nx = nextOpening(type);
+    const when = !nx ? "শিগগিরই খুলবে" : nx.n === 0 ? fmtTime(nx.time) : (nx.n === 1 ? "আগামীকাল " : fmtDay(nx.date) + " ") + fmtTime(nx.time);
+    return `<div class="q-line">
+      <div><strong>${SCHEDULE[type].label}</strong><div class="muted" style="font-size:.85rem">${total ? `আজ ${bn(booked)}/${bn(total)} সিরিয়াল নেওয়া হয়েছে` : "আজ বন্ধ"}</div></div>
+      <div><div class="muted" style="font-size:.78rem;text-align:right">পরবর্তী খালি</div><div class="q-next">${when}</div></div>
+      <div class="meter"><span style="width:${total ? Math.round(booked / total * 100) : 0}%"></span></div>
+    </div>`;
+  };
+  const latest = S.posts.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
+  app.innerHTML = `
+  <section class="wrap hero">
+    <div>
+      <div class="hero-id"><div class="portrait" aria-hidden="true">আ</div><div><p class="eyebrow">${D.title} · ঢাকা</p><h1>${D.name}</h1></div></div>
+      <p class="degrees">${D.degrees}<br>${D.post}</p>
+      <p class="lede">জ্বর, ডায়াবেটিস, উচ্চ রক্তচাপ, গ্যাস্ট্রিক ও দীর্ঘমেয়াদি রোগের চিকিৎসা। চেম্বারে এসে অথবা ঘরে বসে ভিডিও কলে পরামর্শ নিন। প্রেসক্রিপশন পাবেন অনলাইনেই, যেকোনো ফার্মেসিতে দেখাতে পারবেন।</p>
+      <div class="row"><a class="btn primary" href="#booking">সিরিয়াল নিন</a><a class="btn" href="#consult">অনলাইন পরামর্শে যোগ দিন</a></div>
+      <dl class="facts">
+        <div><dt>বছরের অভিজ্ঞতা</dt><dd>১৪+</dd></div>
+        <div><dt>রোগী দেখেছেন</dt><dd>১২,০০০+</dd></div>
+        <div><dt>বিএমডিসি রেজি.</dt><dd class="mono" style="font-size:1rem;padding-top:6px">${D.bmdc}</dd></div>
+      </dl>
+    </div>
+    <aside class="card queue" aria-label="আজকের সিরিয়াল">
+      <h3>আজকের সিরিয়াল <span class="muted" style="font-family:var(--f-body);font-size:.85rem;font-weight:500">${fmtDay(t)}, ${fmtDate(t)}</span></h3>
+      ${queueLine("online")}
+      ${queueLine("chamber")}
+      <a class="btn primary" style="width:100%;margin-top:6px" href="#booking">খালি সময় দেখুন</a>
+    </aside>
+  </section>
+
+  <section class="wrap section" style="padding-top:12px">
+    <div class="services">
+      <div class="service"><span class="eyebrow">চেম্বার</span><h3>সরাসরি সাক্ষাৎ</h3><div class="fee">${taka(D.fee.chamber)} <small>প্রথম ভিজিট</small></div><p class="muted">ধানমন্ডি চেম্বারে, সন্ধ্যা ৫টা থেকে ৯টা। প্রেশার, ওজন ও প্রয়োজনীয় পরীক্ষা চেম্বারেই।</p></div>
+      <div class="service"><span class="eyebrow">অনলাইন</span><h3>ভিডিও পরামর্শ</h3><div class="fee">${taka(D.fee.online)} <small>প্রতি পরামর্শ</small></div><p class="muted">সকাল ১০টা থেকে দুপুর ১টা। কল শেষে ডিজিটাল প্রেসক্রিপশন সাথে সাথে পাবেন।</p></div>
+      <div class="service"><span class="eyebrow">ফলো-আপ</span><h3>রিপোর্ট দেখানো</h3><div class="fee">${taka(D.fee.report)} <small>৭ দিনের মধ্যে</small></div><p class="muted">আগের প্রেসক্রিপশনের পরীক্ষার রিপোর্ট নিয়ে চেম্বারে বা অনলাইনে দেখান।</p></div>
+    </div>
+  </section>
+
+  <section class="wrap section" style="padding-top:0">
+    <div class="section-head"><h2>সাক্ষাতের সময়সূচি</h2><span class="muted">শুক্রবার ও সরকারি ছুটির দিন বন্ধ</span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>ধরন</th><th>দিন</th><th>সময়</th><th>স্থান</th></tr></thead>
+      <tbody>
+        <tr><td>${typePill("online")}</td><td>শনি থেকে বৃহস্পতি</td><td class="nowrap">সকাল ১০:০০ থেকে দুপুর ১:০০</td><td>ভিডিও কল, এই ওয়েবসাইটে</td></tr>
+        <tr><td>${typePill("chamber")}</td><td>শনি থেকে বৃহস্পতি</td><td class="nowrap">বিকাল ৫:০০ থেকে রাত ৯:০০</td><td>${D.chamber}</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="wrap section" style="padding-top:0">
+    <div class="section-head"><h2>স্বাস্থ্য ব্লগ থেকে</h2><a href="#blog">সব লেখা দেখুন</a></div>
+    <div class="posts">${latest.map(postCard).join("")}</div>
+  </section>`;
+}
+
+/* ---------- blog ---------- */
+function postCard(p) {
+  const words = p.body.split(/\s+/).length;
+  return `<a class="card post-card" href="#post-${esc(p.id)}">
+    <div class="post-meta"><span class="tag">${esc(p.cat)}</span><span>${fmtDate(p.date)}</span><span>· ${bn(Math.max(1, Math.round(words / 180)))} মিনিট পড়া</span></div>
+    <h3>${esc(p.title)}</h3><p>${esc(p.excerpt)}</p></a>`;
+}
+let blogCat = "সব";
+function viewBlog() {
+  const cats = ["সব", ...new Set(S.posts.map(p => p.cat))];
+  const list = S.posts.filter(p => blogCat === "সব" || p.cat === blogCat).sort((a, b) => b.date.localeCompare(a.date));
+  app.innerHTML = `
+  <div class="wrap page-head"><p class="eyebrow">${D.name} এর লেখা</p><h1>স্বাস্থ্য ব্লগ</h1><p class="muted">রোগীদের সবচেয়ে বেশি জিজ্ঞেস করা প্রশ্নগুলোর সহজ ভাষায় উত্তর।</p></div>
+  <section class="wrap section" style="padding-top:16px">
+    <div class="row" style="margin-bottom:18px">${cats.map(c => `<button class="chip" type="button" data-cat="${esc(c)}" style="${c === blogCat ? "color:var(--accent);border-color:var(--accent);background:var(--accent-soft)" : ""}">${esc(c)}</button>`).join("")}
+    ${authed ? `<a class="btn sm primary" style="margin-left:auto" href="#doctor" id="write-link">নতুন লেখা লিখুন</a>` : ""}</div>
+    <div class="posts">${list.map(postCard).join("") || `<p class="empty">এই বিভাগে এখনো লেখা নেই।</p>`}</div>
+  </section>`;
+  $$("[data-cat]").forEach(b => b.onclick = () => { blogCat = b.dataset.cat; viewBlog(); });
+  const wl = $("#write-link"); if (wl) wl.onclick = () => { docTab = "blog"; };
+}
+function viewPost(id) {
+  const p = S.posts.find(x => x.id === id);
+  if (!p) { app.innerHTML = `<div class="wrap empty"><p>লেখাটি পাওয়া যায়নি।</p><a class="btn" href="#blog">ব্লগে ফিরে যান</a></div>`; return; }
+  const more = S.posts.filter(x => x.id !== id).slice(0, 2);
+  app.innerHTML = `
+  <article class="wrap article">
+    <a href="#blog">← সব লেখা</a>
+    <div class="post-meta" style="margin-top:16px"><span class="tag">${esc(p.cat)}</span><span>${fmtDate(p.date)}</span></div>
+    <h1>${esc(p.title)}</h1>
+    <div class="byline"><div class="portrait" aria-hidden="true">আ</div><div><b>${D.name}</b><div class="muted" style="font-size:.88rem">${D.degrees}</div></div></div>
+    <div class="body">${p.body.split(/\n\s*\n/).map(par => `<p>${esc(par.trim())}</p>`).join("")}</div>
+    <p class="note" style="margin-top:28px">এই লেখা সাধারণ স্বাস্থ্য সচেতনতার জন্য। নিজের সমস্যার জন্য ডাক্তারের পরামর্শ নিন। <a href="#booking">সিরিয়াল নিন</a></p>
+  </article>
+  ${more.length ? `<section class="wrap section" style="padding-top:0"><div class="section-head"><h2>আরও পড়ুন</h2></div><div class="posts">${more.map(postCard).join("")}</div></section>` : ""}`;
+}
+
+/* ---------- booking ---------- */
+let bk = null;
+function resetBk() { const nx = nextOpening("chamber"); bk = { type: "chamber", date: nx ? nx.date : today(), time: null, done: null }; }
+function viewBooking() {
+  if (!bk) resetBk();
+  if (bk.done) return viewTicket(bk.done);
+  const days = Array.from({ length: 10 }, (_, n) => ymd(dayAt(n)));
+  const all = slotsFor(bk.date, bk.type), free = freeSlots(bk.date, bk.type);
+  const fee = D.fee[bk.type];
+  app.innerHTML = `
+  <div class="wrap page-head"><p class="eyebrow">${D.name}</p><h1>সিরিয়াল নিন</h1><p class="muted">ধরন, দিন ও সময় বেছে নিয়ে রোগীর তথ্য দিন। বুকিং আইডি দিয়ে পরে অনলাইন রুমে যোগ দিতে পারবেন।</p></div>
+  <div class="wrap steps">
+    <div class="stack">
+      <div class="card">
+        <div class="step-title"><span class="step-no">১</span><h3>পরামর্শের ধরন</h3></div>
+        <div class="choice">
+          <button type="button" data-type="chamber" aria-pressed="${bk.type === "chamber"}"><b>চেম্বারে সাক্ষাৎ</b><small>ধানমন্ডি · বিকাল ৫টা থেকে · ${taka(D.fee.chamber)}</small></button>
+          <button type="button" data-type="online" aria-pressed="${bk.type === "online"}"><b>অনলাইন ভিডিও পরামর্শ</b><small>ঘরে বসে · সকাল ১০টা থেকে · ${taka(D.fee.online)}</small></button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="step-title"><span class="step-no">২</span><h3>দিন ও সময়</h3></div>
+        <div class="days">${days.map(d => { const dt = parseD(d), off = dt.getDay() === 5; return `<button type="button" class="day" data-date="${d}" aria-pressed="${bk.date === d}" ${off ? "disabled title=\"শুক্রবার বন্ধ\"" : ""}><small>${DAYS_SHORT[dt.getDay()]}</small><b>${bn(dt.getDate())}</b><small>${MONTHS[dt.getMonth()].slice(0, 3)}</small></button>`; }).join("")}</div>
+        <p class="muted" style="font-size:.88rem;margin:14px 0 8px">${fmtDay(bk.date)}, ${fmtDate(bk.date)} · ${bn(free.length)}টি সময় খালি</p>
+        <div class="slots">${all.length ? all.map(s => `<button type="button" class="slot" data-time="${s}" aria-pressed="${bk.time === s}" ${free.includes(s) ? "" : "disabled"}>${fmtTime(s)}</button>`).join("") : `<p class="muted">এই দিনে সাক্ষাৎ বন্ধ।</p>`}</div>
+      </div>
+      <form class="card stack" id="bk-form" novalidate>
+        <div class="step-title" style="margin:0"><span class="step-no">৩</span><h3>রোগীর তথ্য</h3></div>
+        <div class="grid2">
+          <div class="field"><label for="bk-name">রোগীর নাম</label><input id="bk-name" required autocomplete="name" placeholder="যেমন: মোঃ রফিকুল ইসলাম"></div>
+          <div class="field"><label for="bk-phone">মোবাইল নম্বর</label><input id="bk-phone" required inputmode="tel" placeholder="01XXXXXXXXX"></div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label for="bk-age">বয়স (বছর)</label><input id="bk-age" required inputmode="numeric" placeholder="৩৫"></div>
+          <div class="field"><label for="bk-gender">লিঙ্গ</label><select id="bk-gender"><option>পুরুষ</option><option>মহিলা</option><option>অন্যান্য</option></select></div>
+          <div class="field"><label for="bk-pay">ফি পরিশোধ</label><select id="bk-pay">${bk.type === "online" ? "<option>বিকাশ</option><option>নগদ</option><option>কার্ড</option>" : "<option>চেম্বারে</option><option>বিকাশ</option><option>নগদ</option>"}</select></div>
+        </div>
+        <div class="field"><label for="bk-problem">সমস্যা সংক্ষেপে</label><textarea id="bk-problem" placeholder="যেমন: ৩ দিন ধরে জ্বর ও কাশি"></textarea></div>
+        <p class="err" id="bk-err" hidden></p>
+        <button class="btn primary" type="submit" ${bk.time ? "" : "disabled"}>${bk.time ? "সিরিয়াল নিশ্চিত করুন" : "আগে একটি সময় বেছে নিন"}</button>
+        <p class="muted" style="font-size:.82rem">ডেমোতে কোনো টাকা কাটা হয় না। আসল সাইটে এখানে বিকাশ/নগদ পেমেন্ট গেটওয়ে যুক্ত হবে।</p>
+      </form>
+    </div>
+    <aside class="card summary">
+      <h3>বুকিং সারাংশ</h3>
+      <div class="sum-row"><span>ডাক্তার</span><span>${D.name}</span></div>
+      <div class="sum-row"><span>ধরন</span><span>${SCHEDULE[bk.type].label}</span></div>
+      <div class="sum-row"><span>তারিখ</span><span>${fmtDay(bk.date)}, ${fmtDate(bk.date)}</span></div>
+      <div class="sum-row"><span>সময়</span><span>${bk.time ? fmtTime(bk.time) : "বাছাই করা হয়নি"}</span></div>
+      <div class="sum-row"><span>ফি</span><span>${taka(fee)}</span></div>
+      <p class="muted" style="font-size:.85rem">${bk.type === "online" ? "নির্ধারিত সময়ের ৫ মিনিট আগে \"অনলাইন পরামর্শ\" পাতায় বুকিং আইডি দিয়ে রুমে ঢুকুন।" : "নির্ধারিত সময়ের ১৫ মিনিট আগে চেম্বারে আসুন, আগের প্রেসক্রিপশন ও রিপোর্ট সাথে আনুন।"}</p>
+    </aside>
+  </div>`;
+  const keep = () => ["bk-name", "bk-phone", "bk-age", "bk-gender", "bk-problem"].reduce((o, k) => (o[k] = $("#" + k).value, o), {});
+  const restore = v => Object.entries(v).forEach(([k, val]) => { const el = $("#" + k); if (el) el.value = val; });
+  const rerender = () => { const v = keep(); viewBooking(); restore(v); };
+  $$("[data-type]").forEach(b => b.onclick = () => { bk.type = b.dataset.type; bk.time = null; rerender(); });
+  $$("[data-date]").forEach(b => b.onclick = () => { bk.date = b.dataset.date; bk.time = null; rerender(); });
+  $$("[data-time]").forEach(b => b.onclick = () => { bk.time = b.dataset.time; rerender(); });
+  $("#bk-form").onsubmit = e => {
+    e.preventDefault();
+    const v = keep(), err = $("#bk-err");
+    const phone = v["bk-phone"].replace(/[০-৯]/g, d => BN.indexOf(d)).replace(/\D/g, "");
+    const age = v["bk-age"].replace(/[০-৯]/g, d => BN.indexOf(d)).replace(/\D/g, "");
+    let msg = "";
+    if (!v["bk-name"].trim()) msg = "রোগীর নাম লিখুন।";
+    else if (!/^01\d{9}$/.test(phone)) msg = "১১ সংখ্যার মোবাইল নম্বর দিন, যেমন 01712345678।";
+    else if (!age || +age > 120) msg = "সঠিক বয়স লিখুন।";
+    else if (!freeSlots(bk.date, bk.type).includes(bk.time)) msg = "এই সময়টি এইমাত্র বুক হয়ে গেছে, অন্য সময় বেছে নিন।";
+    if (msg) { err.textContent = msg; err.hidden = false; return; }
+    const id = "DB" + S.nextAppt++;
+    const serial = S.appointments.filter(a => a.date === bk.date && a.type === bk.type && a.time < bk.time && a.status !== "cancelled").length + 1;
+    S.appointments.push({ id, type: bk.type, date: bk.date, time: bk.time, serial, status: "confirmed", pay: $("#bk-pay").value,
+      name: v["bk-name"].trim(), phone, age, gender: v["bk-gender"], problem: v["bk-problem"].trim(), rxId: null,
+      chat: [] });
+    save(); bk.done = id; viewTicket(id); window.scrollTo(0, 0);
+  };
+}
+function viewTicket(id) {
+  const a = appt(id);
+  app.innerHTML = `<div class="wrap"><div class="ticket">
+    <span class="pill ok">সিরিয়াল নিশ্চিত হয়েছে</span>
+    <p class="muted">আপনার সিরিয়াল নম্বর</p>
+    <div class="big">${bn(a.serial)}</div>
+    <div class="id">${a.id}</div>
+    <p><b>${esc(a.name)}</b> · ${SCHEDULE[a.type].label}<br>${fmtDay(a.date)}, ${fmtDate(a.date)} · ${fmtTime(a.time)}</p>
+    <p class="muted" style="font-size:.9rem">বুকিং আইডিটি লিখে রাখুন। ${a.type === "online" ? "এই আইডি দিয়ে অনলাইন রুমে যোগ দেবেন এবং প্রেসক্রিপশন দেখবেন।" : "চেম্বারে রিসেপশনে এই আইডি বলবেন।"}</p>
+    <div class="row" style="justify-content:center">
+      ${a.type === "online" ? `<a class="btn primary" href="#room-${a.id}">রুমে যোগ দিন</a>` : ""}
+      <button class="btn" type="button" id="copy-id">আইডি কপি করুন</button>
+      <button class="btn ghost" type="button" id="bk-again">আরেকটি সিরিয়াল নিন</button>
+    </div></div></div>`;
+  $("#copy-id").onclick = () => copyText(a.id);
+  $("#bk-again").onclick = () => { resetBk(); viewBooking(); };
+}
+
+/* ---------- consult lookup ---------- */
+function normId(q) { return q.trim().toUpperCase().replace(/[০-৯]/g, d => BN.indexOf(d)).replace(/[^A-Z0-9]/g, ""); }
+function findByQuery(q) {
+  const n = normId(q);
+  if (!n) return [];
+  return S.appointments.filter(a => a.id === n || a.id === "DB" + n || a.phone === n);
+}
+function viewConsult() {
+  const todays = S.appointments.filter(a => a.type === "online" && a.date === today() && a.status !== "cancelled");
+  app.innerHTML = `
+  <div class="wrap page-head"><p class="eyebrow">ভিডিও পরামর্শ</p><h1>অনলাইন পরামর্শ রুম</h1><p class="muted">বুকিং আইডি বা মোবাইল নম্বর দিয়ে আপনার অ্যাপয়েন্টমেন্ট খুঁজে রুমে প্রবেশ করুন।</p></div>
+  <section class="wrap section" style="padding-top:16px;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));align-items:start">
+    <form class="card stack" id="cs-form">
+      <div class="field"><label for="cs-q">বুকিং আইডি অথবা মোবাইল নম্বর</label><input id="cs-q" placeholder="যেমন: DB1001 অথবা 01711000001"></div>
+      <button class="btn primary" type="submit">অ্যাপয়েন্টমেন্ট খুঁজুন</button>
+      <p class="hint">ডেমোর জন্য আজকের নমুনা রোগী: <button type="button" class="chip" id="cs-demo">DB1001</button></p>
+      <div id="cs-out"></div>
+    </form>
+    <div class="card">
+      <h3 style="margin-bottom:6px">কীভাবে কাজ করে</h3>
+      <ol class="muted" style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px">
+        <li>"সিরিয়াল নিন" পাতায় অনলাইন পরামর্শ বেছে নিয়ে সময় বুক করুন।</li>
+        <li>নির্ধারিত সময়ে এখানে বুকিং আইডি দিয়ে রুমে ঢুকুন।</li>
+        <li>ডাক্তার ভিডিও কলে কথা বলবেন, চ্যাটে রিপোর্টের ছবি বা তথ্য দিতে পারবেন।</li>
+        <li>কল শেষে ডিজিটাল প্রেসক্রিপশন "প্রেসক্রিপশন" পাতায় পাবেন।</li>
+      </ol>
+      <p class="muted" style="font-size:.85rem;margin-top:14px">আজ অনলাইনে ${bn(todays.length)} জন রোগী বুক করেছেন।</p>
+    </div>
+  </section>`;
+  const run = () => {
+    const res = findByQuery($("#cs-q").value).filter(a => a.status !== "cancelled");
+    $("#cs-out").innerHTML = !res.length ? `<p class="err">কোনো অ্যাপয়েন্টমেন্ট পাওয়া যায়নি। আইডি বা নম্বর আবার দেখুন।</p>` :
+      res.map(a => `<div class="list-item"><div><b>${esc(a.name)}</b> <span class="mono muted">${a.id}</span><div class="muted" style="font-size:.88rem">${typePill(a.type)} ${fmtDate(a.date)} · ${fmtTime(a.time)}</div></div>
+      ${a.type === "online" ? `<a class="btn sm primary" href="#room-${a.id}">${a.status === "completed" ? "রুম ও প্রেসক্রিপশন" : "রুমে প্রবেশ"}</a>` : `<span class="muted" style="font-size:.85rem">চেম্বার অ্যাপয়েন্টমেন্ট</span>`}</div>`).join("");
+  };
+  $("#cs-form").onsubmit = e => { e.preventDefault(); run(); };
+  $("#cs-demo").onclick = () => { $("#cs-q").value = "DB1001"; run(); };
+}
+
+/* ---------- consultation room ---------- */
+const ICON = {
+  mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+  cam: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg>'
+};
+let viewAsPatient = false;
+const TEMPLATES = {
+  fever: { label: "ভাইরাল জ্বর", cc: "জ্বর, ৩ দিন\nগা ও মাথা ব্যথা", dx: "Acute febrile illness (viral)",
+    meds: [{ name: "Tab. Napa 500 mg", dose: "১+১+১", timing: "খাবারের পরে", dur: "৫ দিন" }, { name: "Sachet ORS-N", dose: "প্রতিবার পাতলা পায়খানা বা ঘামের পর", timing: "আধা লিটার পানিতে", dur: "প্রয়োজনে" }, { name: "Tab. Ceevit 250 mg", dose: "১+০+১", timing: "চুষে খাবেন", dur: "৭ দিন" }],
+    tests: "CBC\nDengue NS1 Ag", advice: "প্রচুর পানি ও তরল খাবার খান\nপূর্ণ বিশ্রাম নিন\nজ্বর ৩ দিনের বেশি থাকলে বা পেটে ব্যথা, বমি হলে দ্রুত যোগাযোগ করুন", follow: "৩ দিন পর রিপোর্টসহ" },
+  gastric: { label: "গ্যাস্ট্রাইটিস", cc: "বুক জ্বালাপোড়া, ২ সপ্তাহ\nখাওয়ার পর পেট ফাঁপা", dx: "Gastro-oesophageal reflux disease (GERD)",
+    meds: [{ name: "Cap. Seclo 20 mg", dose: "১+০+১", timing: "খাবারের আগে", dur: "১৪ দিন" }, { name: "Tab. Domperidone 10 mg", dose: "১+১+১", timing: "খাবারের আগে", dur: "৭ দিন" }, { name: "Susp. Antacid Plus 200 ml", dose: "২ চামচ ৩ বার", timing: "খাবারের পরে", dur: "প্রয়োজনে" }],
+    tests: "", advice: "রাতের খাবার ঘুমের অন্তত ২ ঘণ্টা আগে খান\nতেল-মশলা, চা-কফি ও ধূমপান কমান\nমাথার দিক একটু উঁচু করে ঘুমান", follow: "২ সপ্তাহ পর" }
+};
+function viewRoom(id) {
+  const a = appt(id);
+  if (!a) { app.innerHTML = `<div class="wrap empty"><p>এই আইডিতে কোনো অ্যাপয়েন্টমেন্ট নেই।</p><a class="btn" href="#consult">আবার খুঁজুন</a></div>`; return; }
+  const asDoc = authed && !viewAsPatient;
+  const me = asDoc ? "doctor" : "patient";
+  const online = a.type === "online";
+  const other = asDoc ? a.name : D.name;
+  const rx = a.rxId ? rxOf(a.rxId) : null;
+
+  app.innerHTML = `
+  <div class="wrap page-head" style="padding-bottom:0">
+    <div class="row between">
+      <div><p class="eyebrow">${online ? "অনলাইন পরামর্শ রুম" : "চেম্বার রোগী"} · <span class="mono">${a.id}</span></p>
+        <h2>${esc(a.name)} <span class="muted" style="font-family:var(--f-body);font-size:1rem;font-weight:500">${bn(a.age)} বছর, ${esc(a.gender)}</span></h2>
+        <p class="muted" style="font-size:.9rem">${fmtDay(a.date)}, ${fmtDate(a.date)} · ${fmtTime(a.time)} · সিরিয়াল ${bn(a.serial)} · ${statusPill(a.status)}</p></div>
+      ${authed ? `<div class="row"><span class="muted" style="font-size:.85rem">যেভাবে দেখছেন:</span><button class="btn sm" type="button" id="swap-view">${asDoc ? "রোগীর দৃষ্টিতে দেখুন" : "ডাক্তারের দৃষ্টিতে ফিরুন"}</button></div>` : ""}
+    </div>
+  </div>
+  <div class="wrap room ${online ? "" : "no-video"}">
+    <div class="stack">
+      ${online ? `
+      <div>
+        <div class="stage" id="stage">
+          <div class="avatar">${esc(initials(other))}</div>
+          <span class="timer" id="timer">০০:০০</span>
+          <span class="who-name">${esc(other)}</span>
+          <div class="self" id="self">আপনি · ক্যামেরা বন্ধ</div>
+        </div>
+        <div class="controls">
+          <button class="ctl" type="button" id="ctl-mic" aria-label="মাইক্রোফোন">${ICON.mic}</button>
+          <button class="ctl off" type="button" id="ctl-cam" aria-label="ক্যামেরা চালু করুন">${ICON.cam}</button>
+          <button class="ctl end" type="button" id="ctl-end">কল শেষ করুন</button>
+        </div>
+        <p class="muted" style="font-size:.8rem;text-align:center;margin-top:6px">ডেমো ভিডিও প্যানেল। আসল সাইটে এখানে Jitsi, Agora বা WebRTC ভিত্তিক ভিডিও কল যুক্ত হবে।</p>
+      </div>` : `
+      <div class="card"><h3>রোগীর সমস্যা</h3><p style="margin-top:6px">${esc(a.problem) || "<span class='muted'>উল্লেখ করা হয়নি</span>"}</p>
+        <p class="muted" style="font-size:.88rem;margin-top:10px">মোবাইল: <span class="mono">${esc(a.phone)}</span> · ফি: ${esc(a.pay)}</p></div>`}
+      <div class="card chat">
+        <div class="chat-head"><span>চ্যাট</span><span class="muted" style="font-size:.8rem;font-weight:500">${asDoc ? "আপনি ডাক্তার হিসেবে লিখছেন" : "আপনি রোগী হিসেবে লিখছেন"}</span></div>
+        <div class="msgs" id="msgs"></div>
+        <div class="chips" id="chips"></div>
+        <form id="chat-form"><input id="chat-input" autocomplete="off" placeholder="বার্তা লিখুন…"><button class="btn primary sm" type="submit">পাঠান</button></form>
+      </div>
+    </div>
+    <div class="stack" id="side"></div>
+  </div>`;
+
+  /* chat */
+  const quick = asDoc
+    ? ["কতদিন ধরে সমস্যা হচ্ছে?", "জ্বর মেপেছেন? কত ছিল?", "আগে কোনো ওষুধ খেয়েছেন?", "প্রেসক্রিপশন পাঠাচ্ছি।"]
+    : ["জি, ৩ দিন ধরে।", "সর্বোচ্চ ১০২° ছিল।", "শুধু নাপা খেয়েছি।", "ধন্যবাদ স্যার।"];
+  $("#chips").innerHTML = quick.map(q => `<button type="button" class="chip">${q}</button>`).join("");
+  const renderChat = () => {
+    const box = $("#msgs"); if (!box) return;
+    box.innerHTML = (a.chat || []).map(m => m.from === "sys"
+      ? `<div class="msg sys">${esc(m.text)} · ${bn(m.t)}</div>`
+      : `<div class="msg ${m.from === me ? "me" : ""}">${esc(m.text)}<time>${m.from === "doctor" ? "ডাক্তার" : "রোগী"} · ${bn(m.t)}</time></div>`).join("") || `<div class="msg sys">এখনো কোনো বার্তা নেই</div>`;
+    box.scrollTop = box.scrollHeight;
+  };
+  const send = text => { if (!text.trim()) return; a.chat = a.chat || []; a.chat.push({ from: me, text: text.trim(), t: nowHM() }); save(); renderChat(); };
+  renderChat();
+  $$("#chips .chip").forEach(c => c.onclick = () => send(c.textContent));
+  $("#chat-form").onsubmit = e => { e.preventDefault(); const i = $("#chat-input"); send(i.value); i.value = ""; i.focus(); };
+  const sw = $("#swap-view"); if (sw) sw.onclick = () => { viewAsPatient = !viewAsPatient; viewRoom(id); };
+
+  /* call */
+  if (online) {
+    const start = Date.now();
+    const tick = () => { const s = Math.floor((Date.now() - start) / 1000); const el = $("#timer"); if (el) el.textContent = bn(pad2(Math.floor(s / 60)) + ":" + pad2(s % 60)); };
+    const iv = setInterval(tick, 1000); cleanups.push(() => clearInterval(iv));
+    let stream = null;
+    cleanups.push(() => { if (stream) stream.getTracks().forEach(t => t.stop()); });
+    $("#ctl-mic").onclick = e => e.currentTarget.classList.toggle("off");
+    $("#ctl-cam").onclick = async e => {
+      const btn = e.currentTarget, self = $("#self");
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; self.textContent = "আপনি · ক্যামেরা বন্ধ"; btn.classList.add("off"); return; }
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        self.innerHTML = ""; const v = document.createElement("video"); v.autoplay = true; v.muted = true; v.playsInline = true; v.srcObject = stream; self.appendChild(v);
+        btn.classList.remove("off");
+      } catch (err) { toast("এই প্রিভিউতে ক্যামেরা চালু করা যায় না। নিজের সার্ভারে হোস্ট করলে কাজ করবে।"); }
+    };
+    $("#ctl-end").onclick = () => {
+      a.chat = a.chat || []; a.chat.push({ from: "sys", text: "কল শেষ হয়েছে", t: nowHM() }); save();
+      location.hash = asDoc ? "#doctor" : (a.rxId ? "#rx-" + a.rxId : "#consult");
+    };
+  }
+
+  /* side panel */
+  const side = $("#side");
+  if (asDoc) {
+    renderRxWriter(side, a, () => { renderChat(); });
+  } else {
+    side.innerHTML = `
+      <div class="card stack">
+        <h3>আপনার অ্যাপয়েন্টমেন্ট</h3>
+        <div class="sum-row"><span>ডাক্তার</span><span>${D.name}</span></div>
+        <div class="sum-row"><span>সমস্যা</span><span>${esc(a.problem) || "উল্লেখ নেই"}</span></div>
+        <div class="sum-row"><span>ফি পরিশোধ</span><span>${esc(a.pay)}</span></div>
+        ${rx ? `<p class="pill ok" style="align-self:start">প্রেসক্রিপশন তৈরি হয়েছে</p><a class="btn primary" href="#rx-${rx.id}">প্রেসক্রিপশন দেখুন</a>`
+             : `<p class="muted" style="font-size:.9rem">ডাক্তার পরামর্শ শেষে প্রেসক্রিপশন পাঠালে এখানে দেখতে পাবেন।</p>`}
+      </div>
+      <div class="card"><h3>কলের আগে প্রস্তুতি</h3><ul class="muted" style="margin:8px 0 0;padding-left:20px;font-size:.92rem">
+        <li>আলোকিত, শান্ত জায়গায় বসুন</li><li>আগের প্রেসক্রিপশন ও রিপোর্ট হাতের কাছে রাখুন</li><li>প্রেশার, তাপমাত্রা ও ওজন মাপা থাকলে চ্যাটে লিখে দিন</li></ul></div>`;
+  }
+}
+
+function medRowHTML(m, i) {
+  m = m || {};
+  return `<div class="med-row" data-row="${i}">
+    <input id="med-name-${i}" list="med-list" placeholder="ওষুধের নাম ও মাত্রা" value="${esc(m.name)}" aria-label="ওষুধ">
+    <input id="med-dose-${i}" list="dose-list" placeholder="১+০+১" value="${esc(m.dose)}" aria-label="ডোজ">
+    <input id="med-timing-${i}" list="timing-list" placeholder="খাবারের পরে" value="${esc(m.timing)}" aria-label="কখন">
+    <input id="med-dur-${i}" list="dur-list" placeholder="৭ দিন" value="${esc(m.dur)}" aria-label="কতদিন">
+    <button type="button" class="x" data-del="${i}" aria-label="মুছুন">×</button></div>`;
+}
+function renderRxWriter(root, a, onSaved) {
+  const ex = a.rxId ? rxOf(a.rxId) : null;
+  let meds = ex ? ex.meds.map(m => Object.assign({}, m)) : [{}, {}];
+  root.innerHTML = `
+  <form class="card rx-writer" id="rx-form" novalidate>
+    <h3><span><span class="rx-sym">℞</span> প্রেসক্রিপশন লিখুন</span>
+      <span class="row" style="gap:6px"><span class="muted" style="font-size:.8rem;font-family:var(--f-body);font-weight:500">টেমপ্লেট:</span>${Object.entries(TEMPLATES).map(([k, t]) => `<button type="button" class="chip" data-tpl="${k}">${t.label}</button>`).join("")}</span></h3>
+    ${ex ? `<p class="hint">এই রোগীর প্রেসক্রিপশন <span class="mono">${ex.id}</span> আগেই দেওয়া হয়েছে। পরিবর্তন করে আবার সংরক্ষণ করতে পারেন। <a href="#rx-${ex.id}">দেখুন</a></p>` : ""}
+    <div class="field"><label for="rx-cc">প্রধান অভিযোগ (C/C), প্রতি লাইনে একটি</label><textarea id="rx-cc" rows="2">${esc(ex ? ex.cc : a.problem)}</textarea></div>
+    <div><label>পরীক্ষার ফলাফল (O/E)</label><div class="grid4">
+      <input id="rx-bp" placeholder="BP 120/80" value="${esc(ex ? ex.oe.bp : "")}" aria-label="রক্তচাপ">
+      <input id="rx-pulse" placeholder="Pulse /min" value="${esc(ex ? ex.oe.pulse : "")}" aria-label="পালস">
+      <input id="rx-temp" placeholder="Temp °F" value="${esc(ex ? ex.oe.temp : "")}" aria-label="তাপমাত্রা">
+      <input id="rx-weight" placeholder="Weight kg" value="${esc(ex ? ex.oe.weight : "")}" aria-label="ওজন"></div></div>
+    <div class="field"><label for="rx-dx">রোগ নির্ণয় (Diagnosis)</label><input id="rx-dx" value="${esc(ex ? ex.dx : "")}" placeholder="যেমন: Acute febrile illness"></div>
+    <div><label>ওষুধ</label>
+      <div class="med-head"><span>ওষুধ</span><span>ডোজ</span><span>কখন</span><span>কতদিন</span><span></span></div>
+      <div class="stack" style="gap:6px;margin-top:4px" id="meds"></div>
+      <button type="button" class="btn sm ghost" id="add-med" style="margin-top:6px">+ আরেকটি ওষুধ</button></div>
+    <div class="grid2">
+      <div class="field"><label for="rx-tests">পরীক্ষা (Investigation)</label><textarea id="rx-tests" rows="3" placeholder="CBC&#10;RBS">${esc(ex ? ex.tests : "")}</textarea></div>
+      <div class="field"><label for="rx-advice">উপদেশ</label><textarea id="rx-advice" rows="3" placeholder="প্রচুর পানি পান করুন">${esc(ex ? ex.advice : "")}</textarea></div>
+    </div>
+    <div class="field"><label for="rx-follow">পরবর্তী সাক্ষাৎ</label><input id="rx-follow" list="dur-list" value="${esc(ex ? ex.follow : "")}" placeholder="যেমন: ৭ দিন পর"></div>
+    <p class="err" id="rx-err" hidden></p>
+    <div class="row"><button class="btn primary" type="submit">${ex ? "আপডেট করে পাঠান" : "সংরক্ষণ করে রোগীকে পাঠান"}</button>${ex ? `<a class="btn" href="#rx-${ex.id}">প্রেসক্রিপশন দেখুন</a>` : ""}</div>
+  </form>`;
+  const readMeds = () => meds.map((_, i) => ({
+    name: $("#med-name-" + i).value.trim(), dose: $("#med-dose-" + i).value.trim(),
+    timing: $("#med-timing-" + i).value.trim(), dur: $("#med-dur-" + i).value.trim() }));
+  const drawMeds = () => {
+    $("#meds").innerHTML = meds.map(medRowHTML).join("");
+    $$("[data-del]").forEach(b => b.onclick = () => { meds = readMeds(); meds.splice(+b.dataset.del, 1); if (!meds.length) meds = [{}]; drawMeds(); });
+  };
+  drawMeds();
+  $("#add-med").onclick = () => { meds = readMeds(); meds.push({}); drawMeds(); $("#med-name-" + (meds.length - 1)).focus(); };
+  $$("[data-tpl]").forEach(b => b.onclick = () => {
+    const t = TEMPLATES[b.dataset.tpl];
+    $("#rx-cc").value = t.cc; $("#rx-dx").value = t.dx; $("#rx-tests").value = t.tests; $("#rx-advice").value = t.advice; $("#rx-follow").value = t.follow;
+    meds = t.meds.map(m => Object.assign({}, m)); drawMeds(); toast(t.label + " টেমপ্লেট বসানো হয়েছে");
+  });
+  $("#rx-form").onsubmit = e => {
+    e.preventDefault();
+    const list = readMeds().filter(m => m.name);
+    const dx = $("#rx-dx").value.trim();
+    const err = $("#rx-err");
+    if (!dx && !list.length) { err.textContent = "অন্তত রোগ নির্ণয় অথবা একটি ওষুধ লিখুন।"; err.hidden = false; return; }
+    const data = { cc: $("#rx-cc").value, oe: { bp: $("#rx-bp").value.trim(), pulse: $("#rx-pulse").value.trim(), temp: $("#rx-temp").value.trim(), weight: $("#rx-weight").value.trim() },
+      dx, meds: list, tests: $("#rx-tests").value, advice: $("#rx-advice").value, follow: $("#rx-follow").value.trim() };
+    let rx = ex;
+    if (rx) Object.assign(rx, data);
+    else {
+      rx = Object.assign({ id: "RX" + S.nextRx++, apptId: a.id, date: today(), patient: { name: a.name, age: a.age, gender: a.gender, phone: a.phone } }, data);
+      S.prescriptions.push(rx); a.rxId = rx.id;
+    }
+    a.status = "completed";
+    a.chat = a.chat || []; a.chat.push({ from: "sys", text: "প্রেসক্রিপশন " + rx.id + (ex ? " আপডেট করা হয়েছে" : " পাঠানো হয়েছে"), t: nowHM() });
+    save(); toast("প্রেসক্রিপশন " + rx.id + " রোগীর কাছে পাঠানো হয়েছে");
+    onSaved && onSaved();
+    renderRxWriter(root, a, onSaved);
+  };
+}
+
+/* ---------- prescriptions ---------- */
+function viewRx(id) {
+  if (id) return viewRxPaper(id);
+  app.innerHTML = `
+  <div class="wrap page-head"><p class="eyebrow">ডিজিটাল প্রেসক্রিপশন</p><h1>আমার প্রেসক্রিপশন</h1><p class="muted">বুকিং আইডি, প্রেসক্রিপশন নম্বর বা মোবাইল নম্বর দিয়ে খুঁজুন।</p></div>
+  <section class="wrap section" style="padding-top:16px;max-width:720px;margin-left:0">
+    <form class="card stack" id="rx-q-form">
+      <div class="field"><label for="rx-q">আইডি অথবা মোবাইল নম্বর</label><input id="rx-q" placeholder="যেমন: RX5001, DB1005 অথবা 01511000005"></div>
+      <button class="btn primary" type="submit">খুঁজুন</button>
+      <p class="hint">ডেমোর নমুনা: <button type="button" class="chip" id="rx-demo">RX5001</button></p>
+      <div id="rx-out"></div>
+    </form>
+  </section>`;
+  const run = () => {
+    const n = normId($("#rx-q").value);
+    const res = !n ? [] : S.prescriptions.filter(r => r.id === n || r.id === "RX" + n || r.apptId === n || r.apptId === "DB" + n || r.patient.phone === n);
+    $("#rx-out").innerHTML = !res.length ? `<p class="err">কোনো প্রেসক্রিপশন পাওয়া যায়নি। পরামর্শ শেষ হলে ডাক্তার প্রেসক্রিপশন পাঠাবেন।</p>` :
+      res.map(r => `<div class="list-item"><div><b>${esc(r.patient.name)}</b> <span class="mono muted">${r.id}</span><div class="muted" style="font-size:.88rem">${fmtDate(r.date)} · ${esc(r.dx || "")}</div></div><a class="btn sm primary" href="#rx-${r.id}">দেখুন</a></div>`).join("");
+  };
+  $("#rx-q-form").onsubmit = e => { e.preventDefault(); run(); };
+  $("#rx-demo").onclick = () => { $("#rx-q").value = "RX5001"; run(); };
+}
+function viewRxPaper(id) {
+  const r = rxOf(id);
+  if (!r) { app.innerHTML = `<div class="wrap empty"><p>প্রেসক্রিপশনটি পাওয়া যায়নি।</p><a class="btn" href="#rx">আবার খুঁজুন</a></div>`; return; }
+  const list = (title, txt) => lines(txt).length ? `<div><h4>${title}</h4><ul>${lines(txt).map(l => `<li>${esc(l)}</li>`).join("")}</ul></div>` : "";
+  const oe = [["BP", r.oe.bp, "mmHg"], ["Pulse", r.oe.pulse, "/min"], ["Temp", r.oe.temp, "°F"], ["Weight", r.oe.weight, "kg"]].filter(x => x[1]);
+  app.innerHTML = `
+  <div class="wrap" style="padding-block:24px 50px">
+    <div class="row between" style="max-width:860px;margin:0 auto 14px">
+      <a href="${authed ? "#doctor" : "#rx"}">← ফিরে যান</a>
+      <div class="row">
+        ${authed ? `<a class="btn sm" href="#room-${r.apptId}">সম্পাদনা</a>` : ""}
+        <button class="btn sm" type="button" id="rx-copy">লিংক কপি</button>
+        ${framed ? "" : `<button class="btn sm primary" type="button" id="rx-print">প্রিন্ট</button>`}
+      </div>
+    </div>
+    <article class="pad">
+      <header class="pad-head">
+        <div><h2>${D.name}</h2><p>${D.degrees}<br>${D.title}<br>বিএমডিসি রেজি. নং ${D.bmdc}</p></div>
+        <div class="en"><h2>${D.nameEn}</h2><p>${D.degreesEn}<br>${D.titleEn}<br>${D.chamber}</p></div>
+      </header>
+      <div class="pad-pt">
+        <span>নাম: <b>${esc(r.patient.name)}</b></span><span>বয়স: <b>${bn(r.patient.age)} বছর</b></span><span>লিঙ্গ: <b>${esc(r.patient.gender)}</b></span>
+        <span>তারিখ: <b>${fmtDate(r.date)}</b></span><span>নং: <b class="mono">${r.id}</b></span>
+      </div>
+      <div class="pad-body">
+        <div class="pad-left">
+          ${list("C/C", r.cc)}
+          ${oe.length ? `<div><h4>O/E</h4><ul>${oe.map(x => `<li>${x[0]}: ${esc(x[1])} ${x[2]}</li>`).join("")}</ul></div>` : ""}
+          ${r.dx ? `<div><h4>DX</h4><p>${esc(r.dx)}</p></div>` : ""}
+          ${list("INV", r.tests)}
+        </div>
+        <div class="pad-right">
+          <span class="rx-sym" style="font-size:2.2rem">℞</span>
+          <ul class="pad-meds">${r.meds.map(m => `<li><div><div class="mname">${esc(m.name)}</div><div class="mdose"><b>${esc(m.dose)}</b>${m.timing ? " · " + esc(m.timing) : ""}${m.dur ? " · " + esc(m.dur) : ""}</div></div></li>`).join("") || "<li><div class='muted'>কোনো ওষুধ দেওয়া হয়নি</div></li>"}</ul>
+          ${list("উপদেশ", r.advice)}
+          ${r.follow ? `<div><h4>পরবর্তী সাক্ষাৎ</h4><p>${esc(r.follow)}</p></div>` : ""}
+        </div>
+      </div>
+      <footer class="pad-foot">
+        <span>শনি থেকে বৃহস্পতি · চেম্বার বিকাল ৫টা থেকে রাত ৯টা · অনলাইন সকাল ১০টা থেকে দুপুর ১টা<br>এই প্রেসক্রিপশন DoctorBangla24 থেকে ডিজিটালভাবে তৈরি (ডেমো)</span>
+        <div class="sign"><div class="scrawl">A. Hasan</div><div class="line">ডাক্তারের স্বাক্ষর</div></div>
+      </footer>
+    </article>
+  </div>`;
+  $("#rx-copy").onclick = () => copyText(location.href.split("#")[0] + "#rx-" + r.id);
+  const pr = $("#rx-print"); if (pr) pr.onclick = () => window.print();
+}
+
+/* ---------- doctor panel ---------- */
+let docTab = "today", apFilter = "upcoming";
+function viewDoctor() {
+  if (!authed) {
+    app.innerHTML = `<form class="wrap card login" id="login" style="padding-block:24px">
+      <p class="eyebrow">শুধু ডাক্তারের জন্য</p><h2>ডাক্তার প্যানেলে লগইন</h2>
+      <div class="field"><label for="pin">পিন নম্বর</label><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="৪ সংখ্যার পিন"></div>
+      <p class="hint">ডেমো পিন: <b class="mono">2468</b></p>
+      <p class="err" id="pin-err" hidden>পিন মেলেনি। ডেমো পিন 2468 লিখুন।</p>
+      <button class="btn primary" type="submit">লগইন</button></form>`;
+    $("#login").onsubmit = e => {
+      e.preventDefault();
+      const v = $("#pin").value.replace(/[০-৯]/g, d => BN.indexOf(d));
+      if (v === PIN) { setAuthed(true); viewAsPatient = false; toast("স্বাগতম, " + D.name); viewDoctor(); }
+      else $("#pin-err").hidden = false;
+    };
+    return;
+  }
+  const t = today();
+  const todays = S.appointments.filter(a => a.date === t && a.status !== "cancelled").sort((a, b) => a.time.localeCompare(b.time));
+  const pending = S.appointments.filter(a => a.status === "pending" && a.date >= t).length;
+  const stats = [
+    [bn(todays.length), "আজকের রোগী"],
+    [bn(todays.filter(a => a.status === "completed").length) + "/" + bn(todays.length), "আজ দেখা হয়েছে"],
+    [bn(pending), "নিশ্চিত করা বাকি"],
+    [bn(S.prescriptions.length), "মোট প্রেসক্রিপশন"]
+  ];
+  const tabs = [["today", "আজকের রোগী"], ["appts", "সব অ্যাপয়েন্টমেন্ট"], ["blog", "ব্লগ"], ["rxs", "প্রেসক্রিপশন"]];
+  app.innerHTML = `
+  <div class="wrap page-head"><p class="eyebrow">ডাক্তার প্যানেল</p><h1>শুভ ${new Date().getHours() < 12 ? "সকাল" : new Date().getHours() < 17 ? "দুপুর" : "সন্ধ্যা"}, ${D.name}</h1><p class="muted">${fmtDay(t)}, ${fmtDate(t)}</p></div>
+  <section class="wrap section" style="padding-top:18px">
+    <div class="stats">${stats.map(s => `<div class="card stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join("")}</div>
+    <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${docTab === k}">${l}</button>`).join("")}</div>
+    <div id="tab-body"></div>
+  </section>`;
+  $$("[data-tab]").forEach(b => b.onclick = () => { docTab = b.dataset.tab; viewDoctor(); });
+  const body = $("#tab-body");
+  ({ today: tabToday, appts: tabAppts, blog: tabBlog, rxs: tabRxs })[docTab](body, todays);
+}
+function apptRows(list, showDate) {
+  if (!list.length) return `<p class="empty">কোনো অ্যাপয়েন্টমেন্ট নেই।</p>`;
+  return `<div class="table-wrap"><table><thead><tr><th>সিরিয়াল</th>${showDate ? "<th>তারিখ</th>" : ""}<th>সময়</th><th>রোগী</th><th>সমস্যা</th><th>ধরন</th><th>অবস্থা</th><th></th></tr></thead><tbody>
+  ${list.map(a => `<tr>
+    <td>${bn(a.serial)}</td>${showDate ? `<td class="nowrap">${fmtDate(a.date)}</td>` : ""}<td class="nowrap">${fmtTime(a.time)}</td>
+    <td><b>${esc(a.name)}</b><div class="muted mono" style="font-size:.78rem">${a.id} · ${esc(a.phone)}</div></td>
+    <td style="min-width:180px">${esc(a.problem) || "<span class='muted'>উল্লেখ নেই</span>"}</td>
+    <td>${typePill(a.type)}</td><td>${statusPill(a.status)}</td>
+    <td class="nowrap"><div class="row" style="gap:6px;flex-wrap:nowrap">
+      ${a.status === "pending" ? `<button class="btn sm" type="button" data-confirm="${a.id}">নিশ্চিত করুন</button>` : ""}
+      ${a.status !== "cancelled" ? `<a class="btn sm primary" href="#room-${a.id}">${a.status === "completed" ? "খুলুন" : a.type === "online" ? "কল শুরু করুন" : "প্রেসক্রিপশন লিখুন"}</a>` : ""}
+      ${a.rxId ? `<a class="btn sm" href="#rx-${a.rxId}">℞</a>` : ""}
+      ${a.status === "pending" || a.status === "confirmed" ? `<button class="btn sm danger" type="button" data-cancel="${a.id}">বাতিল</button>` : ""}
+    </div></td></tr>`).join("")}</tbody></table></div>`;
+}
+function wireAppt(root, rerender) {
+  $$("[data-confirm]", root).forEach(b => b.onclick = () => { appt(b.dataset.confirm).status = "confirmed"; save(); toast("অ্যাপয়েন্টমেন্ট নিশ্চিত করা হয়েছে"); rerender(); });
+  $$("[data-cancel]", root).forEach(b => b.onclick = () => {
+    if (!b.classList.contains("armed")) { b.classList.add("armed"); b.textContent = "নিশ্চিত?"; setTimeout(() => { if (b.isConnected) { b.classList.remove("armed"); b.textContent = "বাতিল"; } }, 3000); return; }
+    appt(b.dataset.cancel).status = "cancelled"; save(); toast("অ্যাপয়েন্টমেন্ট বাতিল করা হয়েছে"); rerender();
+  });
+}
+function tabToday(body, todays) {
+  const nextUp = todays.find(a => a.status === "confirmed");
+  body.innerHTML = `${nextUp ? `<div class="card row between" style="margin-bottom:16px;border-color:var(--accent)">
+      <div><p class="eyebrow">পরবর্তী রোগী</p><b style="font-size:1.1rem">${esc(nextUp.name)}</b> <span class="muted">· ${fmtTime(nextUp.time)} · ${esc(nextUp.problem)}</span></div>
+      <a class="btn primary" href="#room-${nextUp.id}">${nextUp.type === "online" ? "ভিডিও কল শুরু করুন" : "প্রেসক্রিপশন লিখুন"}</a></div>` : ""}
+    ${apptRows(todays, false)}`;
+  wireAppt(body, viewDoctor);
+}
+function tabAppts(body) {
+  const t = today();
+  const filters = [["upcoming", "আসন্ন"], ["pending", "অপেক্ষমাণ"], ["completed", "সম্পন্ন"], ["all", "সব"]];
+  const list = S.appointments.filter(a => apFilter === "all" ? true : apFilter === "upcoming" ? a.date >= t && (a.status === "pending" || a.status === "confirmed") : a.status === apFilter)
+    .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time) * (apFilter === "completed" ? -1 : 1));
+  body.innerHTML = `<div class="row" style="margin-bottom:14px">${filters.map(([k, l]) => `<button class="chip" type="button" data-f="${k}" style="${apFilter === k ? "color:var(--accent);border-color:var(--accent);background:var(--accent-soft)" : ""}">${l}</button>`).join("")}</div>${apptRows(list, true)}`;
+  $$("[data-f]", body).forEach(b => b.onclick = () => { apFilter = b.dataset.f; viewDoctor(); });
+  wireAppt(body, viewDoctor);
+}
+function tabBlog(body) {
+  const posts = S.posts.slice().sort((a, b) => b.date.localeCompare(a.date));
+  body.innerHTML = `<div style="display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));align-items:start">
+    <form class="card stack" id="post-form">
+      <h3>নতুন লেখা</h3>
+      <div class="field"><label for="pf-title">শিরোনাম</label><input id="pf-title" placeholder="যেমন: শীতে অ্যাজমা নিয়ন্ত্রণের ৫টি উপায়"></div>
+      <div class="field"><label for="pf-cat">বিভাগ</label><input id="pf-cat" list="cat-list" placeholder="যেমন: শ্বাসতন্ত্র"><datalist id="cat-list">${[...new Set(S.posts.map(p => p.cat))].map(c => `<option value="${esc(c)}"></option>`).join("")}</datalist></div>
+      <div class="field"><label for="pf-body">লেখা (অনুচ্ছেদের মাঝে একটি ফাঁকা লাইন দিন)</label><textarea id="pf-body" rows="9"></textarea></div>
+      <p class="err" id="pf-err" hidden></p>
+      <button class="btn primary" type="submit">প্রকাশ করুন</button>
+    </form>
+    <div class="card"><h3>প্রকাশিত লেখা (${bn(posts.length)})</h3>
+      ${posts.map(p => `<div class="list-item"><div><a href="#post-${esc(p.id)}"><b>${esc(p.title)}</b></a><div class="muted" style="font-size:.85rem">${esc(p.cat)} · ${fmtDate(p.date)}</div></div><button class="btn sm danger" type="button" data-delpost="${esc(p.id)}">মুছুন</button></div>`).join("") || `<p class="empty">এখনো কোনো লেখা নেই।</p>`}
+    </div></div>`;
+  $("#post-form").onsubmit = e => {
+    e.preventDefault();
+    const title = $("#pf-title").value.trim(), cat = $("#pf-cat").value.trim() || "সাধারণ", text = $("#pf-body").value.trim();
+    if (!title || text.length < 20) { const er = $("#pf-err"); er.textContent = "শিরোনাম ও অন্তত কয়েক লাইনের লেখা দিন।"; er.hidden = false; return; }
+    const first = text.split(/\n\s*\n/)[0].replace(/\s+/g, " ");
+    const id = "p" + S.nextPost++;
+    S.posts.push({ id, date: today(), cat, title, excerpt: first.length > 140 ? first.slice(0, 138) + "…" : first, body: text });
+    save(); toast("লেখা প্রকাশিত হয়েছে"); location.hash = "#post-" + id;
+  };
+  $$("[data-delpost]", body).forEach(b => b.onclick = () => {
+    if (!b.classList.contains("armed")) { b.classList.add("armed"); b.textContent = "নিশ্চিত?"; setTimeout(() => { if (b.isConnected) { b.classList.remove("armed"); b.textContent = "মুছুন"; } }, 3000); return; }
+    S.posts = S.posts.filter(p => p.id !== b.dataset.delpost); save(); toast("লেখা মুছে ফেলা হয়েছে"); viewDoctor();
+  });
+}
+function tabRxs(body) {
+  const list = S.prescriptions.slice().sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+  body.innerHTML = !list.length ? `<p class="empty">এখনো কোনো প্রেসক্রিপশন দেওয়া হয়নি।</p>` : `<div class="table-wrap"><table>
+    <thead><tr><th>নং</th><th>তারিখ</th><th>রোগী</th><th>রোগ নির্ণয়</th><th>ওষুধ</th><th></th></tr></thead><tbody>
+    ${list.map(r => `<tr><td class="mono">${r.id}</td><td class="nowrap">${fmtDate(r.date)}</td><td><b>${esc(r.patient.name)}</b><div class="muted" style="font-size:.8rem">${bn(r.patient.age)} বছর, ${esc(r.patient.gender)}</div></td><td>${esc(r.dx)}</td><td>${bn(r.meds.length)}টি</td>
+    <td class="nowrap"><a class="btn sm" href="#rx-${r.id}">দেখুন</a> <a class="btn sm ghost" href="#room-${r.apptId}">সম্পাদনা</a></td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+
+/* ---------- boot ---------- */
+$("#reset-demo").onclick = e => {
+  const b = e.currentTarget;
+  if (!b.classList.contains("armed")) { b.classList.add("armed"); b.textContent = "আবার চাপুন, সব নতুন করে শুরু হবে"; setTimeout(() => { b.classList.remove("armed"); b.textContent = "ডেমো ডেটা রিসেট"; }, 3500); return; }
+  b.classList.remove("armed"); b.textContent = "ডেমো ডেটা রিসেট";
+  S = seed(); save(); bk = null; toast("ডেমো ডেটা নতুন করে সাজানো হয়েছে"); route();
+};
+renderWho();
+route();
+})();
+</script>
+</body>
+</html>
