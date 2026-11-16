@@ -10,11 +10,19 @@
   window.addEventListener('scroll', onScroll, { passive: true });
 
   // Mobile menu
-  toggle.addEventListener('click', () => document.body.classList.toggle('menu-open'));
-  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => document.body.classList.remove('menu-open')));
+  const setMenu = open => {
+    document.body.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', open);
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  };
+  toggle.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  document.getElementById('navOverlay').addEventListener('click', () => setMenu(false));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 900) setMenu(false); });
 
   // Active nav link on scroll
-  const links = [...nav.querySelectorAll('a')];
+  const links = [...nav.querySelectorAll('a:not(.nav-cta)')];
   const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
   const spy = new IntersectionObserver(entries => {
     entries.forEach(e => {
