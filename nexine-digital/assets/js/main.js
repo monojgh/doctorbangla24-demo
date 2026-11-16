@@ -21,6 +21,25 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
   window.addEventListener('resize', () => { if (window.innerWidth > 900) setMenu(false); });
 
+  // In-page links (Start a Project, menu, footer): scroll with JS so they work
+  // everywhere, including in-app browsers and previews that block #hash jumps.
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const id = link.getAttribute('href');
+      const target = id.length > 1 && document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      setMenu(false);
+      const y = target.getBoundingClientRect().top + window.pageYOffset - header.offsetHeight - 8;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      try { history.pushState(null, '', id); } catch (err) { /* ignore */ }
+      // "Start a Project" / quote buttons: put the cursor in the form (desktop only, no surprise keyboard on phones)
+      if (id === '#contact' && link.classList.contains('btn') && window.innerWidth > 900) {
+        setTimeout(() => { const n = document.getElementById('name'); if (n) n.focus({ preventScroll: true }); }, 700);
+      }
+    });
+  });
+
   // Active nav link on scroll
   const links = [...nav.querySelectorAll('a:not(.nav-cta)')];
   const sections = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
