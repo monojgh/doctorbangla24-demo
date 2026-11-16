@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexine Digital — Brand Guide</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    body { background: var(--cloud); font-family: "Hind Siliguri", var(--font-body); }
+    .bg-head { background: var(--navy); color: #C9CDE6; padding: 70px 0 60px; }
+    .bg-head .logo { color: #fff; font-size: 28px; margin-bottom: 22px; }
+    .bg-head .logo img { width: 52px; height: 52px; }
+    .bg-head h1 { color: #fff; font-size: clamp(32px, 5vw, 52px); }
+    .bg-sec { padding: 60px 0 10px; }
+    .bg-sec h2 { font-size: 28px; }
+    .bg-sec > .container > p { color: var(--slate); max-width: 720px; }
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; margin-top: 26px; }
+    .sw { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); cursor: pointer; transition: transform .25s; }
+    .sw:hover { transform: translateY(-4px); }
+    .sw .chip { height: 140px; position: relative; }
+    .sw .chip span { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,.85); color: var(--navy); }
+    .sw .meta { padding: 18px 20px; }
+    .sw b { font-family: var(--font-head); color: var(--navy); font-size: 17px; display: block; }
+    .sw code { font-size: 14px; color: var(--ink); }
+    .sw small { display: block; color: var(--slate); margin-top: 6px; font-size: 14px; line-height: 1.5; }
+    .ratio { display: flex; height: 70px; border-radius: 18px; overflow: hidden; margin-top: 26px; box-shadow: var(--shadow); }
+    .ratio div { display: grid; place-items: center; color: #fff; font-weight: 600; font-size: 14px; }
+    .grads { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 26px; }
+    .grads div { height: 130px; border-radius: 20px; display: flex; align-items: flex-end; padding: 16px 18px; color: #fff; font-weight: 600; font-size: 14px; }
+    .type-row { background: #fff; border-radius: 20px; padding: 28px; box-shadow: var(--shadow); margin-top: 20px; }
+    .type-row small { color: var(--slate); }
+    .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 26px; }
+    .do-dont > div { background: #fff; border-radius: 20px; padding: 26px; box-shadow: var(--shadow); }
+    .do-dont h3 { font-size: 19px; }
+    .do-dont ul { margin: 0; padding-left: 20px; color: var(--ink); }
+    .do-dont li { margin-bottom: 8px; }
+    .logos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 26px; }
+    .logos div { border-radius: 20px; height: 150px; display: grid; place-items: center; box-shadow: var(--shadow); }
+    .logos .logo { font-size: 24px; }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--navy); color: #fff; padding: 12px 22px; border-radius: 99px; transition: transform .3s; font-size: 14px; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    @media (max-width: 700px) { .do-dont, .logos { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="bg-head">
+    <div class="container">
+      <a href="index.html" class="logo"><img src="assets/img/logo.svg" alt="">Nexine <span>Digital</span></a>
+      <div class="eyebrow">Brand Guidelines</div>
+      <h1>ব্র্যান্ড কালার ও <span class="grad-text">স্টাইল গাইড</span></h1>
+      <p>গ্রাফিক ডিজাইন, ভিডিও, রিল, ওয়েবসাইট, সফটওয়্যার — সব জায়গায় এই কালার আর ফন্টগুলোই ব্যবহার করবেন, তাহলে Nexine Digital সবসময় এক রকম আর প্রফেশনাল দেখাবে।</p>
+    </div>
+  </header>
+
+  <section class="bg-sec">
+    <div class="container">
+      <h2>১. প্রধান ব্র্যান্ড কালার</h2>
+      <p>এই চারটা কালারই Nexine Digital-এর মূল পরিচয়। ভায়োলেট (সৃজনশীলতা) আর সায়ান (টেকনোলজি) মিলে সিগনেচার গ্রেডিয়েন্ট, আর কোরাল শুধু মূল বাটন বা হাইলাইটে — যেন চোখে পড়ে কিন্তু চোখে না লাগে। কালার কার্ডে ক্লিক করলে HEX কোড কপি হবে।</p>
+      <div class="swatches">
+        <div class="sw" data-hex="#6D5DFC"><div class="chip" style="background:#6D5DFC"><span>Primary</span></div><div class="meta"><b>Nexine Violet</b><code>#6D5DFC</code> · <code>RGB 109, 93, 252</code><small>লোগো, হেডিং-এর হাইলাইট, লিংক, আইকন। ব্র্যান্ডের মূল রঙ।</small></div></div>
+        <div class="sw" data-hex="#22D3EE"><div class="chip" style="background:#22D3EE"><span>Secondary</span></div><div class="meta"><b>Electric Cyan</b><code>#22D3EE</code> · <code>RGB 34, 211, 238</code><small>টেক/ওয়েব/সফটওয়্যার কাজ, গ্রেডিয়েন্ট, ডার্ক ব্যাকগ্রাউন্ডে হাইলাইট।</small></div></div>
+        <div class="sw" data-hex="#FF7A59"><div class="chip" style="background:#FF7A59"><span>Accent</span></div><div class="meta"><b>Sunset Coral</b><code>#FF7A59</code> · <code>RGB 255, 122, 89</code><small>CTA বাটন (“Order Now”), ব্যাজ, রিলের ছোট্ট হাইলাইট। অল্প ব্যবহার করবেন।</small></div></div>
+        <div class="sw" data-hex="#0B1023"><div class="chip" style="background:#0B1023"><span style="background:rgba(255,255,255,.9)">Base</span></div><div class="meta"><b>Midnight Navy</b><code>#0B1023</code> · <code>RGB 11, 16, 35</code><small>ডার্ক ব্যাকগ্রাউন্ড, ফুটার, ভিডিও থাম্বনেইল/রিলের বেস। কালো রঙের বদলে এটা।</small></div></div>
+      </div>
+
+      <h2 style="margin-top:50px">২. সাপোর্টিং / নিউট্রাল কালার</h2>
+      <div class="swatches">
+        <div class="sw" data-hex="#1E2340"><div class="chip" style="background:#1E2340"></div><div class="meta"><b>Ink</b><code>#1E2340</code><small>হালকা ব্যাকগ্রাউন্ডে সাধারণ লেখা।</small></div></div>
+        <div class="sw" data-hex="#64748B"><div class="chip" style="background:#64748B"></div><div class="meta"><b>Slate</b><code>#64748B</code><small>সাব-টেক্সট, ক্যাপশন, ছোট বিবরণ।</small></div></div>
+        <div class="sw" data-hex="#F5F6FB"><div class="chip" style="background:#F5F6FB;border-bottom:1px solid #E4E6F0"></div><div class="meta"><b>Cloud</b><code>#F5F6FB</code><small>হালকা ব্যাকগ্রাউন্ড, কার্ড সেকশন।</small></div></div>
+        <div class="sw" data-hex="#ECEAFF"><div class="chip" style="background:#ECEAFF"></div><div class="meta"><b>Violet Tint</b><code>#ECEAFF</code><small>আইকনের পেছনে, ট্যাগ, সফট হাইলাইট।</small></div></div>
+      </div>
+
+      <h2 style="margin-top:50px">৩. কালার ব্যবহারের অনুপাত (60-30-10)</h2>
+      <p>একটা ডিজাইনে কতটুকু কোন রঙ — এই নিয়ম মানলে কখনো চোখে ইরিটেশন হবে না।</p>
+      <div class="ratio">
+        <div style="flex:60;background:#F5F6FB;color:#1E2340">60% নিউট্রাল (Cloud/White বা Navy)</div>
+        <div style="flex:30;background:#6D5DFC">30% Violet / Cyan</div>
+        <div style="flex:10;background:#FF7A59">10% Coral</div>
+      </div>
+
+      <h2 style="margin-top:50px">৪. সিগনেচার গ্রেডিয়েন্ট</h2>
+      <div class="grads">
+        <div style="background:linear-gradient(135deg,#6D5DFC,#22D3EE)">Primary Gradient · #6D5DFC → #22D3EE (135°)</div>
+        <div style="background:linear-gradient(135deg,#0B1023,#6D5DFC)">Dark Gradient · #0B1023 → #6D5DFC</div>
+        <div style="background:linear-gradient(135deg,#6D5DFC,#FF7A59)">Creative Gradient · #6D5DFC → #FF7A59 (রিল/সোশ্যাল)</div>
+      </div>
+
+      <h2 style="margin-top:50px">৫. লোগো ব্যবহার</h2>
+      <div class="logos">
+        <div style="background:#fff"><span class="logo"><img src="assets/img/logo.svg" alt="">Nexine <span>Digital</span></span></div>
+        <div style="background:#0B1023"><span class="logo" style="color:#fff"><img src="assets/img/logo.svg" alt="">Nexine <span style="color:#9AA0C3">Digital</span></span></div>
+        <div style="background:linear-gradient(135deg,#6D5DFC,#22D3EE)"><span class="logo" style="color:#fff"><img src="assets/img/logo.svg" alt="" style="filter:drop-shadow(0 4px 10px rgba(0,0,0,.2))">Nexine <span style="color:#fff;opacity:.85">Digital</span></span></div>
+      </div>
+
+      <h2 style="margin-top:50px">৬. ফন্ট (টাইপোগ্রাফি)</h2>
+      <div class="type-row"><small>Heading — Sora (Bold 700 / SemiBold 600)</small><div style="font-family:Sora;font-size:40px;font-weight:700;color:#0B1023">We build digital experiences</div></div>
+      <div class="type-row"><small>Body — Inter (Regular 400 / Medium 500)</small><p style="font-family:Inter;font-size:18px;margin:6px 0 0">Clean, readable text for websites, proposals and captions.</p></div>
+      <div class="type-row"><small>বাংলা — Hind Siliguri (Regular / SemiBold)</small><p style="font-size:22px;margin:6px 0 0;font-weight:600">আপনার ব্র্যান্ডকে আমরা ডিজিটালভাবে বড় করি।</p></div>
+
+      <h2 style="margin-top:50px">৭. কোথায় কোন কালার</h2>
+      <div class="do-dont">
+        <div>
+          <h3>✅ যা করবেন</h3>
+          <ul>
+            <li><b>গ্রাফিক ডিজাইন:</b> সাদা/Cloud বেস + Violet হেডিং + Coral “Call to Action”।</li>
+            <li><b>রিল ও মোশন গ্রাফিক্স:</b> Navy বেস, Violet→Cyan গ্রেডিয়েন্ট ট্রানজিশন, Coral দিয়ে টেক্সট হাইলাইট।</li>
+            <li><b>ভিডিও থাম্বনেইল:</b> Navy/Dark Gradient ব্যাকগ্রাউন্ড, সাদা বড় লেখা, এক শব্দে Coral।</li>
+            <li><b>ওয়েবসাইট/সফটওয়্যার UI:</b> Violet প্রাইমারি বাটন/লিংক, Cyan স্ট্যাটাস/হাইলাইট।</li>
+            <li>লোগোর চারপাশে পর্যাপ্ত ফাঁকা জায়গা রাখবেন।</li>
+          </ul>
+        </div>
+        <div>
+          <h3>❌ যা করবেন না</h3>
+          <ul>
+            <li>Coral দিয়ে বড় ব্যাকগ্রাউন্ড ভরাবেন না — চোখে লাগবে।</li>
+            <li>খাঁটি কালো (#000) ব্যবহার না করে Midnight Navy ব্যবহার করুন।</li>
+            <li>এই প্যালেটের বাইরের উজ্জ্বল রঙ (লাল, সবুজ, হলুদ) মিশাবেন না।</li>
+            <li>Cyan-এর উপর সাদা ছোট লেখা দেবেন না — পড়া কঠিন হয়; Navy লেখা দিন।</li>
+            <li>লোগো টেনে লম্বা/চ্যাপ্টা বা রঙ পাল্টাবেন না।</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin:50px 0 70px"><a href="index.html" class="btn btn--primary">← ওয়েবসাইটে ফিরে যান</a></p>
+    </div>
+  </section>
+  <div class="toast" id="toast">Copied!</div>
+  <script>
+    document.querySelectorAll('.sw').forEach(s => s.addEventListener('click', () => {
+      const hex = s.dataset.hex, t = document.getElementById('toast');
+      (navigator.clipboard ? navigator.clipboard.writeText(hex) : Promise.reject()).catch(() => {});
+      t.textContent = hex + ' কপি হয়েছে'; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1600);
+    }));
+  </script>
+</body>
+</html>
