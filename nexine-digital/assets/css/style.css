@@ -118,6 +118,8 @@ p { margin: 0 0 1em; }
 .header .container { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-head); font-weight: 700; font-size: 21px; color: var(--navy); }
 .logo img { width: 38px; height: 38px; }
+.logo img.logo-img { width: auto; height: 46px; }
+.footer .logo img.logo-img { height: 54px; }
 .logo span { font-weight: 400; color: var(--slate); }
 
 .nav { display: flex; align-items: center; gap: 34px; }
