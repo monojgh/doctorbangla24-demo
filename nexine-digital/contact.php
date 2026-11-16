@@ -5,8 +5,8 @@
  * EDIT: set $from to an email on YOUR domain (create it in Hostinger > Emails),
  *       otherwise mail may land in spam.
  */
-$to   = 'hello@nexinedigital.com';
-$from = 'no-reply@nexinedigital.com';
+$to   = 'admin@nexinedigital.com';
+$from = 'admin@nexinedigital.com';
 
 header('Content-Type: application/json; charset=utf-8');
 

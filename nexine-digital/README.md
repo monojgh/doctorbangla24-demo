@@ -19,10 +19,10 @@
 2. পুরোনো `default.php` থাকলে ডিলিট করুন।
 3. `nexine-digital.zip` আপলোড করে **Extract** করুন (ফাইলগুলো সরাসরি `public_html`-এর ভেতরে থাকতে হবে, যেমন `public_html/index.html`)।
 4. hPanel → **Security → SSL** চালু করুন (ফ্রি)।
-5. hPanel → **Emails** থেকে `hello@yourdomain.com` আর `no-reply@yourdomain.com` তৈরি করুন, তারপর `contact.php`-এর `$to` ও `$from` আপডেট করুন।
+5. hPanel → **Emails** থেকে `admin@nexinedigital.com` ইমেইলটি তৈরি করুন (contact.php-তে আগেই বসানো আছে)।
 
 ## যা বদলাতে হবে (`EDIT:` লেখা কমেন্ট খুঁজুন)
-- ফোন নম্বর ও WhatsApp (`8801XXXXXXXXX`) — `index.html`
+- ফোন/WhatsApp (+91 91632 29122), ইমেইল (admin@nexinedigital.com) ও ঠিকানা বসানো হয়েছে
 - ইমেইল — `index.html`, `contact.php`
 - সোশ্যাল মিডিয়া লিংক, স্ট্যাটস সংখ্যা, প্যাকেজের দাম
 - পোর্টফোলিও কার্ডে নিজের কাজের ছবি (`assets/img/`)
