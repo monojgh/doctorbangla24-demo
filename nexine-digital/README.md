@@ -12,7 +12,7 @@
 | Cloud | `#F5F6FB` | হালকা ব্যাকগ্রাউন্ড |
 
 গ্রেডিয়েন্ট: `#6D5DFC → #22D3EE` (135°). ফন্ট: Sora (হেডিং), Inter (বডি), Hind Siliguri (বাংলা).
-বিস্তারিত: `brand-guide.html`
+বিস্তারিত: `brand-guide.html` (অভ্যন্তরীণ — ওয়েবসাইটে আপলোড হয় না, `nexine-brand-kit.zip`-এ আছে)
 
 ## Hostinger-এ লাইভ করার নিয়ম
 1. hPanel → Websites → Manage → **File Manager** খুলুন → `public_html` ফোল্ডারে যান।
