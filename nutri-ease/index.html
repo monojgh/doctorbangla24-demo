@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nutri Ease Wellness Hub</title>
+<meta name="description" content="Nutri Ease Wellness Hub, Panskura: personalised diet charts, weight management, PCOS and diabetes diets, yoga and Zumba classes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Nunito+Sans:wght@400;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: bright, airy wellness page. Hero split (copy + "plate" visual), info ribbon, then soft bands on a 1140px column. */
+:root{
+  --bg:#f7fbf6;        /* page */
+  --soft:#eaf4ea;      /* bands */
+  --card:#ffffff;
+  --line:#d7e6d6;
+  --ink:#16382a;       /* text */
+  --muted:#557063;
+  --leaf:#2f8a55;      /* primary */
+  --leaf-d:#1f6b40;
+  --berry:#e2507f;     /* secondary: matches their neon sign */
+  --sun:#f2a93b;       /* stars */
+  --f-display:"Outfit","Hind Siliguri",system-ui,sans-serif;
+  --f-body:"Nunito Sans","Hind Siliguri",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:18px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 var(--f-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.bn{font-family:"Hind Siliguri",var(--f-body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:#fff}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance}
+body.bn h1,body.bn h2,body.bn h3{font-family:"Hind Siliguri",var(--f-display);line-height:1.3}
+h2{font-size:clamp(1.6rem,3.4vw,2.4rem);font-weight:700}
+h3{font-size:1.12rem;font-weight:600}
+p{margin:0}
+:focus-visible{outline:3px solid var(--berry);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1140px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.band{padding-block:clamp(56px,8vw,96px)}
+.band.soft{background:var(--soft)}
+.kicker{font-weight:700;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--berry)}
+.head{display:grid;gap:10px;max-width:620px;margin-bottom:38px}
+.head p{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:.95rem;border:2px solid transparent;cursor:pointer;transition:transform .2s,background .2s;font-family:inherit}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--leaf);color:#fff}
+.btn.primary:hover{background:var(--leaf-d)}
+.btn.line{border-color:var(--leaf);color:var(--leaf-d);background:#fff}
+.btn.wa{background:#25d366;color:#fff}
+.btn svg{width:18px;height:18px}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;font-size:1.15rem;line-height:1.05}
+.logo svg{width:38px;height:38px;flex:none}
+.logo small{display:block;font-weight:500;font-size:.72rem;color:var(--muted);letter-spacing:.04em}
+nav.main{display:flex;gap:4px}
+nav.main a{padding:8px 13px;border-radius:999px;font-weight:600;font-size:.93rem;color:var(--muted)}
+nav.main a:hover{background:var(--soft);color:var(--ink)}
+.hright{display:flex;gap:8px;align-items:center}
+.lang{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-weight:700;font-size:.85rem;cursor:pointer;color:var(--ink);font-family:"Hind Siliguri",var(--f-body)}
+.menu-btn{display:none;width:42px;height:42px;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+@media (max-width:920px){
+  nav.main,.hcall{display:none}
+  .menu-btn{display:grid;place-items:center}
+  nav.main.open{display:flex;flex-direction:column;position:absolute;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
+}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:radial-gradient(60% 80% at 95% 10%,rgba(226,80,127,.12),transparent 60%),radial-gradient(50% 70% at 0% 100%,rgba(47,138,85,.14),transparent 60%),var(--bg)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,56px);align-items:center;padding-block:clamp(44px,7vw,84px)}
+.hero h1{font-size:clamp(2.1rem,5.4vw,3.7rem);font-weight:800;letter-spacing:-.015em}
+.hero h1 span{color:var(--leaf)}
+.hero .lead{color:var(--muted);font-size:clamp(1rem,1.6vw,1.15rem);max-width:52ch;margin-top:16px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.gbadge{display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 8px;font-size:.88rem;margin-bottom:18px;box-shadow:0 6px 18px rgba(22,56,42,.06)}
+.gbadge .g{width:26px;height:26px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font:800 .85rem/1 Arial,sans-serif;color:#4285f4}
+.gbadge b{font-size:1rem}
+.stars{color:var(--sun);letter-spacing:1px}
+.plate{position:relative;aspect-ratio:1;max-width:100%;width:min(440px,100%);justify-self:center}
+.plate .disc{position:absolute;inset:6%;border-radius:50%;background:#fff;box-shadow:0 30px 60px rgba(22,56,42,.14),inset 0 0 0 14px var(--soft)}
+.plate svg{position:absolute;inset:0;width:100%;height:100%}
+.chip{position:absolute;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:.82rem;box-shadow:0 10px 24px rgba(22,56,42,.1);line-height:1.3}
+.chip b{display:block;font-family:var(--f-display);font-size:1.05rem;color:var(--leaf-d)}
+.chip.c1{top:4%;left:-2%}
+.chip.c2{bottom:8%;right:-2%}
+.chip.c3{bottom:2%;left:6%}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr}.plate{width:min(360px,92%)}.chip.c2{top:40%;bottom:auto;right:-4%}}
+
+/* ribbon */
+.ribbon{background:var(--ink);color:#e9f3ec}
+.ribbon .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.rb{display:flex;gap:14px;align-items:flex-start;padding:22px 18px;border-right:1px solid rgba(255,255,255,.12)}
+.rb:last-child{border-right:0}
+.rb svg{width:24px;height:24px;flex:none;color:#8fd9a8;margin-top:2px}
+.rb span{display:block;font-size:.78rem;opacity:.7;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.rb b{font-weight:600;font-size:.95rem}
+.rb a{text-decoration:underline;text-underline-offset:3px}
+@media (max-width:820px){.ribbon .wrap{grid-template-columns:1fr}.rb{border-right:0;border-bottom:1px solid rgba(255,255,255,.12)}.rb:last-child{border-bottom:0}}
+
+/* services */
+.svcs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.svc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:10px;align-content:start;transition:transform .2s,box-shadow .2s}
+.svc:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(22,56,42,.1)}
+.svc .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--soft);color:var(--leaf)}
+.svc.pink .ic{background:#fde7ef;color:var(--berry)}
+.svc .ic svg{width:28px;height:28px}
+.svc p{color:var(--muted);font-size:.94rem}
+@media (max-width:900px){.svcs{grid-template-columns:1fr 1fr}}
+@media (max-width:580px){.svcs{grid-template-columns:1fr}}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.step{background:#fff;border-radius:var(--r);padding:22px;border:1px solid var(--line);display:grid;gap:8px;align-content:start}
+.step .n{width:38px;height:38px;border-radius:50%;background:var(--leaf);color:#fff;display:grid;place-items:center;font:700 1rem/1 var(--f-display)}
+.step p{color:var(--muted);font-size:.92rem}
+@media (max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+
+/* classes */
+.classes{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cls{border-radius:22px;padding:28px;display:grid;gap:12px;color:#fff;position:relative;overflow:hidden}
+.cls.yoga{background:linear-gradient(140deg,#2f8a55,#1b5e39)}
+.cls.zumba{background:linear-gradient(140deg,#e2507f,#b8325f)}
+.cls::after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-60px;bottom:-80px;background:rgba(255,255,255,.1)}
+.cls p{opacity:.92;max-width:44ch}
+.cls ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.cls li{background:rgba(255,255,255,.18);border-radius:999px;padding:5px 12px;font-size:.82rem;font-weight:600}
+.cls .btn{justify-self:start;background:#fff;color:var(--ink);position:relative;z-index:1}
+@media (max-width:760px){.classes{grid-template-columns:1fr}}
+
+/* bmi */
+.bmi{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,48px);align-items:center}
+.bmi form{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bmi label{display:grid;gap:6px;font-weight:700;font-size:.85rem;color:var(--muted);min-width:0}
+.bmi input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg)}
+.bmi input:focus{outline:none;border-color:var(--leaf)}
+.bmi .full{grid-column:1/-1}
+.result{grid-column:1/-1;border-radius:16px;background:var(--soft);padding:16px;display:grid;gap:10px}
+.result .val{font:800 2rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.scale{position:relative;height:12px;border-radius:999px;background:linear-gradient(90deg,#7cc4e8 0 22%,#4fb071 22% 52%,#f2a93b 52% 72%,#e2507f 72%)}
+.scale i{position:absolute;top:-5px;width:4px;height:22px;border-radius:2px;background:var(--ink);transform:translateX(-50%);transition:left .4s}
+.scale-l{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+@media (max-width:820px){.bmi{grid-template-columns:1fr}}
+
+/* reviews */
+.rev{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(24px,4vw,48px);align-items:center}
+.rcard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+.big{font:800 3.6rem/1 var(--f-display);text-align:center}
+.big small{display:block;font:600 .85rem var(--f-body);color:var(--muted);margin-top:6px}
+.bars{display:grid;gap:7px}
+.bar{display:grid;grid-template-columns:12px 1fr;gap:10px;align-items:center;font-size:.8rem;color:var(--muted)}
+.bar div{height:9px;border-radius:999px;background:var(--soft);overflow:hidden}
+.bar div i{display:block;height:100%;background:var(--sun);border-radius:999px}
+.why{display:grid;gap:12px}
+.why li{list-style:none;display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start}
+.why ul{margin:0;padding:0;display:grid;gap:12px}
+.why li::before{content:"✓";width:28px;height:28px;border-radius:50%;background:var(--leaf);color:#fff;display:grid;place-items:center;font-weight:800;font-size:.85rem}
+@media (max-width:820px){.rev{grid-template-columns:1fr}}
+@media (max-width:420px){.rcard{grid-template-columns:1fr}}
+
+/* faq */
+.faq details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:10px}
+.faq summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--leaf);font-weight:800;font-size:1.3rem;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq details p{color:var(--muted);margin-top:8px;font-size:.95rem}
+.faq-wrap{max-width:780px}
+
+/* contact */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,44px)}
+.cbox{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;display:grid;gap:16px;align-content:start}
+.cl{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center}
+.cl .ic{width:44px;height:44px;border-radius:12px;background:var(--soft);color:var(--leaf);display:grid;place-items:center}
+.cl .ic svg{width:22px;height:22px}
+.cl span{display:block;font-size:.8rem;color:var(--muted);font-weight:700}
+.cl b{font-weight:600}
+.map{border-radius:22px;overflow:hidden;border:1px solid var(--line);min-height:320px;background:var(--soft)}
+.map iframe{width:100%;height:100%;min-height:320px;border:0;display:block}
+.cbox .acts{display:flex;flex-wrap:wrap;gap:10px}
+@media (max-width:820px){.contact{grid-template-columns:1fr}}
+
+footer{background:var(--ink);color:#cfe3d6;padding-block:34px;font-size:.88rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+footer a{color:#fff;font-weight:700}
+
+.float{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;display:grid;gap:10px}
+.float a{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;box-shadow:0 10px 24px rgba(0,0,0,.2)}
+.float .w{background:#25d366}.float .c{background:var(--leaf)}
+.float svg{width:26px;height:26px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="#top" class="logo" aria-label="Nutri Ease Wellness Hub">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#eaf4ea"/><path d="M20 31c-6-3-9-8-9-13 4 0 7 2 9 5 2-6 6-10 11-11 0 9-4 16-11 19z" fill="#2f8a55"/><path d="M20 31c0-4 1-7 3-10" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="14" cy="12" r="3" fill="#e2507f"/></svg>
+      <span>Nutri Ease<small data-en="Wellness Hub · Panskura" data-bn="ওয়েলনেস হাব · পাঁশকুড়া">Wellness Hub · Panskura</small></span>
+    </a>
+    <nav class="main" id="nav" aria-label="Main">
+      <a href="#services" data-en="Services" data-bn="পরিষেবা">Services</a>
+      <a href="#classes" data-en="Yoga &amp; Zumba" data-bn="যোগা ও জুম্বা">Yoga &amp; Zumba</a>
+      <a href="#bmi" data-en="BMI Check" data-bn="BMI চেক">BMI Check</a>
+      <a href="#reviews" data-en="Reviews" data-bn="রিভিউ">Reviews</a>
+      <a href="#contact" data-en="Contact" data-bn="যোগাযোগ">Contact</a>
+    </nav>
+    <div class="hright">
+      <button class="lang" id="lang" type="button" aria-label="Switch language">বাংলা</button>
+      <a href="tel:+917586947545" class="btn primary hcall" data-en="Call Now" data-bn="কল করুন">Call Now</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="gbadge"><span class="g">G</span><b>4.8</b><span class="stars">★★★★★</span><span data-en="49 Google reviews" data-bn="৪৯টি গুগল রিভিউ">49 Google reviews</span></div>
+      <h1 data-en="Eat right, move daily, <span>feel lighter</span>." data-bn="সঠিক খাবার, নিয়মিত ব্যায়াম, <span>হালকা জীবন</span>।">Eat right, move daily, <span>feel lighter</span>.</h1>
+      <p class="lead" data-en="Personalised diet charts, yoga and Zumba in the heart of Panskura. We help you lose weight, control PCOS and diabetes, and build habits that last, without starving." data-bn="পাঁশকুড়ার কেন্দ্রে ব্যক্তিগত ডায়েট চার্ট, যোগা আর জুম্বা। না খেয়ে নয়, সঠিক খেয়ে ওজন কমান, PCOS ও ডায়াবেটিস নিয়ন্ত্রণে রাখুন আর সুস্থ অভ্যাস গড়ে তুলুন।">Personalised diet charts, yoga and Zumba in the heart of Panskura. We help you lose weight, control PCOS and diabetes, and build habits that last, without starving.</p>
+      <div class="ctas">
+        <a class="btn wa" href="https://wa.me/917586947545?text=Hello%20Nutri%20Ease%2C%20I%20want%20to%20book%20a%20diet%20consultation." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg><span data-en="Book on WhatsApp" data-bn="WhatsApp-এ বুক করুন">Book on WhatsApp</span></a>
+        <a class="btn line" href="#services" data-en="See Programs" data-bn="প্রোগ্রাম দেখুন">See Programs</a>
+      </div>
+    </div>
+    <div class="plate" aria-hidden="true">
+      <div class="disc"></div>
+      <svg viewBox="0 0 400 400">
+        <path d="M200 200 L200 92 A108 108 0 0 1 300 238 Z" fill="#4fb071"/>
+        <path d="M200 200 L300 238 A108 108 0 0 1 130 282 Z" fill="#f2a93b"/>
+        <path d="M200 200 L130 282 A108 108 0 0 1 200 92 Z" fill="#e2507f"/>
+        <circle cx="200" cy="200" r="34" fill="#fff"/>
+        <text x="200" y="196" text-anchor="middle" font-family="Outfit,sans-serif" font-weight="800" font-size="15" fill="#16382a">MY</text>
+        <text x="200" y="213" text-anchor="middle" font-family="Outfit,sans-serif" font-weight="800" font-size="15" fill="#16382a">PLATE</text>
+        <text x="262" y="160" text-anchor="middle" font-family="Outfit,sans-serif" font-weight="700" font-size="13" fill="#fff">VEGGIES</text>
+        <text x="215" y="262" text-anchor="middle" font-family="Outfit,sans-serif" font-weight="700" font-size="13" fill="#fff">PROTEIN</text>
+        <text x="128" y="186" text-anchor="middle" font-family="Outfit,sans-serif" font-weight="700" font-size="13" fill="#fff">GRAINS</text>
+      </svg>
+      <div class="chip c1"><b>PCOS · PCOD</b><span data-en="Hormone-friendly diets" data-bn="হরমোন-বান্ধব ডায়েট">Hormone-friendly diets</span></div>
+      <div class="chip c2"><b data-en="Diabetes" data-bn="ডায়াবেটিস">Diabetes</b><span data-en="Sugar control plans" data-bn="সুগার নিয়ন্ত্রণ প্ল্যান">Sugar control plans</span></div>
+      <div class="chip c3"><b data-en="Weight loss" data-bn="ওজন কমানো">Weight loss</b><span data-en="Weekly check-ins" data-bn="সাপ্তাহিক চেক-ইন">Weekly check-ins</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="ribbon">
+  <div class="wrap">
+    <div class="rb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg><div><span data-en="Open every day" data-bn="প্রতিদিন খোলা">Open every day</span><b data-en="Mon–Sun · 6:00 AM – 9:30 PM" data-bn="সোম–রবি · সকাল ৬টা – রাত ৯:৩০">Mon–Sun · 6:00 AM – 9:30 PM</b></div></div>
+    <div class="rb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><div><span data-en="Find us" data-bn="ঠিকানা">Find us</span><b data-en="2nd Floor, JK Super Market, Central Bus Stand, Panskura" data-bn="২য় তলা, জে কে সুপার মার্কেট, সেন্ট্রাল বাস স্ট্যান্ড, পাঁশকুড়া">2nd Floor, JK Super Market, Central Bus Stand, Panskura</b></div></div>
+    <div class="rb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><div><span data-en="Call us" data-bn="ফোন করুন">Call us</span><b><a href="tel:+917586947545">075869 47545</a></b></div></div>
+  </div>
+</section>
+
+<section class="band" id="services">
+  <div class="wrap">
+    <div class="head"><span class="kicker" data-en="Our programs" data-bn="আমাদের প্রোগ্রাম">Our programs</span><h2 data-en="Nutrition plans made for your body" data-bn="আপনার শরীরের জন্য তৈরি ডায়েট প্ল্যান">Nutrition plans made for your body</h2><p data-en="Every plan starts with your health history, routine and food habits, using foods from a normal Bengali kitchen." data-bn="প্রতিটি প্ল্যান তৈরি হয় আপনার শারীরিক অবস্থা, দৈনন্দিন রুটিন আর খাদ্যাভ্যাস দেখে, সাধারণ বাঙালি রান্নাঘরের খাবার দিয়েই।">Every plan starts with your health history, routine and food habits, using foods from a normal Bengali kitchen.</p></div>
+    <div class="svcs">
+      <article class="svc"><div class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="9" width="22" height="18" rx="4"/><path d="M11 9V7a5 5 0 0 1 10 0v2M16 15v6M13 18h6" stroke-linecap="round"/></svg></div><h3 data-en="Weight Management" data-bn="ওজন নিয়ন্ত্রণ">Weight Management</h3><p data-en="Safe fat loss or healthy weight gain with a chart you can actually follow, plus weekly weigh-ins." data-bn="নিরাপদে ওজন কমানো বা বাড়ানো, মেনে চলা যায় এমন চার্ট আর সাপ্তাহিক ওজন মাপা।">Safe fat loss or healthy weight gain with a chart you can actually follow, plus weekly weigh-ins.</p></article>
+      <article class="svc pink"><div class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="12" r="7"/><path d="M16 19v9M12 24h8" stroke-linecap="round"/></svg></div><h3 data-en="PCOS / PCOD Diet" data-bn="PCOS / PCOD ডায়েট">PCOS / PCOD Diet</h3><p data-en="Low-GI, hormone-friendly meals to support regular cycles, weight and skin health." data-bn="লো-জিআই, হরমোন-বান্ধব খাবার, যা নিয়মিত পিরিয়ড, ওজন আর ত্বকের যত্নে সাহায্য করে।">Low-GI, hormone-friendly meals to support regular cycles, weight and skin health.</p></article>
+      <article class="svc"><div class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 4c5 7 8 11 8 15a8 8 0 0 1-16 0c0-4 3-8 8-15z"/><path d="M12 20h8" stroke-linecap="round"/></svg></div><h3 data-en="Diabetes Control Diet" data-bn="ডায়াবেটিস কন্ট্রোল ডায়েট">Diabetes Control Diet</h3><p data-en="Meal timing and portions that keep blood sugar steady, planned alongside your doctor's advice." data-bn="রক্তে শর্করা স্থির রাখতে খাবারের সময় আর পরিমাণ ঠিক করা, ডাক্তারের পরামর্শের সাথে মিলিয়ে।">Meal timing and portions that keep blood sugar steady, planned alongside your doctor's advice.</p></article>
+      <article class="svc pink"><div class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="9" r="4"/><path d="M9 28v-6a7 7 0 0 1 14 0v6" stroke-linecap="round"/></svg></div><h3 data-en="Pediatric Nutrition" data-bn="শিশুদের পুষ্টি">Pediatric Nutrition</h3><p data-en="Growth-focused plans for fussy eaters, underweight or overweight children." data-bn="খেতে না চাওয়া, কম ওজন বা বেশি ওজনের শিশুদের বৃদ্ধির জন্য বিশেষ প্ল্যান।">Growth-focused plans for fussy eaters, underweight or overweight children.</p></article>
+      <article class="svc"><div class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="7" y="4" width="18" height="24" rx="3"/><path d="M11 11h10M11 16h10M11 21h6" stroke-linecap="round"/></svg></div><h3 data-en="Meal Planning &amp; Diet Charts" data-bn="মিল প্ল্যানিং ও ডায়েট চার্ট">Meal Planning &amp; Diet Charts</h3><p data-en="Day-by-day charts with swaps for festivals, travel, night shifts and family meals." data-bn="প্রতিদিনের চার্ট, সাথে উৎসব, বেড়ানো, নাইট শিফট আর পারিবারিক খাবারের বিকল্প।">Day-by-day charts with swaps for festivals, travel, night shifts and family meals.</p></article>
+      <article class="svc pink"><div class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="6" r="3"/><path d="M16 9v9M8 13l8 3 8-3M11 28l5-10 5 10" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-en="Lifestyle Support" data-bn="লাইফস্টাইল সাপোর্ট">Lifestyle Support</h3><p data-en="Sleep, stress, water and activity goals, with yoga and Zumba to keep you moving." data-bn="ঘুম, মানসিক চাপ, জল আর ব্যায়ামের লক্ষ্য, সাথে যোগা আর জুম্বা।">Sleep, stress, water and activity goals, with yoga and Zumba to keep you moving.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="band soft" id="how">
+  <div class="wrap">
+    <div class="head"><span class="kicker" data-en="How it works" data-bn="কীভাবে কাজ হয়">How it works</span><h2 data-en="Four simple steps to a healthier you" data-bn="চারটি সহজ ধাপে সুস্থ জীবন">Four simple steps to a healthier you</h2></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3 data-en="Consultation" data-bn="পরামর্শ">Consultation</h3><p data-en="Talk to us about your goals, health reports and daily routine." data-bn="আপনার লক্ষ্য, রিপোর্ট আর রোজকার রুটিন নিয়ে কথা বলুন।">Talk to us about your goals, health reports and daily routine.</p></div>
+      <div class="step"><div class="n">2</div><h3 data-en="Body assessment" data-bn="শারীরিক মূল্যায়ন">Body assessment</h3><p data-en="Weight, BMI and measurements to set a clear starting point." data-bn="ওজন, BMI আর মাপ নিয়ে শুরুর অবস্থা ঠিক করা।">Weight, BMI and measurements to set a clear starting point.</p></div>
+      <div class="step"><div class="n">3</div><h3 data-en="Your diet chart" data-bn="আপনার ডায়েট চার্ট">Your diet chart</h3><p data-en="A personalised plan with home foods, timings and portions." data-bn="ঘরের খাবার, সময় আর পরিমাণ সহ ব্যক্তিগত প্ল্যান।">A personalised plan with home foods, timings and portions.</p></div>
+      <div class="step"><div class="n">4</div><h3 data-en="Follow-up" data-bn="ফলো-আপ">Follow-up</h3><p data-en="Regular check-ins to track progress and adjust the plan." data-bn="নিয়মিত চেক-ইন করে অগ্রগতি দেখা আর প্ল্যান বদলানো।">Regular check-ins to track progress and adjust the plan.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="classes">
+  <div class="wrap">
+    <div class="head"><span class="kicker" data-en="Group classes" data-bn="গ্রুপ ক্লাস">Group classes</span><h2 data-en="Yoga and Zumba at the hub" data-bn="হাবে যোগা ও জুম্বা">Yoga and Zumba at the hub</h2><p data-en="Morning and evening batches for all ages and fitness levels. Call for current timings." data-bn="সব বয়স আর ফিটনেস লেভেলের জন্য সকাল ও সন্ধ্যার ব্যাচ। সময় জানতে ফোন করুন।">Morning and evening batches for all ages and fitness levels. Call for current timings.</p></div>
+    <div class="classes">
+      <div class="cls yoga"><h3 style="font-size:1.6rem" data-en="Yoga" data-bn="যোগা">Yoga</h3><p data-en="Build flexibility, strength and calm. Guided sessions with breathing and posture work, gentle enough for beginners." data-bn="নমনীয়তা, শক্তি আর মানসিক শান্তি। শ্বাস-প্রশ্বাস আর আসন সহ গাইডেড সেশন, নতুনদের জন্যও সহজ।">Build flexibility, strength and calm. Guided sessions with breathing and posture work, gentle enough for beginners.</p><ul><li data-en="Weight loss" data-bn="ওজন কমানো">Weight loss</li><li>PCOS</li><li data-en="Back pain" data-bn="কোমর ব্যথা">Back pain</li><li data-en="Stress" data-bn="স্ট্রেস">Stress</li></ul><a class="btn" href="tel:+917586947545" data-en="Ask for timings" data-bn="সময় জানুন">Ask for timings</a></div>
+      <div class="cls zumba"><h3 style="font-size:1.6rem" data-en="Zumba" data-bn="জুম্বা">Zumba</h3><p data-en="High-energy dance workouts that burn calories and feel like fun, not exercise. Great with friends." data-bn="নাচের তালে এনার্জি-ভরা ব্যায়াম, ক্যালোরি পোড়ে আর মজাও হয়। বন্ধুদের নিয়ে আসুন।">High-energy dance workouts that burn calories and feel like fun, not exercise. Great with friends.</p><ul><li data-en="Fat burn" data-bn="ফ্যাট বার্ন">Fat burn</li><li data-en="Stamina" data-bn="স্ট্যামিনা">Stamina</li><li data-en="Mood boost" data-bn="মন ভালো">Mood boost</li></ul><a class="btn" href="tel:+917586947545" data-en="Ask for timings" data-bn="সময় জানুন">Ask for timings</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="band soft" id="bmi">
+  <div class="wrap bmi">
+    <div class="head" style="margin:0"><span class="kicker" data-en="Free tool" data-bn="ফ্রি টুল">Free tool</span><h2 data-en="Check your BMI in 10 seconds" data-bn="১০ সেকেন্ডে আপনার BMI দেখুন">Check your BMI in 10 seconds</h2><p data-en="BMI is a quick screening number, not a diagnosis. For Indian adults, a healthy range is 18.5–22.9. Visit us for a full body assessment." data-bn="BMI শুধু একটা প্রাথমিক মাপ, রোগ নির্ণয় নয়। ভারতীয় প্রাপ্তবয়স্কদের জন্য সুস্থ সীমা ১৮.৫–২২.৯। সম্পূর্ণ মূল্যায়নের জন্য আমাদের কাছে আসুন।">BMI is a quick screening number, not a diagnosis. For Indian adults, a healthy range is 18.5–22.9. Visit us for a full body assessment.</p></div>
+    <form id="bmiForm" novalidate>
+      <label><span data-en="Height (cm)" data-bn="উচ্চতা (সেমি)">Height (cm)</span><input id="h" type="number" inputmode="decimal" min="80" max="230" value="158"></label>
+      <label><span data-en="Weight (kg)" data-bn="ওজন (কেজি)">Weight (kg)</span><input id="w" type="number" inputmode="decimal" min="10" max="250" value="64"></label>
+      <div class="result" aria-live="polite">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><span class="val" id="bmiVal">25.6</span><b id="bmiCat">Obese (Asian cut-off)</b></div>
+        <div class="scale"><i id="bmiPin" style="left:50%"></i></div>
+        <div class="scale-l"><span>15</span><span>18.5</span><span>23</span><span>25</span><span>35</span></div>
+        <p id="bmiTip" style="font-size:.9rem;color:var(--muted)"></p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="band" id="reviews">
+  <div class="wrap rev">
+    <div class="rcard">
+      <div class="big">4.8<small><span class="stars">★★★★★</span><br><span data-en="49 Google reviews" data-bn="৪৯টি গুগল রিভিউ">49 Google reviews</span></small></div>
+      <div class="bars">
+        <div class="bar"><span>5</span><div><i style="width:94%"></i></div></div>
+        <div class="bar"><span>4</span><div><i style="width:2%"></i></div></div>
+        <div class="bar"><span>3</span><div><i style="width:0%"></i></div></div>
+        <div class="bar"><span>2</span><div><i style="width:0%"></i></div></div>
+        <div class="bar"><span>1</span><div><i style="width:4%"></i></div></div>
+      </div>
+    </div>
+    <div class="why">
+      <span class="kicker" data-en="Why people choose us" data-bn="কেন সবাই আমাদের বেছে নেন">Why people choose us</span>
+      <h2 data-en="Rated 4.8 by our members on Google" data-bn="গুগলে সদস্যদের দেওয়া রেটিং ৪.৮">Rated 4.8 by our members on Google</h2>
+      <ul>
+        <li data-en="Diet charts with everyday Bengali food, no costly supplements required" data-bn="রোজকার বাঙালি খাবার দিয়েই ডায়েট চার্ট, দামি সাপ্লিমেন্টের দরকার নেই">Diet charts with everyday Bengali food, no costly supplements required</li>
+        <li data-en="Diet guidance and group workouts under one roof" data-bn="ডায়েট পরামর্শ আর গ্রুপ ব্যায়াম এক ছাদের নিচে">Diet guidance and group workouts under one roof</li>
+        <li data-en="Open 7 days, early morning to late evening" data-bn="সপ্তাহে ৭ দিন খোলা, ভোর থেকে রাত পর্যন্ত">Open 7 days, early morning to late evening</li>
+        <li data-en="Friendly, family-like community at Central Bus Stand" data-bn="সেন্ট্রাল বাস স্ট্যান্ডে পরিবারের মতো আন্তরিক পরিবেশ">Friendly, family-like community at Central Bus Stand</li>
+      </ul>
+      <div><a class="btn line" href="https://www.google.com/maps/search/?api=1&query=Nutri+Ease+Wellness+Hub+Panskura" target="_blank" rel="noopener" data-en="Read reviews on Google" data-bn="গুগলে রিভিউ পড়ুন">Read reviews on Google</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="band soft" id="faq">
+  <div class="wrap faq-wrap faq">
+    <div class="head"><span class="kicker">FAQ</span><h2 data-en="Common questions" data-bn="সাধারণ প্রশ্ন">Common questions</h2></div>
+    <details open><summary data-en="Do I have to stop eating rice?" data-bn="ভাত খাওয়া কি বন্ধ করতে হবে?">Do I have to stop eating rice?</summary><p data-en="No. Most plans keep rice and roti in the right portions. We change quantities and combinations, not your whole diet." data-bn="না। বেশিরভাগ প্ল্যানে সঠিক পরিমাণে ভাত-রুটি থাকে। আমরা পরিমাণ আর খাবারের মেলবন্ধন বদলাই, পুরো খাদ্যাভ্যাস নয়।">No. Most plans keep rice and roti in the right portions. We change quantities and combinations, not your whole diet.</p></details>
+    <details><summary data-en="Can I join only yoga or Zumba?" data-bn="শুধু যোগা বা জুম্বায় ভর্তি হওয়া যায়?">Can I join only yoga or Zumba?</summary><p data-en="Yes. You can join classes on their own or combine them with a diet plan for faster results." data-bn="হ্যাঁ। শুধু ক্লাসেও ভর্তি হতে পারেন, বা দ্রুত ফলের জন্য ডায়েট প্ল্যানের সাথে নিতে পারেন।">Yes. You can join classes on their own or combine them with a diet plan for faster results.</p></details>
+    <details><summary data-en="I have diabetes and take medicine. Is this safe?" data-bn="আমার ডায়াবেটিস আছে, ওষুধ খাই। এটা কি নিরাপদ?">I have diabetes and take medicine. Is this safe?</summary><p data-en="Your diet plan works alongside your doctor's treatment. Please keep taking your medicines and bring recent reports to the first consultation." data-bn="ডায়েট প্ল্যান আপনার ডাক্তারের চিকিৎসার পাশাপাশি চলে। ওষুধ বন্ধ করবেন না, আর প্রথম পরামর্শে সাম্প্রতিক রিপোর্ট নিয়ে আসুন।">Your diet plan works alongside your doctor's treatment. Please keep taking your medicines and bring recent reports to the first consultation.</p></details>
+    <details><summary data-en="Do you offer online consultation?" data-bn="অনলাইনে পরামর্শ পাওয়া যায়?">Do you offer online consultation?</summary><p data-en="Call or WhatsApp us to ask about phone or video consultations and follow-ups." data-bn="ফোন বা ভিডিও কলে পরামর্শ ও ফলো-আপের জন্য কল বা WhatsApp করুন।">Call or WhatsApp us to ask about phone or video consultations and follow-ups.</p></details>
+  </div>
+</section>
+
+<section class="band" id="contact">
+  <div class="wrap">
+    <div class="head"><span class="kicker" data-en="Visit us" data-bn="আসুন আমাদের কাছে">Visit us</span><h2 data-en="Start your plan this week" data-bn="এই সপ্তাহেই শুরু করুন">Start your plan this week</h2></div>
+    <div class="contact">
+      <div class="cbox">
+        <div class="cl"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><div><span data-en="Address" data-bn="ঠিকানা">Address</span><b>2nd Floor, JK Super Market, Central Bus Stand, Panskura Station Rd, Kanakpur, Panskura, West Bengal 721152</b></div></div>
+        <div class="cl"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg></div><div><span data-en="Hours" data-bn="সময়">Hours</span><b data-en="Monday – Sunday, 6:00 AM – 9:30 PM" data-bn="সোমবার – রবিবার, সকাল ৬টা – রাত ৯:৩০">Monday – Sunday, 6:00 AM – 9:30 PM</b></div></div>
+        <div class="cl"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div><div><span data-en="Phone" data-bn="ফোন">Phone</span><b><a href="tel:+917586947545">075869 47545</a></b></div></div>
+        <div class="acts">
+          <a class="btn primary" href="tel:+917586947545" data-en="Call Now" data-bn="কল করুন">Call Now</a>
+          <a class="btn wa" href="https://wa.me/917586947545" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="btn line" href="https://www.google.com/maps/dir/?api=1&destination=Nutri+Ease+Wellness+Hub+Panskura" target="_blank" rel="noopener" data-en="Directions" data-bn="পথনির্দেশ">Directions</a>
+        </div>
+      </div>
+      <div class="map"><iframe title="Map to Nutri Ease Wellness Hub" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Nutri%20Ease%20Wellness%20Hub%2C%20JK%20Super%20Market%2C%20Panskura&z=16&output=embed"></iframe></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr">2026</span> Nutri Ease Wellness Hub, Panskura</span>
+    <span>Website by <a href="https://nexinedigital.com" target="_blank" rel="noopener">Nexine Digital</a></span>
+  </div>
+</footer>
+
+<div class="float">
+  <a class="w" href="https://wa.me/917586947545" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg></a>
+  <a class="c" href="tel:+917586947545" aria-label="Call"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></a>
+</div>
+
+<script>
+(function(){
+  var lang='en';
+  var nav=document.getElementById('nav'),mb=document.getElementById('menuBtn');
+  mb.addEventListener('click',function(){var o=nav.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
+  nav.addEventListener('click',function(e){if(e.target.tagName==='A'){nav.classList.remove('open');mb.setAttribute('aria-expanded','false')}});
+
+  var bnNum=function(s){return lang==='bn'?String(s).replace(/\d/g,function(d){return '০১২৩৪৫৬৭৮৯'[d]}):String(s)};
+  var T={
+    en:{u:'Underweight',n:'Healthy',o:'Overweight (Asian cut-off)',ob:'Obese (Asian cut-off)',
+        tu:'You may need a weight-gain plan with enough protein and calories.',
+        tn:'Great! A balanced diet and regular activity will help you stay here.',
+        to:'A small change in portions and daily activity can bring you into the healthy range.',
+        tob:'A guided diet plan with regular follow-up can help. Talk to us for a full assessment.',
+        bad:'Enter height in cm and weight in kg.'},
+    bn:{u:'কম ওজন',n:'সুস্থ',o:'অতিরিক্ত ওজন (এশীয় মাপ)',ob:'স্থূলতা (এশীয় মাপ)',
+        tu:'প্রোটিন ও ক্যালোরি সহ ওজন বাড়ানোর প্ল্যান দরকার হতে পারে।',
+        tn:'খুব ভালো! সুষম খাবার আর নিয়মিত ব্যায়ামে এই অবস্থা ধরে রাখুন।',
+        to:'খাবারের পরিমাণ আর রোজকার ব্যায়ামে সামান্য বদলেই সুস্থ সীমায় আসতে পারেন।',
+        tob:'নিয়মিত ফলো-আপ সহ ডায়েট প্ল্যান সাহায্য করবে। সম্পূর্ণ মূল্যায়নের জন্য যোগাযোগ করুন।',
+        bad:'উচ্চতা সেমিতে আর ওজন কেজিতে লিখুন।'}
+  };
+  function bmi(){
+    var h=parseFloat(document.getElementById('h').value)/100,w=parseFloat(document.getElementById('w').value),t=T[lang];
+    var val=document.getElementById('bmiVal'),cat=document.getElementById('bmiCat'),tip=document.getElementById('bmiTip'),pin=document.getElementById('bmiPin');
+    if(!(h>0.8&&h<2.3&&w>10&&w<250)){val.textContent='–';cat.textContent='';tip.textContent=t.bad;return}
+    var b=w/(h*h),k,tp;
+    if(b<18.5){k=t.u;tp=t.tu}else if(b<23){k=t.n;tp=t.tn}else if(b<25){k=t.o;tp=t.to}else{k=t.ob;tp=t.tob}
+    val.textContent=bnNum(b.toFixed(1));cat.textContent=k;tip.textContent=tp;
+    pin.style.left=Math.max(0,Math.min(100,(b-15)/20*100))+'%';
+  }
+  ['h','w'].forEach(function(id){document.getElementById(id).addEventListener('input',bmi)});
+  document.getElementById('bmiForm').addEventListener('submit',function(e){e.preventDefault()});
+
+  var lb=document.getElementById('lang');
+  lb.addEventListener('click',function(){
+    lang=lang==='en'?'bn':'en';
+    document.documentElement.lang=lang==='bn'?'bn':'en';
+    document.body.classList.toggle('bn',lang==='bn');
+    document.querySelectorAll('[data-en]').forEach(function(el){el.innerHTML=el.getAttribute('data-'+lang)});
+    lb.textContent=lang==='en'?'বাংলা':'English';
+    bmi();
+  });
+  document.getElementById('yr').textContent=new Date().getFullYear();
+  bmi();
+})();
+</script>
+</body>
+</html>
