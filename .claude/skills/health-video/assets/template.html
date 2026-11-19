@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<!--
+  HEALTH VIDEO TEMPLATE (1080x1920, 9:16). Worked example: thyroid.
+  Keep: tokens, fonts, #bg canvas, #bar progress, #brand header, .scene layering, pop()/prog() helpers,
+        render(t) engine, the CTA card in the LAST scene, the footer note.
+  Change per topic: the scene markup (s1..sN), the S{} cue functions (cue times come from the
+        voiceover word timestamps), TINTS (one per scene), and the topic symbol (#thy -> organ/icon).
+  Injected by render.js: window.SCENES [[start,end],...], window.TOTAL, window.PLATFORM ("facebook"|"youtube"),
+        window.CTA_AT (seconds into the LAST scene when the CTA voice starts).
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;700;800&family=Hind+Siliguri:wght@500;600;700&display=swap">
+<style>
+:root {
+  --ink: #0d1b2a; --ink2: #13283d; --coral: #ff7a59; --pink: #ff4f8b; --mint: #4fe0c0;
+  --cream: #fff4e6; --muted: #a9bccb; --cold: #6cb6ff; --hot: #ff5a4f;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+body { font-family: "Hind Siliguri", sans-serif; color: var(--cream); position: relative; }
+#bg { position: absolute; inset: 0; }
+.scene { position: absolute; inset: 0; opacity: 0; }
+.h1 { font-family: "Baloo Da 2", sans-serif; font-weight: 800; font-size: 104px; line-height: 1.12; text-align: center; }
+.h2 { font-family: "Baloo Da 2", sans-serif; font-weight: 700; font-size: 76px; line-height: 1.15; text-align: center; }
+.sub { font-weight: 600; font-size: 50px; text-align: center; color: var(--muted); line-height: 1.35; }
+.abs { position: absolute; left: 0; right: 0; }
+.chip { display: inline-block; padding: 18px 40px; border-radius: 999px; font-weight: 700; font-size: 56px; background: rgba(255,255,255,.08); border: 3px solid rgba(255,255,255,.18); }
+.row { display: flex; justify-content: center; gap: 26px; flex-wrap: wrap; }
+.list { position: absolute; left: 120px; right: 120px; display: flex; flex-direction: column; gap: 26px; }
+.item { display: flex; align-items: center; gap: 30px; font-size: 58px; font-weight: 700; padding: 22px 34px; border-radius: 28px; background: rgba(255,255,255,.06); }
+.dot { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; }
+.tag { display: inline-block; font-family: "Baloo Da 2", sans-serif; font-weight: 800; font-size: 60px; padding: 8px 34px; border-radius: 20px; }
+#bar { position: absolute; left: 60px; right: 60px; top: 70px; height: 10px; border-radius: 9px; background: rgba(255,255,255,.12); overflow: hidden; }
+#bar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--coral), var(--pink)); border-radius: 9px; }
+#brand { position: absolute; left: 50px; top: 100px; display: flex; align-items: center; gap: 16px; font-family: Arial, "Hind Siliguri", sans-serif; font-weight: 700; font-size: 40px; color: #fff; z-index: 5; }
+#brand .plus { width: 56px; height: 56px; border-radius: 14px; background: #2ad4a8; display: grid; place-items: center; }
+#brand b { color: #2ad4a8; font-weight: 700; }
+.cta { position: absolute; left: 60px; right: 60px; border-radius: 34px; background: #0f4a63; padding: 40px 40px 46px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+.cta .l1 { font-weight: 700; font-size: 52px; line-height: 1.35; color: #fff; }
+.cta .l2 { font-weight: 500; font-size: 36px; color: var(--muted); margin-top: 14px; }
+.cta .btn { display: inline-block; margin-top: 30px; padding: 20px 56px; border-radius: 999px; background: var(--coral); color: #2a0d05; font-weight: 800; font-size: 46px; font-family: "Baloo Da 2", sans-serif; }
+.note { position: absolute; left: 80px; right: 80px; bottom: 120px; text-align: center; font-size: 34px; color: var(--muted); font-weight: 500; }
+svg text { font-family: "Baloo Da 2", sans-serif; font-weight: 800; }
+</style>
+</head>
+<body>
+<canvas id="bg" width="1080" height="1920"></canvas>
+<div id="bar"><span></span></div>
+<div id="brand"><span class="plus"><svg width="34" height="34" viewBox="0 0 34 34"><path d="M12 2h10v10h10v10H22v10H12V22H2V12h10z" fill="#0d1b2a"/></svg></span><span>Medinest <b>Digital</b></span></div>
+
+<!-- shared thyroid gland symbol -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="gland" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb08a"/><stop offset=".5" stop-color="#ff7a59"/><stop offset="1" stop-color="#ff4f8b"/></linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#ff7a59" stop-opacity=".55"/><stop offset="1" stop-color="#ff7a59" stop-opacity="0"/></radialGradient>
+    <symbol id="thy" viewBox="0 0 1000 800">
+      <rect x="440" y="40" width="120" height="720" rx="60" fill="#2a4560"/>
+      <g fill="#3b5c7c"><rect x="440" y="110" width="120" height="22" rx="11"/><rect x="440" y="190" width="120" height="22" rx="11"/><rect x="440" y="600" width="120" height="22" rx="11"/><rect x="440" y="680" width="120" height="22" rx="11"/></g>
+      <path fill="url(#gland)" d="M470 470 C 450 330, 360 200, 270 230 C 170 265, 170 470, 230 580 C 290 680, 420 670, 470 560 Z"/>
+      <path fill="url(#gland)" d="M530 470 C 550 330, 640 200, 730 230 C 830 265, 830 470, 770 580 C 710 680, 580 670, 530 560 Z"/>
+      <rect x="440" y="455" width="120" height="110" rx="40" fill="url(#gland)"/>
+      <path d="M300 300 C 260 360, 255 450, 280 520" stroke="#fff" stroke-opacity=".35" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path d="M700 300 C 740 360, 745 450, 720 520" stroke="#fff" stroke-opacity=".35" stroke-width="16" fill="none" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- S1 hook -->
+<section class="scene" id="s1">
+  <div class="abs h2" style="top:260px" id="s1q">সারাদিন ক্লান্ত লাগে?</div>
+  <div class="abs row" style="top:420px" id="s1chips">
+    <span class="chip">ক্লান্তি</span><span class="chip">ওজন বাড়া</span><span class="chip">চুল পড়া</span>
+  </div>
+  <svg class="abs" style="top:600px" width="1080" height="900" viewBox="0 0 1080 900">
+    <path id="s1body" d="M120 900 C 200 790, 330 760, 420 730 L 430 610 C 360 560, 320 470, 320 360 C 320 200, 420 100, 540 100 C 660 100, 760 200, 760 360 C 760 470, 720 560, 650 610 L 660 730 C 750 760, 880 790, 960 900"
+      fill="none" stroke="#fff4e6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2600" stroke-dashoffset="2600"/>
+    <circle id="s1glow" cx="540" cy="690" r="170" fill="url(#glow)" opacity="0"/>
+    <use id="s1thy" href="#thy" x="440" y="610" width="200" height="160" opacity="0"/>
+  </svg>
+  <div class="abs h1" style="top:1500px;color:var(--coral)" id="s1t">থাইরয়েড</div>
+</section>
+
+<!-- S2 what -->
+<section class="scene" id="s2">
+  <div class="abs h2" style="top:230px" id="s2h">প্রজাপতির মতো একটি গ্রন্থি</div>
+  <svg class="abs" style="top:380px" width="1080" height="760" viewBox="0 0 1080 760" id="s2svg">
+    <circle cx="540" cy="380" r="330" fill="url(#glow)"/>
+    <use href="#thy" x="140" y="60" width="800" height="640" id="s2thy"/>
+    <g id="s2parts"></g>
+  </svg>
+  <div class="abs" style="top:1180px" id="s2gauge">
+    <svg width="1080" height="380" viewBox="0 0 1080 380">
+      <path d="M290 330 A 250 250 0 0 1 790 330" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="44" stroke-linecap="round"/>
+      <path d="M290 330 A 250 250 0 0 1 790 330" fill="none" stroke="url(#gaugeGrad)" stroke-width="44" stroke-linecap="round"/>
+      <defs><linearGradient id="gaugeGrad"><stop offset="0" stop-color="#6cb6ff"/><stop offset=".5" stop-color="#4fe0c0"/><stop offset="1" stop-color="#ff5a4f"/></linearGradient></defs>
+      <g id="needle" transform="rotate(0 540 330)"><rect x="532" y="120" width="16" height="215" rx="8" fill="#fff4e6"/></g>
+      <circle cx="540" cy="330" r="30" fill="#fff4e6"/>
+    </svg>
+    <div class="sub" style="margin-top:-6px"><b style="color:var(--cream)">মেটাবলিজম</b> · বিপাকের গতি</div>
+  </div>
+</section>
+
+<!-- S3 hypo -->
+<section class="scene" id="s3">
+  <div class="abs" style="top:230px;text-align:center"><span class="tag" style="background:var(--cold);color:#08243f">হরমোন কম ↓</span></div>
+  <div class="abs h2" style="top:350px" id="s3h">হাইপোথাইরয়েডিজম</div>
+  <div class="list" style="top:560px" id="s3list"></div>
+  <div class="abs sub" style="top:1530px" id="s3s">শরীর চলে <b style="color:var(--cold)">ধীর গতিতে</b></div>
+</section>
+
+<!-- S4 hyper -->
+<section class="scene" id="s4">
+  <div class="abs" style="top:230px;text-align:center"><span class="tag" style="background:var(--hot);color:#3a0606">হরমোন বেশি ↑</span></div>
+  <div class="abs h2" style="top:350px" id="s4h">হাইপারথাইরয়েডিজম</div>
+  <div class="list" style="top:560px" id="s4list"></div>
+  <div class="abs sub" style="top:1530px" id="s4s">শরীর চলে <b style="color:var(--hot)">অতিরিক্ত দ্রুত</b></div>
+</section>
+
+<!-- S5 stat -->
+<section class="scene" id="s5">
+  <div class="abs sub" style="top:250px">ভারতে প্রায়</div>
+  <div class="abs h1" style="top:320px"><span style="color:var(--coral)">১০ জনে ১ জন</span></div>
+  <div class="abs sub" style="top:460px">থাইরয়েডের সমস্যায় ভুগছেন</div>
+  <svg class="abs" style="top:580px" width="1080" height="520" viewBox="0 0 1080 520" id="s5people"></svg>
+  <div class="abs" style="top:1130px" id="s5cmp">
+    <div class="sub" style="color:var(--cream);margin-bottom:26px">মহিলাদের মধ্যে প্রায় <b style="color:var(--pink)">৩ গুণ</b> বেশি</div>
+    <div style="margin:0 140px;display:flex;flex-direction:column;gap:22px;font-size:44px;font-weight:700">
+      <div style="display:flex;align-items:center;gap:24px"><span style="width:170px">মহিলা</span><div style="flex:1;height:64px;background:rgba(255,255,255,.08);border-radius:16px;overflow:hidden"><div id="s5w" style="height:100%;width:0;background:linear-gradient(90deg,#ff7a59,#ff4f8b);border-radius:16px"></div></div></div>
+      <div style="display:flex;align-items:center;gap:24px"><span style="width:170px">পুরুষ</span><div style="flex:1;height:64px;background:rgba(255,255,255,.08);border-radius:16px;overflow:hidden"><div id="s5m" style="height:100%;width:0;background:#6cb6ff;border-radius:16px"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S6 test -->
+<section class="scene" id="s6">
+  <div class="abs h2" style="top:250px" id="s6h">একটা সাধারণ রক্তপরীক্ষা</div>
+  <svg class="abs" style="top:430px" width="1080" height="820" viewBox="0 0 1080 820">
+    <defs><clipPath id="tube"><rect x="440" y="120" width="200" height="600" rx="100"/></clipPath></defs>
+    <rect x="410" y="60" width="260" height="70" rx="26" fill="#ff5a4f"/>
+    <rect x="440" y="120" width="200" height="600" rx="100" fill="rgba(255,255,255,.08)" stroke="#fff4e6" stroke-width="8"/>
+    <g clip-path="url(#tube)"><rect id="s6fill" x="440" y="720" width="200" height="600" fill="#d9304a"/>
+      <rect id="s6shine" x="470" y="720" width="26" height="600" rx="13" fill="#fff" opacity=".25"/></g>
+    <g id="s6lines" fill="#fff4e6" opacity=".7"><rect x="600" y="250" width="40" height="6"/><rect x="600" y="370" width="40" height="6"/><rect x="600" y="490" width="40" height="6"/><rect x="600" y="610" width="40" height="6"/></g>
+  </svg>
+  <div class="abs h1" style="top:1300px;font-size:190px;letter-spacing:12px;color:var(--mint)" id="s6t">TSH</div>
+  <div class="abs sub" style="top:1540px" id="s6s">থেকেই ধরা পড়ে</div>
+</section>
+
+<!-- S7 treatment -->
+<section class="scene" id="s7">
+  <div class="abs h2" style="top:250px">ঠিক চিকিৎসায়<br><span style="color:var(--mint)">পুরো নিয়ন্ত্রণে</span></div>
+  <div class="list" style="top:600px" id="s7list"></div>
+</section>
+
+<!-- S8 CTA -->
+<section class="scene" id="s8">
+  <svg class="abs" style="top:230px" width="1080" height="460" viewBox="0 0 1080 460">
+    <circle cx="540" cy="230" r="220" fill="url(#glow)"/>
+    <use href="#thy" x="315" y="50" width="450" height="360" id="s8thy"/>
+  </svg>
+  <div class="abs sub" style="top:720px;color:var(--cream)" id="s8a">লক্ষণ মিলে গেলে</div>
+  <div class="abs h1" style="top:800px" id="s8b">আজই <span style="color:var(--mint)">TSH</span><br>পরীক্ষা করান</div>
+  <div class="cta" style="top:1150px" id="s8share"><div class="l1" id="ctaL1"></div><div class="l2" id="ctaL2"></div><span class="btn" id="ctaBtn"></span></div>
+  <div class="note" id="s8note">শুধু সচেতনতার জন্য। চিকিৎসার জন্য ডাক্তারের পরামর্শ নিন।</div>
+</section>
+
+<script>
+const $ = s => document.querySelector(s);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ease = x => 1 - Math.pow(1 - clamp(x), 3);
+const back = x => { x = clamp(x); const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+function pop(el, p, dy = 50) { el.style.opacity = clamp(p * 1.4); el.style.transform = `translateY(${(1 - ease(p)) * dy}px) scale(${0.94 + 0.06 * back(p)})`; }
+
+/* default timings for preview; the renderer injects real ones from the voiceover */
+window.SCENES = window.SCENES || [[0, 8.0], [8.0, 16.94], [16.94, 24.6], [24.6, 32.92], [32.92, 39.42], [39.42, 44.6], [44.6, 53.58], [53.58, 61.5]];
+window.TOTAL = window.TOTAL || 61.5;
+window.PLATFORM = window.PLATFORM || "facebook";
+window.CTA_AT = window.CTA_AT || 4.0;
+const CTA = {
+  facebook: ["ভিডিওটি ভালো লাগলে<br>লাইক, কমেন্ট ও শেয়ার করুন", "এরকম আরও ভিডিও পেতে পেজটি ফলো করুন", "ফলো করুন"],
+  youtube: ["ভিডিওটি ভালো লাগলে লাইক,<br>কমেন্ট, শেয়ার ও সাবস্ক্রাইব করুন", "এরকম আরও ভিডিও পেতে চ্যানেলটি সাবস্ক্রাইব করুন", "সাবস্ক্রাইব করুন"]
+}[window.PLATFORM];
+
+
+/* build lists */
+function list(id, items, color) {
+  $(id).innerHTML = items.map(x => `<div class="item"><span class="dot" style="background:${color}"></span>${x}</div>`).join("");
+}
+list("#s3list", ["ক্লান্তি ও ঘুম ঘুম ভাব", "ওজন বেড়ে যাওয়া", "শীত বেশি লাগা", "কোষ্ঠকাঠিন্য", "চুল পড়া"], "var(--cold)");
+list("#s4list", ["বুক ধড়ফড়", "ওজন কমে যাওয়া", "গরম বেশি লাগা", "হাত কাঁপা", "অস্থিরতা"], "var(--hot)");
+$("#s7list").innerHTML = ["ওষুধ খালি পেটে", "রোজ একই সময়ে", "ডাক্তারের পরামর্শ ছাড়া<br>বন্ধ করবেন না"].map(x =>
+  `<div class="item" style="font-size:60px"><svg width="70" height="70" viewBox="0 0 70 70" style="flex-shrink:0"><circle cx="35" cy="35" r="32" fill="#4fe0c0"/><path class="ck" d="M20 36 L31 47 L51 24" fill="none" stroke="#06261f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="50" stroke-dashoffset="50"/></svg><span>${x}</span></div>`).join("");
+$("#ctaL1").innerHTML = CTA[0]; $("#ctaL2").textContent = CTA[1]; $("#ctaBtn").textContent = CTA[2];
+/* people grid */
+(() => {
+  let g = "";
+  for (let i = 0; i < 10; i++) {
+    const x = 170 + (i % 5) * 185, y = 40 + Math.floor(i / 5) * 240;
+    g += `<g class="person" data-i="${i}" transform="translate(${x} ${y})"><circle cx="0" cy="40" r="38"/><path d="M-62 210 C -62 120, -40 95, 0 95 C 40 95, 62 120, 62 210 Z"/></g>`;
+  }
+  $("#s5people").innerHTML = g;
+})();
+/* hormone particles */
+(() => {
+  let g = "";
+  for (let i = 0; i < 14; i++) g += `<g class="pt"><circle r="44" fill="${i % 2 ? '#4fe0c0' : '#ffd166'}"/><text text-anchor="middle" dy="17" font-size="44" fill="#0d1b2a">${i % 2 ? 'T4' : 'T3'}</text></g>`;
+  $("#s2parts").innerHTML = g;
+})();
+
+/* background: soft drifting blobs */
+const bg = $("#bg").getContext("2d");
+function drawBg(t, tint) {
+  const g = bg.createLinearGradient(0, 0, 0, 1920);
+  g.addColorStop(0, "#0d1b2a"); g.addColorStop(1, "#0a1420");
+  bg.fillStyle = g; bg.fillRect(0, 0, 1080, 1920);
+  const blobs = [[200, 400, 520, tint[0]], [900, 1200, 600, tint[1]], [300, 1650, 480, tint[2]]];
+  blobs.forEach(([x, y, r, c], i) => {
+    const xx = x + Math.sin(t * 0.25 + i * 2) * 90, yy = y + Math.cos(t * 0.2 + i) * 110;
+    const rg = bg.createRadialGradient(xx, yy, 0, xx, yy, r);
+    rg.addColorStop(0, c); rg.addColorStop(1, "rgba(0,0,0,0)");
+    bg.fillStyle = rg; bg.fillRect(0, 0, 1080, 1920);
+  });
+  /* faint dots */
+  bg.fillStyle = "rgba(255,244,230,.06)";
+  for (let i = 0; i < 40; i++) {
+    const x = (i * 263 % 1080), y = ((i * 571 + t * 18 * (1 + i % 3)) % 2000) - 40;
+    bg.beginPath(); bg.arc(x, 1920 - y, 3 + (i % 3), 0, 7); bg.fill();
+  }
+}
+const TINTS = [
+  ["rgba(255,122,89,.20)", "rgba(255,79,139,.14)", "rgba(79,224,192,.10)"],
+  ["rgba(255,122,89,.22)", "rgba(79,224,192,.14)", "rgba(255,209,102,.10)"],
+  ["rgba(108,182,255,.24)", "rgba(108,182,255,.12)", "rgba(79,224,192,.08)"],
+  ["rgba(255,90,79,.24)", "rgba(255,122,89,.14)", "rgba(255,79,139,.10)"],
+  ["rgba(255,79,139,.20)", "rgba(108,182,255,.12)", "rgba(255,122,89,.10)"],
+  ["rgba(217,48,74,.20)", "rgba(79,224,192,.14)", "rgba(108,182,255,.08)"],
+  ["rgba(79,224,192,.22)", "rgba(79,224,192,.10)", "rgba(255,209,102,.08)"],
+  ["rgba(255,122,89,.20)", "rgba(79,224,192,.16)", "rgba(255,79,139,.10)"]
+];
+const mix = (a, b, k) => a.map((c, i) => {
+  const pa = c.match(/[\d.]+/g).map(Number), pb = b[i].match(/[\d.]+/g).map(Number);
+  return `rgba(${pa.slice(0, 3).map((v, j) => Math.round(v + (pb[j] - v) * k)).join(",")},${(pa[3] + (pb[3] - pa[3]) * k).toFixed(3)})`;
+});
+
+const scenes = [1, 2, 3, 4, 5, 6, 7, 8].map(i => $("#s" + i));
+const FADE = 0.45;
+
+const S = {
+  1(t) {
+    pop($("#s1q"), prog(t, 0.05, 0.5));
+    [0.55, 1.62, 2.66].forEach((a, i) => pop($("#s1chips").children[i], prog(t, a, a + 0.45)));
+    $("#s1body").style.strokeDashoffset = 2600 * (1 - ease(prog(t, 3.8, 5.4)));
+    const tp = prog(t, 5.9, 6.6);
+    $("#s1thy").setAttribute("opacity", ease(tp));
+    $("#s1glow").setAttribute("opacity", ease(tp) * (0.7 + 0.3 * Math.sin(t * 5)));
+    $("#s1glow").setAttribute("r", 150 + 30 * Math.sin(t * 3));
+    pop($("#s1t"), prog(t, 6.95, 7.45), 70);
+  },
+  2(t, d) {
+    pop($("#s2h"), prog(t, 0, 0.5));
+    const s = 0.6 + 0.4 * back(prog(t, 0.1, 0.9)) + 0.015 * Math.sin(t * 4);
+    const th = $("#s2thy"); th.setAttribute("transform", `translate(540 380) scale(${s}) translate(-540 -380)`);
+    const P0 = 2.2, pa = prog(t, P0, P0 + 0.6);
+    document.querySelectorAll("#s2parts .pt").forEach((p, i) => {
+      const life = (Math.max(0, t - P0) * 0.45 + i / 14) % 1;
+      const ang = i * 2.4 + 0.6, r = 120 + life * 360;
+      const x = 540 + Math.cos(ang) * r, y = 400 + Math.sin(ang) * r * 0.8;
+      p.setAttribute("transform", `translate(${x} ${y}) scale(${0.6 + life * 0.5})`);
+      p.setAttribute("opacity", t < P0 ? 0 : pa * Math.sin(Math.PI * life));
+    });
+    const G0 = 5.6;
+    pop($("#s2gauge"), prog(t, G0, G0 + 0.5));
+    $("#needle").setAttribute("transform", `rotate(${-80 + 80 * back(prog(t, G0 + 0.3, G0 + 1.3)) + Math.sin(t * 6) * 2} 540 330)`);
+  },
+  3(t) {
+    pop($("#s3h"), prog(t, 1.3, 1.8));
+    [2.72, 3.5, 4.34, 5.48, 6.74].forEach((a, i) => pop($("#s3list").children[i], prog(t, a, a + 0.4), 30));
+    pop($("#s3s"), prog(t, 1.9, 2.4));
+  },
+  4(t) {
+    pop($("#s4h"), prog(t, 1.4, 1.9));
+    [2.9, 3.98, 5.08, 6.26, 7.34].forEach((a, i) => pop($("#s4list").children[i], prog(t, a, a + 0.4), 30));
+    pop($("#s4s"), prog(t, 2.0, 2.5));
+  },
+  5(t) {
+    document.querySelectorAll("#s5people .person").forEach((p, i) => {
+      const k = back(prog(t, 0.6 + i * 0.07, 1.0 + i * 0.07));
+      const hi = i === 6 && t > 1.85;
+      p.setAttribute("fill", hi ? "#ff7a59" : "rgba(255,244,230,.22)");
+      const base = p.getAttribute("transform").replace(/ scale\(.*\)$/, "");
+      p.setAttribute("transform", base + ` scale(${k * (hi ? 1 + 0.06 * Math.sin(t * 6) + 0.08 : 1)})`);
+    });
+    const cp = prog(t, 4.1, 4.6); pop($("#s5cmp"), cp);
+    $("#s5w").style.width = 75 * ease(prog(t, 5.0, 6.0)) + "%";
+    $("#s5m").style.width = 25 * ease(prog(t, 5.2, 6.2)) + "%";
+  },
+  6(t) {
+    pop($("#s6h"), prog(t, 0.9, 1.4));
+    const f = ease(prog(t, 1.0, 2.8));
+    $("#s6fill").setAttribute("y", 720 - 480 * f);
+    $("#s6shine").setAttribute("y", 720 - 480 * f + 20);
+    pop($("#s6t"), prog(t, 2.8, 3.3), 80);
+    pop($("#s6s"), prog(t, 3.75, 4.2));
+  },
+  7(t) {
+    [3.5, 4.76, 6.44].forEach((a, i) => {
+      const c = $("#s7list").children[i];
+      pop(c, prog(t, a, a + 0.5), 30);
+      c.querySelector(".ck").style.strokeDashoffset = 50 * (1 - ease(prog(t, a + 0.3, a + 0.8)));
+    });
+  },
+  8(t) {
+    const s = 0.9 + 0.1 * back(prog(t, 0, 0.8)) + 0.03 * Math.sin(t * 2.5);
+    $("#s8thy").setAttribute("transform", `translate(540 260) scale(${s}) rotate(${Math.sin(t * 1.5) * 2}) translate(-540 -260)`);
+    pop($("#s8a"), prog(t, 0.05, 0.5));
+    pop($("#s8b"), prog(t, 1.5, 2.0), 70);
+    pop($("#s8share"), prog(t, window.CTA_AT - 0.2, window.CTA_AT + 0.3));
+    $("#s8note").style.opacity = prog(t, 0.6, 1.2);
+  }
+};
+
+window.render = function (t) {
+  const sc = window.SCENES;
+  let cur = sc.findIndex(([a, b]) => t >= a && t < b); if (cur < 0) cur = t < sc[0][0] ? 0 : sc.length - 1;
+  const [a, b] = sc[cur];
+  const k = clamp((t - a) / FADE);
+  drawBg(t, cur > 0 && k < 1 ? mix(TINTS[cur - 1], TINTS[cur], k) : TINTS[cur]);
+  scenes.forEach((el, i) => {
+    const [sa, sb] = sc[i];
+    let o = 0;
+    if (t >= sa - 0.001 && t < sb + FADE) o = Math.min(clamp((t - sa) / FADE + (i === 0 ? 1 : 0)), clamp((sb + FADE - t) / FADE));
+    if (i === sc.length - 1 && t >= sb) o = 1;
+    el.style.opacity = o;
+    el.style.transform = `translateY(${(1 - o) * (t < sa + FADE ? 40 : -40)}px)`;
+    if (o > 0) S[i + 1](t - sa, sb - sa);
+  });
+  $("#bar span").style.width = (100 * clamp(t / window.TOTAL)) + "%";
+};
+window.render(0);
+</script>
+</body>
+</html>
