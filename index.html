@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexine Digital — সফটওয়্যার, ওয়েব, ডিজাইন ও ভিডিও</title>
+<meta name="description" content="Nexine Digital — সফটওয়্যার ও অ্যাপ ডেভেলপমেন্ট, ওয়েব ডেভেলপমেন্ট, গ্রাফিক ডিজাইন, মোশন গ্রাফিক্স এবং ভিডিও এডিটিং সার্ভিস।">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d17; --bg2:#121527; --card:#171b31; --line:#262b4a;
+    --text:#e9ebf8; --muted:#9aa0c3;
+    --accent:#7c5cff; --accent2:#22d3ee;
+    --grad:linear-gradient(135deg,var(--accent),var(--accent2));
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Hind Siliguri",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+  .en{font-family:"Space Grotesk",sans-serif}
+
+  /* nav */
+  header{position:sticky;top:0;z-index:50;background:rgba(11,13,23,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:1.3rem}
+  .logo-mark{width:34px;height:34px;border-radius:10px;background:var(--grad);display:grid;place-items:center;font-size:1.1rem;color:#fff}
+  .logo span b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .links{display:flex;gap:28px;align-items:center}
+  .links a{color:var(--muted);font-weight:500;transition:color .2s}
+  .links a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;font-weight:600;border:0;cursor:pointer;font:inherit;font-weight:600;transition:transform .2s,box-shadow .2s}
+  .btn-primary{background:var(--grad);color:#fff;box-shadow:0 8px 30px -8px rgba(124,92,255,.6)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px -8px rgba(124,92,255,.8)}
+  .btn-ghost{border:1px solid var(--line);color:var(--text);background:transparent}
+  .btn-ghost:hover{border-color:var(--accent)}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--text);border-radius:10px;width:42px;height:42px;font-size:1.3rem;cursor:pointer}
+
+  /* hero */
+  .hero{position:relative;padding:110px 0 90px;text-align:center;overflow:hidden}
+  .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);opacity:.45;z-index:-1}
+  .hero::before{width:480px;height:480px;background:var(--accent);top:-160px;left:-120px}
+  .hero::after{width:420px;height:420px;background:var(--accent2);bottom:-200px;right:-120px;opacity:.3}
+  .pill{display:inline-block;padding:6px 16px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.92rem;margin-bottom:24px;background:rgba(255,255,255,.03)}
+  .hero h1{font-size:clamp(2.2rem,5.5vw,4rem);line-height:1.25;font-weight:700;margin-bottom:20px}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--muted);font-size:1.15rem;max-width:640px;margin:0 auto 36px}
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:70px}
+  .stat{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .stat b{display:block;font-family:"Space Grotesk",sans-serif;font-size:2rem}
+  .stat span{color:var(--muted);font-size:.95rem}
+
+  /* sections */
+  section{padding:90px 0}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 54px}
+  .sec-head small{color:var(--accent2);font-family:"Space Grotesk",sans-serif;letter-spacing:.15em;text-transform:uppercase;font-weight:700}
+  .sec-head h2{font-size:clamp(1.8rem,3.6vw,2.6rem);line-height:1.3;margin:10px 0 12px}
+  .sec-head p{color:var(--muted)}
+
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .svc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px;transition:transform .25s,border-color .25s}
+  .svc:hover{transform:translateY(-6px);border-color:var(--accent)}
+  .svc .ico{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:1.6rem;background:rgba(124,92,255,.14);margin-bottom:18px}
+  .svc h3{font-size:1.3rem;margin-bottom:4px}
+  .svc .en-sub{color:var(--accent2);font-family:"Space Grotesk",sans-serif;font-size:.85rem;margin-bottom:10px;display:block}
+  .svc p{color:var(--muted);margin-bottom:14px}
+  .svc ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+  .svc li{font-size:.82rem;padding:4px 10px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);color:var(--muted)}
+  .svc.cta-card{background:var(--grad);border:0;display:flex;flex-direction:column;justify-content:center}
+  .svc.cta-card p{color:rgba(255,255,255,.85)}
+  .svc.cta-card .btn{background:#fff;color:#1b1640;align-self:flex-start}
+
+  .alt{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:s}
+  .step{position:relative;padding:28px;border-radius:var(--radius);background:var(--card);border:1px solid var(--line)}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:2.2rem;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;display:block;margin-bottom:8px}
+  .step h4{font-size:1.15rem;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:.95rem}
+
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+  .why h2{font-size:clamp(1.8rem,3.6vw,2.5rem);line-height:1.3;margin:10px 0 16px}
+  .why > div > p{color:var(--muted);margin-bottom:24px}
+  .checks{display:grid;gap:14px}
+  .check{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+  .check i{flex:none;width:28px;height:28px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-style:normal;font-size:.85rem;color:#fff}
+  .check b{display:block}
+  .check span{color:var(--muted);font-size:.95rem}
+  .showcase{aspect-ratio:1/1;border-radius:28px;background:var(--card);border:1px solid var(--line);position:relative;overflow:hidden;display:grid;place-items:center}
+  .orb{position:absolute;border-radius:50%;background:var(--grad);filter:blur(2px);animation:float 8s ease-in-out infinite}
+  .orb.o1{width:46%;height:46%;opacity:.9}
+  .orb.o2{width:22%;height:22%;top:12%;right:14%;opacity:.6;animation-delay:-3s}
+  .orb.o3{width:14%;height:14%;bottom:14%;left:16%;opacity:.5;animation-delay:-5s}
+  .showcase .big{position:relative;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(3rem,9vw,6rem);color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.4)}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-18px)}}
+
+  /* contact */
+  .contact{display:grid;grid-template-columns:1fr 1.2fr;gap:30px}
+  .contact > *,.row > *{min-width:0}
+  .info{display:grid;gap:14px;align-content:start}
+  .info span{overflow-wrap:anywhere}
+  .info a,.info div{display:flex;gap:14px;align-items:center;padding:18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+  .info a:hover{border-color:var(--accent)}
+  .info .ic{font-size:1.4rem}
+  .info small{display:block;color:var(--muted);font-size:.85rem}
+  form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px;display:grid;gap:16px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  label{display:grid;gap:6px;font-weight:500;font-size:.95rem}
+  input,select,textarea{font:inherit;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none;transition:border-color .2s;width:100%}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  textarea{min-height:120px;resize:vertical}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.92rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (max-width:960px){
+    .services{grid-template-columns:1fr 1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .why,.contact{grid-template-columns:1fr}
+    .showcase{max-width:420px;margin:0 auto;width:100%}
+  }
+  @media (max-width:720px){
+    .links{position:fixed;inset:68px 0 auto 0;flex-direction:column;background:var(--bg);padding:24px;border-bottom:1px solid var(--line);display:none}
+    .links.open{display:flex}
+    .menu-btn{display:block}
+    .services,.steps,.row{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    .hero{padding:80px 0 60px}
+    section{padding:70px 0}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="#" class="logo"><div class="logo-mark">N</div><span>Nexine <b>Digital</b></span></a>
+    <div class="links" id="links">
+      <a href="#services">সার্ভিস</a>
+      <a href="#process">কাজের ধাপ</a>
+      <a href="#why">কেন আমরা</a>
+      <a href="#contact" class="btn btn-primary">যোগাযোগ করুন</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="মেনু">☰</button>
+  </nav>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="pill">🚀 আপনার ব্যবসার জন্য সম্পূর্ণ ডিজিটাল সমাধান</span>
+      <h1>আইডিয়া থেকে বাস্তবে —<br><span class="grad-text">এক জায়গাতেই সব ডিজিটাল কাজ</span></h1>
+      <p>সফটওয়্যার, মোবাইল অ্যাপ, ওয়েবসাইট, গ্রাফিক ডিজাইন, মোশন গ্রাফিক্স আর ভিডিও এডিটিং — Nexine Digital আপনার ব্র্যান্ডকে নিয়ে যায় পরের ধাপে।</p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">প্রজেক্ট শুরু করুন →</a>
+        <a href="#services" class="btn btn-ghost">সার্ভিসগুলো দেখুন</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b class="en">5+</b><span>ডিজিটাল সার্ভিস</span></div>
+        <div class="stat"><b class="en">24/7</b><span>ক্লায়েন্ট সাপোর্ট</span></div>
+        <div class="stat"><b class="en">100%</b><span>কাস্টম কাজ</span></div>
+        <div class="stat"><b class="en">On-time</b><span>সময়মতো ডেলিভারি</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <small>Our Services</small>
+        <h2>আমরা যা যা করি</h2>
+        <p>আপনার প্রয়োজন অনুযায়ী প্রতিটি কাজ আমরা যত্ন নিয়ে, আধুনিক টুল ও প্রযুক্তি দিয়ে তৈরি করি।</p>
+      </div>
+      <div class="services">
+        <article class="svc reveal">
+          <div class="ico">💻</div>
+          <h3>সফটওয়্যার ও অ্যাপ ডেভেলপমেন্ট</h3>
+          <span class="en-sub">Software &amp; App Development</span>
+          <p>Android, iOS ও ডেস্কটপের জন্য দ্রুত, নিরাপদ ও ব্যবহারবান্ধব অ্যাপ এবং বিজনেস সফটওয়্যার।</p>
+          <ul><li>Android</li><li>iOS</li><li>Flutter</li><li>POS / ERP</li></ul>
+        </article>
+        <article class="svc reveal">
+          <div class="ico">🌐</div>
+          <h3>ওয়েব ডেভেলপমেন্ট</h3>
+          <span class="en-sub">Web Development</span>
+          <p>বিজনেস ওয়েবসাইট, ই-কমার্স, ল্যান্ডিং পেজ ও ওয়েব অ্যাপ — মোবাইলে ও কম্পিউটারে সমান সুন্দর।</p>
+          <ul><li>WordPress</li><li>React</li><li>E-commerce</li><li>SEO</li></ul>
+        </article>
+        <article class="svc reveal">
+          <div class="ico">🎨</div>
+          <h3>গ্রাফিক ডিজাইন</h3>
+          <span class="en-sub">Graphic Design</span>
+          <p>লোগো, ব্র্যান্ড আইডেন্টিটি, সোশ্যাল মিডিয়া পোস্ট, ব্যানার, পোস্টার ও প্রিন্ট ডিজাইন।</p>
+          <ul><li>Logo</li><li>Branding</li><li>Social Media</li><li>Print</li></ul>
+        </article>
+        <article class="svc reveal">
+          <div class="ico">✨</div>
+          <h3>মোশন গ্রাফিক্স</h3>
+          <span class="en-sub">Motion Graphics</span>
+          <p>লোগো অ্যানিমেশন, এক্সপ্লেইনার ভিডিও ও অ্যানিমেটেড বিজ্ঞাপন — যা মানুষের চোখ আটকে রাখে।</p>
+          <ul><li>Logo Animation</li><li>Explainer</li><li>2D Animation</li></ul>
+        </article>
+        <article class="svc reveal">
+          <div class="ico">🎬</div>
+          <h3>ভিডিও এডিটিং</h3>
+          <span class="en-sub">Video Editing</span>
+          <p>YouTube, Facebook, Reels ও Shorts-এর জন্য প্রফেশনাল এডিটিং, কালার গ্রেডিং ও সাবটাইটেল।</p>
+          <ul><li>YouTube</li><li>Reels / Shorts</li><li>Ads</li><li>Color Grade</li></ul>
+        </article>
+        <article class="svc cta-card reveal">
+          <h3>আপনার প্রজেক্টের কথা বলুন</h3>
+          <p>কোন সার্ভিস লাগবে বুঝতে পারছেন না? আমাদের জানান — আমরা ফ্রি পরামর্শ দেব।</p>
+          <a href="#contact" class="btn">ফ্রি কনসাল্টেশন →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section id="process" class="alt">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <small>How We Work</small>
+        <h2>সহজ ৪টি ধাপে কাজ</h2>
+        <p>শুরু থেকে ডেলিভারি পর্যন্ত প্রতিটি ধাপে আপনি থাকবেন আপডেটেড।</p>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><h4>আলোচনা</h4><p>আপনার আইডিয়া, লক্ষ্য ও বাজেট সম্পর্কে বিস্তারিত জানি।</p></div>
+        <div class="step reveal"><h4>পরিকল্পনা ও ডিজাইন</h4><p>প্ল্যান, ড্রাফট ও ডিজাইন তৈরি করে আপনার অনুমোদন নিই।</p></div>
+        <div class="step reveal"><h4>তৈরি ও রিভিশন</h4><p>কাজ সম্পন্ন করি এবং আপনার মতামত অনুযায়ী পরিবর্তন করি।</p></div>
+        <div class="step reveal"><h4>ডেলিভারি ও সাপোর্ট</h4><p>সময়মতো ফাইনাল ডেলিভারি, তারপরও আমরা পাশে থাকি।</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why -->
+  <section id="why">
+    <div class="wrap why">
+      <div class="reveal">
+        <div class="sec-head" style="text-align:left;margin:0"><small>Why Nexine</small></div>
+        <h2>কেন <span class="grad-text">Nexine Digital</span> বেছে নেবেন?</h2>
+        <p>আলাদা আলাদা জায়গায় না ঘুরে আপনার সব ডিজিটাল কাজ এক টিমের হাতে — যারা আপনার ব্র্যান্ডকে বোঝে।</p>
+        <div class="checks">
+          <div class="check"><i>✓</i><div><b>সব সার্ভিস এক ছাদের নিচে</b><span>অ্যাপ, ওয়েব, ডিজাইন, ভিডিও — একটাই টিম, একটাই যোগাযোগ।</span></div></div>
+          <div class="check"><i>✓</i><div><b>সাশ্রয়ী মূল্য</b><span>মানসম্মত কাজ, স্বচ্ছ ও বাজেট-বান্ধব প্রাইসিং।</span></div></div>
+          <div class="check"><i>✓</i><div><b>সময়মতো ডেলিভারি</b><span>নির্ধারিত সময়ের মধ্যে কাজ বুঝিয়ে দিই।</span></div></div>
+          <div class="check"><i>✓</i><div><b>ডেলিভারির পরেও সাপোর্ট</b><span>যেকোনো সমস্যা বা আপডেটে আমরা আছি।</span></div></div>
+        </div>
+      </div>
+      <div class="showcase reveal" aria-hidden="true">
+        <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+        <div class="big">Nexine</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="alt">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <small>Contact</small>
+        <h2>চলুন একসাথে কাজ শুরু করি</h2>
+        <p>নিচের ফর্মটি পূরণ করুন অথবা সরাসরি যোগাযোগ করুন।</p>
+      </div>
+      <div class="contact">
+        <div class="info reveal">
+          <!-- TODO: আসল যোগাযোগের তথ্য বসান -->
+          <a href="mailto:info@nexinedigital.com"><span class="ic">✉️</span><div><small>ইমেইল</small><span class="en">info@nexinedigital.com</span></div></a>
+          <a href="https://wa.me/8801XXXXXXXXX" target="_blank" rel="noopener"><span class="ic">💬</span><div><small>WhatsApp</small><span class="en">+880 1XXX-XXXXXX</span></div></a>
+          <a href="#" target="_blank" rel="noopener"><span class="ic">📘</span><div><small>Facebook</small><span class="en">facebook.com/nexinedigital</span></div></a>
+          <div><span class="ic">📍</span><div><small>ঠিকানা</small><span>ঢাকা, বাংলাদেশ</span></div></div>
+        </div>
+        <form id="contactForm" class="reveal">
+          <div class="row">
+            <label>আপনার নাম<input name="name" required placeholder="নাম লিখুন"></label>
+            <label>ফোন / ইমেইল<input name="contact" required placeholder="যোগাযোগের মাধ্যম"></label>
+          </div>
+          <label>কোন সার্ভিস দরকার?
+            <select name="service">
+              <option>সফটওয়্যার ও অ্যাপ ডেভেলপমেন্ট</option>
+              <option>ওয়েব ডেভেলপমেন্ট</option>
+              <option>গ্রাফিক ডিজাইন</option>
+              <option>মোশন গ্রাফিক্স</option>
+              <option>ভিডিও এডিটিং</option>
+              <option>একাধিক / অন্যান্য</option>
+            </select>
+          </label>
+          <label>প্রজেক্টের বিবরণ<textarea name="message" required placeholder="আপনার প্রজেক্ট সম্পর্কে একটু লিখুন…"></textarea></label>
+          <button class="btn btn-primary" type="submit">মেসেজ পাঠান →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> <b class="en">Nexine Digital</b> — সর্বস্বত্ব সংরক্ষিত।</span>
+    <span class="en">Software · Web · Design · Motion · Video</span>
+  </div>
+</footer>
+
+<script>
+  // মোবাইল মেনু
+  const links = document.getElementById('links');
+  document.getElementById('menuBtn').addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  // স্ক্রলে অ্যানিমেশন
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // ফর্ম → ইমেইল (ব্যাকএন্ড ছাড়া)
+  const CONTACT_EMAIL = 'info@nexinedigital.com'; // TODO: আসল ইমেইল বসান
+  document.getElementById('contactForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const subject = `নতুন প্রজেক্ট: ${f.get('service')} — ${f.get('name')}`;
+    const body = `নাম: ${f.get('name')}\nযোগাযোগ: ${f.get('contact')}\nসার্ভিস: ${f.get('service')}\n\n${f.get('message')}`;
+    location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>
+</body>
+</html>
