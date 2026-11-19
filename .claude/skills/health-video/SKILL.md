@@ -1,6 +1,6 @@
 ---
 name: health-video
-description: Use when the user says "হেলথ ভিডিও" / "health video" (often followed by a health topic, sometimes with their own images). Research the topic from current, reliable sources and make two Bengali 9:16 motion-graphics reels (Facebook + YouTube Shorts) in the fixed Medinest Digital style, each ending with its platform call-to-action.
+description: Use when the user says "হেলথ ভিডিও" / "health video" (often followed by a health topic, sometimes with their own images). Research the topic from current, reliable sources and make two Bengali 9:16 motion-graphics reels (Facebook + YouTube Shorts) in the fixed Medinest Bangla style (logo watermark on every frame), each ending with its platform call-to-action.
 ---
 
 # হেলথ ভিডিও (keyword: "হেলথ ভিডিও" / "health video")
@@ -22,9 +22,13 @@ scenes for the new topic.
    - YouTube voice: "ভিডিওটি ভালো লাগলে লাইক, কমেন্ট ও শেয়ার করুন। এবং এরকম আরও ভিডিও পেতে চ্যানেলটি সাবস্ক্রাইব করুন।"
    - On-screen card text is built into the template (`PLATFORM` = `facebook` → "ফলো করুন" button,
      `youtube` → "সাবস্ক্রাইব করুন" button). Never draw real Facebook/YouTube logos.
-4. **Medinest Digital header** (green rounded square with a plus + "Medinest **Digital**") top-left on
-   every frame, the thin progress bar on top, and the footer note "শুধু সচেতনতার জন্য। চিকিৎসার জন্য
-   ডাক্তারের পরামর্শ নিন।" in the last scene. Soft background music under everything, ducking under the voice.
+4. **Medinest Bangla logo watermark** on every frame of every video: the user's white logo (plus-sign
+   mark + "Medinest / Bangla"), navy background removed, 380 px wide at x=50, y=100, opacity 0.9. It is
+   already embedded in `assets/template.html` as `<img id="brand">` (the transparent PNG is
+   `assets/logo.png`) — keep it as is; never redraw it, recolour it or replace it with text. Also the thin
+   progress bar on top, and the footer note "শুধু সচেতনতার জন্য। চিকিৎসার জন্য ডাক্তারের পরামর্শ নিন।"
+   in the last scene. Soft background music under everything, ducking under the voice.
+   Keep all scene content below y≈220 so nothing collides with the logo.
 
 ## Step 1 — Research (current, reliable)
 - Use WebSearch (mode "extended" for medical facts, guidelines and statistics; send several searches in
