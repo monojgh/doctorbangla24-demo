@@ -26,12 +26,16 @@
   var nav = document.getElementById("nav");
   var menuBtn = document.getElementById("menuBtn");
   var toTop = document.getElementById("toTop");
-  menuBtn.addEventListener("click", function () {
-    nav.classList.toggle("open"); menuBtn.classList.toggle("open");
-  });
-  nav.querySelectorAll("a").forEach(function (a) {
-    a.addEventListener("click", function () { nav.classList.remove("open"); menuBtn.classList.remove("open"); });
-  });
+  function setMenu(open) {
+    nav.classList.toggle("open", open); menuBtn.classList.toggle("open", open);
+    document.documentElement.classList.toggle("menu-open", open);
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  menuBtn.addEventListener("click", function (e) { e.stopPropagation(); setMenu(!nav.classList.contains("open")); });
+  nav.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
+  document.addEventListener("click", function (e) { if (nav.classList.contains("open") && !nav.contains(e.target)) setMenu(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
+  window.addEventListener("resize", function () { if (window.innerWidth > 1100) setMenu(false); });
   function onScroll() {
     var y = window.scrollY;
     header.classList.toggle("scrolled", y > 10);
