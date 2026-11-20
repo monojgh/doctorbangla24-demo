@@ -1,0 +1,8 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' font-family='Plus Jakarta Sans,Hind Siliguri,Arial,sans-serif'><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#1e1b4b'/><stop offset='1' stop-color='#0f172a'/></linearGradient></defs><rect width='800' height='600' fill='url(#bg)'/>
+<g transform='translate(230,40)'><rect width='340' height='520' rx='10' fill='#b91c1c'/>
+<circle cx='170' cy='150' r='120' fill='#f59e0b' opacity='.9'/><circle cx='170' cy='150' r='90' fill='#fbbf24'/>
+<g fill='#fde68a' opacity='.6'><circle cx='40' cy='40' r='8'/><circle cx='300' cy='60' r='6'/><circle cx='60' cy='300' r='5'/><circle cx='290' cy='280' r='9'/></g>
+<text x='170' y='140' font-size='46' font-weight='800' fill='#7f1d1d' text-anchor='middle'>FESTIVE</text><text x='170' y='185' font-size='30' font-weight='800' fill='#7f1d1d' text-anchor='middle'>OFFER</text>
+<text x='170' y='340' font-size='84' font-weight='800' fill='#fff' text-anchor='middle'>40%</text><text x='170' y='380' font-size='26' font-weight='700' fill='#fde68a' text-anchor='middle'>FLAT DISCOUNT</text>
+<rect x='70' y='415' width='200' height='44' rx='22' fill='#fff'/><text x='170' y='443' font-size='17' font-weight='800' fill='#b91c1c' text-anchor='middle'>CALL NOW</text>
+<text x='170' y='495' font-size='13' fill='#fecaca' text-anchor='middle'>Your Shop Name • Kolaghat</text></g></svg>
