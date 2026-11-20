@@ -20,7 +20,7 @@ English (ডিফল্ট) + বাংলা — উপরের ডানদ�
 - **সংখ্যা (150+ প্রজেক্ট ইত্যাদি)**: `index.html` এ `data-count="150"` — নিজের আসল সংখ্যা দিন।
 - **ফেসবুক / ইনস্টাগ্রাম / ইউটিউব লিংক**: `index.html` এর footer এ `href="#"` এর জায়গায়।
 - **কাজের সময়**: "Mon – Sat: 10 AM – 8 PM" লেখাটি।
-- **লোগো**: এখনকার লোগোটি অস্থায়ী। নিজের লোগো `images/logo.svg` নামে রাখুন (PNG হলে `index.html` এ `logo.svg` → `logo.png` করুন)।
+- **লোগো**: `images/logo.webp` (হেডার), `images/logo-white.webp` (footer), `images/logo-icon.png` / `favicon.png` / `apple-touch-icon.png` (ব্রাউজার আইকন), `images/og-cover.png` (ফেসবুক/হোয়াটসঅ্যাপে লিংক শেয়ারের ছবি)। বদলাতে চাইলে একই নামে নতুন ফাইল রাখুন।
 - **হিরো ছবি**: `images/hero.svg`।
 - **রং**: `css/style.css` এর শুরুতে `--navy`, `--blue`, `--teal`।
 
