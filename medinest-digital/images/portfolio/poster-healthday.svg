@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' font-family='Plus Jakarta Sans,Hind Siliguri,Arial,sans-serif'><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#e0f2fe'/><stop offset='1' stop-color='#ccfbf1'/></linearGradient><linearGradient id='lg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#0d9488'/><stop offset='1' stop-color='#0284c7'/></linearGradient></defs><rect width='800' height='600' fill='url(#bg)'/><g transform='translate(230,40)'><rect width='340' height='520' rx='10' fill='#0369a1'/>
+<circle cx='170' cy='190' r='120' fill='#0284c7'/><circle cx='170' cy='190' r='88' fill='#fff'/>
+<path d='M170 250c-60-40-78-80-50-104 18-15 40-6 50 10 10-16 32-25 50-10 28 24 10 64-50 104z' fill='#e11d48'/>
+<path d='M100 190h34l10-22 14 44 12-30 8 8h52' stroke='#fff' stroke-width='5' fill='none' stroke-linejoin='round'/>
+<text x='170' y='360' font-size='34' font-weight='800' fill='#fff' text-anchor='middle'>WORLD</text><text x='170' y='400' font-size='34' font-weight='800' fill='#fff' text-anchor='middle'>HEALTH DAY</text>
+<rect x='105' y='420' width='130' height='34' rx='17' fill='#10b981'/><text x='170' y='443' font-size='15' font-weight='800' fill='#fff' text-anchor='middle'>7 APRIL</text>
+<text x='170' y='490' font-size='13' fill='#bae6fd' text-anchor='middle'>Your Clinic Name • Health for All</text></g></svg>
