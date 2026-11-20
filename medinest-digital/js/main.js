@@ -74,6 +74,7 @@
       el.innerHTML = '<img loading="lazy" alt=""><span class="work-zoom">⤢</span><div class="work-info"><small></small><h4></h4></div>';
       el.querySelector("img").src = it.img;
       el.querySelector("img").alt = title(it);
+      if (it.fit === "contain") { el.classList.add("fit-contain"); el.style.background = it.bg || "#fff"; }
       el.querySelector("small").textContent = catName(it.cat);
       el.querySelector("h4").textContent = title(it);
       el.addEventListener("click", function () { openLb(i); });
