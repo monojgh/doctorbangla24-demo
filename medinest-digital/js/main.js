@@ -36,8 +36,15 @@
   document.addEventListener("click", function (e) { if (nav.classList.contains("open") && !nav.contains(e.target)) setMenu(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
   window.addEventListener("resize", function () { if (window.innerWidth > 1100) setMenu(false); });
+  var topbar = document.getElementById("topbar");
+  var spacer = document.getElementById("headerSpacer");
   function onScroll() {
-    var y = window.scrollY;
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var fixNow = y > (topbar ? topbar.offsetHeight : 0);
+    if (fixNow !== header.classList.contains("is-fixed")) {
+      spacer.style.height = fixNow ? header.offsetHeight + "px" : "0";
+      header.classList.toggle("is-fixed", fixNow);
+    }
     header.classList.toggle("scrolled", y > 10);
     toTop.classList.toggle("show", y > 600);
     // active nav link
@@ -48,6 +55,7 @@
     });
   }
   window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", function () { if (header.classList.contains("is-fixed")) spacer.style.height = header.offsetHeight + "px"; });
   toTop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
 
   /* ---------- Portfolio ---------- */
