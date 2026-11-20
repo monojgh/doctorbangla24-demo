@@ -33,3 +33,7 @@ English (ডিফল্ট) + বাংলা — উপরের ডানদ�
 - শেয়ারের ছবি, canonical লিংক ও Google-এর জন্য ব্যবসার তথ্য (ঠিকানা, ফোন, সময়) `index.html` এ এই ডোমেইন দিয়ে বসানো আছে।
 - `robots.txt` ও `sitemap.xml` যোগ করা আছে — সাইট লাইভ হলে Google Search Console এ `https://medinestdigital.com/sitemap.xml` জমা দিন।
 - হোস্টিংয়ে SSL (https) চালু রাখুন।
+
+## দাম বদলানো
+`index.html` এ `<!-- ===== PRICES ===== -->` অংশে প্রতিটি দাম দুই জায়গায় লেখা আছে, যেমন:
+`<b data-bn="₹2,999/মাস">₹2,999/mo</b>` — `data-bn="..."` (বাংলা) আর `>...<` (English) দুটোই বদলাবেন।
